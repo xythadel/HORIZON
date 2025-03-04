@@ -9,7 +9,11 @@ Route::get('/', function () {
 
 Route::get('horizon', function () {
     return Inertia::render('Horizon');
-})->name('horizon');
+})->middleware(['auth', 'verified'])->name('horizon');
+
+Route::get('test', function () {
+    return Inertia::render('test');
+})->name('test');
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
