@@ -45,35 +45,27 @@
                 Choose your course and start your coding adventure. <br />
                 Your journey begins now!
             </p>
-            <!-- vue course -->
-            <div class="absolute left-[280px] top-[300px] h-72 w-[500px] rounded-[30px] bg-white"></div>
+            <!-- COURSES -->
+            <div class="absolute top-80 ml-12 flex w-[1500px] flex-wrap gap-5">
+                <div class="h-72 w-[500px] rounded-[30px] bg-white" v-for="course in props.courses" v-bind:key="course.name">
+                    <h2 class="text-xl font-normal text-stone-900">Course</h2>
+                    <h3 class="text-2xl font-semibold text-stone-900">{{ course.name }}</h3>
+                    <p class="w-80 text-xs font-normal text-stone-900">
+                        {{ course.description }}
+                    </p>
 
-            <h2 class="absolute left-[380px] top-[350px] text-xl font-normal text-stone-900">Course</h2>
-            <h3 class="absolute left-[380px] top-[390px] text-2xl font-semibold text-stone-900">Vue.js</h3>
-            <p class="absolute left-[380px] top-[450px] w-80 text-xs font-normal text-stone-900">
-                An open-source model–view–viewmodel front-end JavaScript framework for building user interfaces and single-page applications.
-            </p>
-
-            <button class="absolute left-[650px] top-[530px] text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
-            <p>{{ props.courses }}</p>
-            <!-- laravel course -->
-            <div class="absolute left-[810px] top-[300px] h-72 w-[500px] rounded-[30px] bg-white"></div>
-
-            <h4 class="absolute left-[910px] top-[350px] text-xl font-normal text-stone-900">Course</h4>
-            <h5 class="absolute left-[910px] top-[390px] text-2xl font-semibold text-stone-900">Laravel</h5>
-            <p class="absolute left-[910px] top-[450px] w-80 text-xs font-normal text-stone-900">
-                A free and open-source PHP-based web framework for building web applications.
-            </p>
-            <button class="absolute left-[1180px] top-[530px] text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
+                    <button class="text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
+                </div>
+            </div>
         </main>
     </div>
 </template>
 
 <script setup lang="ts">
 import { defineProps } from 'vue';
-
+type Course = { name: string; description: string };
 interface Props {
-    courses: [];
+    courses: Course[];
 }
 
 const props = defineProps<Props>();
