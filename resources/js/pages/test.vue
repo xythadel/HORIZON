@@ -4,23 +4,51 @@
             <title>test</title>
         </head>
         <body>
-            <div class="relative h-[1024px] w-[243px]">
-                <div class="absolute left-0 top-0 h-[1024px] w-[243px] bg-white"></div>
-                <div class="absolute left-[17px] top-[138px] h-[69px] w-[69px] rounded-full bg-white shadow-[2px_2px_4px_0px_rgba(0,0,0,0.25)]"></div>
-                <div class="absolute left-[41px] top-[63px] h-[38px] w-[163px] font-['Poppins'] text-3xl font-normal text-[#2c2d2f]">horizon</div>
-                <div class="absolute left-[102px] top-[160px] h-6 w-[110px] font-['Poppins'] text-[15px] font-normal text-[#2c2d2f]">
-                    Berkan Yuksel
-                </div>
-                <div class="absolute left-[41px] top-[124px] h-[0px] w-[158px] border border-[#ebebeb]"></div>
-                <div class="absolute left-[17px] top-[229px] h-[52px] w-[226px] rounded-bl-[100px] rounded-tl-[100px] bg-[#d9d9d9]"></div>
-                <div class="absolute left-[71px] top-[924px] h-[18px] w-[93px] font-['Poppins'] text-[15px] font-normal text-[#2c2d2f]">Logout</div>
-                <div class="absolute left-[71px] top-[244px] h-[18px] w-[86px] font-['Poppins'] text-[15px] font-normal text-[#2c2d2f]">
-                    Dashboard
-                </div>
-                <div class="absolute left-[71px] top-[300px] h-[18px] w-[93px] font-['Poppins'] text-[15px] font-normal text-[#2c2d2f]">
-                    My Learning
-                </div>
-                <div class="absolute left-[71px] top-[359px] h-[18px] w-[93px] font-['Poppins'] text-[15px] font-normal text-[#2c2d2f]">Settings</div>
+            <div class="flex h-screen w-full flex-wrap bg-zinc-800">
+                <aside class="relative flex h-screen w-60 flex-col bg-white">
+                    <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Horizon</h1>
+                    <!-- Divider -->
+                    <div class="absolute left-10 top-[124px] w-40 border-t border-gray-200"></div>
+                    <!-- profile -->
+                    <div class="absolute left-4 top-[138px] h-16 w-16 rounded-full bg-white shadow-md"></div>
+                    <!-- username -->
+                    <p class="pl-24 pt-16 text-base font-normal text-zinc-800">Berkan Yuksel</p>
+
+                    <!-- navigation -->
+                    <nav class="flex flex-col space-y-6 pl-20 pt-14">
+                        <a href="#" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Dashboard</a>
+                        <a href="#" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a>
+                        <a href="#" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Settings</a>
+                    </nav>
+                    <!-- logout -->
+                    <nav class="flex flex-col space-y-6 pl-20 pt-60">
+                        <a href="#" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Logout</a>
+                    </nav>
+                </aside>
+                <main class="flex h-screen flex-1">
+                    <h2 class="pl-10 pt-5 text-3xl font-bold">Keep Learning</h2>
+
+                    <!-- vue course -->
+                    <div class="absolute left-[280px] top-[80px] h-60 w-[400px] rounded-[30px] bg-white"></div>
+
+                    <h3 class="absolute left-[330px] top-[120px] text-xl font-normal text-stone-900">Course</h3>
+                    <h4 class="absolute left-[330px] top-[150px] text-2xl font-semibold text-stone-900">Vue.js</h4>
+                    <p class="absolute left-[330px] top-[200px] w-80 text-xs font-normal text-stone-900">
+                        An open-source model–view–viewmodel front-end JavaScript framework for building user interfaces and single-page applications.
+                    </p>
+
+                    <button class="absolute left-[550px] top-[270px] text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
+
+                    <!-- laravel course -->
+                    <div class="absolute left-[280px] top-[400px] h-60 w-[400px] rounded-[30px] bg-white"></div>
+
+                    <h5 class="absolute left-[330px] top-[440px] text-xl font-normal text-stone-900">Course</h5>
+                    <h6 class="absolute left-[330px] top-[470px] text-2xl font-semibold text-stone-900">Laravel</h6>
+                    <p class="absolute left-[330px] top-[520px] w-80 text-xs font-normal text-stone-900">
+                        A free and open-source PHP-based web framework for building web applications.
+                    </p>
+                    <button class="absolute left-[550px] top-[590px] text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
+                </main>
             </div>
         </body>
     </html>
