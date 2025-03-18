@@ -55,7 +55,7 @@
             </p>
 
             <button class="absolute left-[650px] top-[530px] text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
-
+            <p>{{ props.courses }}</p>
             <!-- laravel course -->
             <div class="absolute left-[810px] top-[300px] h-72 w-[500px] rounded-[30px] bg-white"></div>
 
@@ -68,3 +68,13 @@
         </main>
     </div>
 </template>
+
+<script setup lang="ts">
+import { defineProps } from 'vue';
+
+interface Props {
+    courses: [];
+}
+
+const props = defineProps<Props>();
+</script>
