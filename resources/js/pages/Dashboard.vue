@@ -47,14 +47,14 @@
             </p>
             <!-- COURSES -->
             <div class="absolute top-80 ml-12 flex w-[1500px] flex-wrap gap-5">
-                <div class="h-72 w-[500px] rounded-[30px] bg-white" v-for="course in props.courses" v-bind:key="course.name">
+                <div class="h-72 w-[500px] rounded-[30px] bg-white px-20 py-14" v-for="course in props.courses" v-bind:key="course.name">
                     <h2 class="text-xl font-normal text-stone-900">Course</h2>
                     <h3 class="text-2xl font-semibold text-stone-900">{{ course.name }}</h3>
                     <p class="w-80 text-xs font-normal text-stone-900">
                         {{ course.description }}
                     </p>
 
-                    <button class="text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
+                    <button class="px-80 py-16 text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
                 </div>
             </div>
         </main>
