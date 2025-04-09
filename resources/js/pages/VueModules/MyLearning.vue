@@ -1,0 +1,49 @@
+// MyLearning.vue
+<template>
+  <div class="flex h-screen w-full bg-zinc-800">
+    <!-- Sidebar -->
+    <aside class="relative flex h-screen w-60 flex-col bg-white p-6">
+      <h1 class="text-3xl font-semibold text-zinc-800">Horizon</h1>
+      <div class="my-4 w-40 border-t border-gray-200"></div>
+      <div class="h-16 w-16 rounded-full bg-gray-300"></div>
+      <p class="pt-2 text-base font-medium text-zinc-800">Berkan Yuksel</p>
+      <nav class="mt-8 space-y-4">
+        <a href="#" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Dashboard</a>
+        <a href="#" class="text-base font-medium text-indigo-600">My Learning</a>
+        <a href="#" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Settings</a>
+      </nav>
+       <!-- logout -->
+       <nav class="flex flex-col space-y-6 pl-20 pt-60">
+                <a href="#" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Logout</a>
+            </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8 text-white">
+      <h2 class="text-2xl font-bold">My Learning</h2>
+      <div v-if="userProgress.some(course => course.progress > 0)" class="mt-6 space-y-4">
+        <div v-for="(course, index) in userProgress" :key="index" v-if="course.progress > 0" class="bg-gray-900 p-4 rounded-lg">
+          <h3 class="text-lg font-semibold">{{ course.name }}</h3>
+          <div class="mt-2 w-full bg-gray-700 rounded-full h-2">
+            <div class="bg-green-500 h-2 rounded-full" :style="{ width: course.progress + '%' }"></div>
+          </div>
+          <p class="mt-2 text-sm">{{ course.progress }}% completed</p>
+        </div>
+      </div>
+      <p v-else class="mt-6 text-gray-400">You haven't started any courses yet.</p>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      userProgress: [
+        { name: 'Vue.js', progress: 0 },
+        { name: 'Laravel', progress: 60 },
+      ],
+    };
+  },
+};
+</script>
