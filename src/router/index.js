@@ -6,9 +6,9 @@ import ModuleLara from '@/settings/LaraModules/ModuleLara.vue';
 import MyLearning from '@/settings/VueModules/MyLearning.vue';
 
 const routes = [
-  { path: '/module-vue', component: ModuleVue },
-  { path: '/module-lara', component: ModuleLara },
-  { path: '/my-learning', component: MyLearning }
+  { path: '/modulevue', component: ModuleVue },
+  { path: '/modulelara', component: ModuleLara },
+  { path: '/mylearning', component: MyLearning }
 ];
 
 const router = createRouter({
