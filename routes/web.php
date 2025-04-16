@@ -18,15 +18,15 @@ Route::get('test', function () {
 // Route::get('dashboard', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/module-vue', function () {
+Route::get('/modulevue', function () {
     return Inertia::render('settings/VueModules/ModuleVue');
 });
 
-Route::get('/module-lara', function () {
+Route::get('/modulelara', function () {
     return Inertia::render('settings/LaraModules/ModuleLara');
 });
 
-Route::get('/my-learning', function () {
+Route::get('/mylearning', function () {
     return Inertia::render('settings/VueModules/MyLearning');
 });
 
