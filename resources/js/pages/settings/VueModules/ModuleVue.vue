@@ -1,5 +1,5 @@
 <template>
-  <div class="flex min-h-screen bg-gray-800 text-white">
+  <div class="flex h-screen w-full flex-wrap bg-zinc-800">
     <!-- Sidebar -->
     <aside class="w-48 bg-white text-gray-900 py-6 px-4">
       <h2 class="text-xl font-bold mb-4">Horizon</h2>
