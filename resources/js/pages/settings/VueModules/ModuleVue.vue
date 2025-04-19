@@ -1,8 +1,8 @@
 <template>
   <div class="flex h-screen w-full flex-wrap bg-zinc-800">
     <!-- Sidebar -->
-    <aside class="w-48 bg-white text-gray-900 py-6 px-4">
-      <h2 class="text-xl font-bold mb-4">Horizon</h2>
+    <aside class="relative flex h-screen w-60 flex-col bg-white">
+      <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Vue Framework</h1>
       <nav class="space-y-2">
         <div v-for="(topic, index) in topics" :key="index">
           <button
