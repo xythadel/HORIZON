@@ -4,9 +4,10 @@
     <aside class="relative flex h-screen w-60 flex-col bg-white">
       <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Vue Framework</h1>
       <nav class="space-y-2">
+        <!-- Navigation Links(Topics) -->
         <div v-for="(topic, index) in topics" :key="index">
           <button
-            class="block w-full text-left px-2 py-1 rounded hover:bg-gray-200"
+            class="block w-full text-left px-6 py-3 text-base text-black font-normal hover:bg-gray-100 transition duration-200"
             :class="{ 'font-bold': currentTopicIndex === index }"
             :disabled="!topic.unlocked"
             @click="goToTopic(index)"
