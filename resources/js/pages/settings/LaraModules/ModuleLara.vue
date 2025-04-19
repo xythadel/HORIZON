@@ -1,6 +1,6 @@
 //laravel page
 <template>
-    <div class="flex min-h-screen bg-gray-800 text-white">
+    <div class="flex h-screen w-full flex-wrap bg-zinc-800">
       <!-- Sidebar -->
       <aside class="w-48 bg-white text-gray-900 py-6 px-4">
         <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Horizon</h1>
