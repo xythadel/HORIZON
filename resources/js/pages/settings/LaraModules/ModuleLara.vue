@@ -7,7 +7,7 @@
         <nav class="space-y-2">
           <div v-for="(topic, index) in topics" :key="index">
             <button
-              class="block w-full text-left px-2 py-1 rounded hover:bg-gray-200"
+              class="block w-full text-left px-2 py-1 rounded hover:bg-black-200"
               :class="{ 'font-bold': currentTopicIndex === index }"
               :disabled="!topic.unlocked"
               @click="goToTopic(index)"
