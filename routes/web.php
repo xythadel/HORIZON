@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MyLearningController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,7 +27,7 @@ Route::get('/modulelara', function () {
     return Inertia::render('settings/LaraModules/ModuleLara');
 });
 
-Route::get('/mylearning', [App\Http\Controllers\MyLearningController::class, 'index'])->name('mylearning');
+Route::get('/mylearning', [MyLearningController::class, 'index'])->name('mylearning');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
