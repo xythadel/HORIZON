@@ -27,7 +27,7 @@ Route::get('/modulelara', function () {
 });
 
 Route::get('/mylearning', function () {
-    return Inertia::render('settings/VueModules/MyLearning');
+    return Inertia::render('settings/MyLearning');
 });
 
 require __DIR__ . '/settings.php';
