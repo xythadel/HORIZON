@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
 use Inertia\Inertia;
 
 class MyLearningController extends Controller
