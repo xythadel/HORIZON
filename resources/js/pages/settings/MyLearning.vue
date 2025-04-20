@@ -41,7 +41,7 @@ export default {
     return {
       userProgress: [
         { name: 'Vue.js', progress: 0 },
-        { name: 'Laravel', progress: 60 },
+        { name: 'Laravel', progress: 0 },
       ],
     };
   },
