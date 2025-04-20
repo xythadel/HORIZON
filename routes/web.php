@@ -26,9 +26,7 @@ Route::get('/modulelara', function () {
     return Inertia::render('settings/LaraModules/ModuleLara');
 });
 
-Route::get('/mylearning', function () {
-    return Inertia::render('settings/MyLearning');
-});
+Route::get('/mylearning', [MyLearningController::class, 'index'])->name('mylearning');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
