@@ -9,7 +9,7 @@
       <p class="pt-2 text-base font-medium text-zinc-800">Berkan Yuksel</p>
       <nav class="mt-8 space-y-4">
         <a href="#" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Dashboard</a>
-        <a href="#" class="text-base font-medium text-indigo-600">My Learning</a>
+        <a href="#" class="text-base font-medium text-indigo-600">My Learning</a> 
         <a href="#" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Settings</a>
       </nav>
        <!-- logout -->
