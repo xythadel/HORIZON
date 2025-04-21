@@ -28,7 +28,7 @@ Route::get('/modulelara', function () {
 });
 
 Route::get('/mylearning', function () {
-    return Inertia::render('MyLearning');
+    return Inertia::render('settings/MyLearning');
 })->name('mylearning');
 
 require __DIR__ . '/settings.php';
