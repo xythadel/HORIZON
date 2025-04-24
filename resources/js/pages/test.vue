@@ -47,7 +47,9 @@
                     <p class="absolute left-[330px] top-[520px] w-80 text-xs font-normal text-stone-900">
                         A free and open-source PHP-based web framework for building web applications.
                     </p>
+                    <a href="/modulelara">
                     <button class="absolute left-[550px] top-[590px] text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
+                </a>
                 </main>
             </div>
         </body>
