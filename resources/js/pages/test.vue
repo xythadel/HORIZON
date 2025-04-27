@@ -16,7 +16,7 @@
 
                     <!-- navigation -->
                     <nav class="flex flex-col space-y-6 pl-20 pt-14">
-                        <a href="test" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Dashboard</a>
+                        <a href="dashboard" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Dashboard</a>
                         <a href="/mylearning" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a>
                         <a href="#" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Settings</a>
                     </nav>
