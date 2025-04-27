@@ -36,9 +36,9 @@
                     <p class="absolute left-[330px] top-[200px] w-80 text-xs font-normal text-stone-900">
                         An open-source model–view–viewmodel front-end JavaScript framework for building user interfaces and single-page applications.
                     </p>
-
+                    <a href="/modulevue">       
                     <button class="absolute left-[550px] top-[270px] text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
-
+                    </a>
                     <!-- laravel course -->
                     <div class="absolute left-[280px] top-[400px] h-60 w-[400px] rounded-[30px] bg-white"></div>
 
