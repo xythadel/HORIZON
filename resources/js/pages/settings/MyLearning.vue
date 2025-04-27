@@ -14,8 +14,8 @@
       <nav class="mt-8 space-y-4"></nav>
         <!--Navigation Panel-->
         <nav class="flex flex-col space-y-6 pl-20 pt-14">
-        <a href="#" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Dashboard</a>
-        <a href="#" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a> 
+        <a href="dashboard" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Dashboard</a>
+        <a href="/mylearning" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a> 
         <a href="#" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Settings</a>
       </nav>
        <!-- logout -->
