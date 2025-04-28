@@ -16,7 +16,9 @@
           </button>
         </div>
       </nav>
+      <a href="dashboard" class="absolute bottom-10 left-10 text-base font-normal text-zinc-800 hover:text-indigo-600">
       <button class="mt-6 text-sm text-gray-600 hover:underline">&larr; Back</button>
+    </a>
     </aside>
 
     <!-- Content -->
