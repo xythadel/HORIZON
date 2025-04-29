@@ -31,5 +31,14 @@ Route::get('/mylearning', function () {
     return Inertia::render('settings/MyLearning');
 })->name('mylearning');
 
+Route::get('/quizvue', function () {
+    return Inertia::render('settings/VueModules/QuizVue');
+})->name('quiz.vue');
+
+Route::get('/quizlara', function () {
+    return Inertia::render('settings/LaraModules/QuizLara');
+})->name('quiz.lara');
+
+
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
