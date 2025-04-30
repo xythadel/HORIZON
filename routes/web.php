@@ -3,7 +3,7 @@
 use App\Http\Controllers\MyLearningController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Settings\VueQuizController;
+use App\Http\Controllers\VueQuizController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
