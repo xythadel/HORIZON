@@ -32,7 +32,7 @@ class VueQuizController extends Controller
             ],
         ];
 
-        return Inertia::render('VueModules/ModuleVueQuiz', [
+        return Inertia::render('VueModules/QuizVue', [
             'questions' => $questions,
         ]);
     }
