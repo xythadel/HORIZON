@@ -1,7 +1,7 @@
 // QuizLara.vue
 <template>
     <div class="min-h-screen bg-gray-800 flex flex-col items-center justify-center text-white p-8">
-      <h1 class="text-3xl font-bold mb-8">Quiz - Vue Module</h1>
+      <h1 class="text-3xl font-bold mb-8">Quiz - Laravel Module</h1>
   
       <div v-for="(question, index) in questions" :key="index" class="mb-10 w-full max-w-md">
         <div class="bg-gray-700 p-6 rounded-lg shadow-lg">
