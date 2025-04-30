@@ -3,6 +3,7 @@
 use App\Http\Controllers\MyLearningController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VueQuizController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -31,9 +32,7 @@ Route::get('/mylearning', function () {
     return Inertia::render('settings/MyLearning');
 })->name('mylearning');
 
-Route::get('/quizvue', function () {
-    return Inertia::render('settings/VueModules/QuizVue');
-})->name('quiz.vue');
+Route::get('/quizvue', [VueQuizController::class, 'index'])->name('quizvue');
 
 Route::get('/quizlara', function () {
     return Inertia::render('settings/LaraModules/QuizLara');

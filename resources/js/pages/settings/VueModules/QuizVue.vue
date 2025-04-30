@@ -1,90 +1,49 @@
 <template>
-  <div class="min-h-screen bg-gray-900 flex items-center justify-center">
-    <div class="bg-gray-800 p-10 rounded-md w-[600px] text-white">
-      <h1 class="text-3xl font-bold mb-8 text-center">Quiz - Vue Module</h1>
+  <div class="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+    <div class="w-full max-w-md p-8 bg-gray-800 rounded shadow-md">
+      <h2 class="text-xl font-bold mb-4">Quiz</h2>
+      <p class="mb-6">{{ questions[currentQuestion].text }}</p>
 
-      <div v-for="(question, index) in questions" :key="index" class="mb-6">
-        <p class="font-semibold mb-3">Question {{ index + 1 }}:</p>
-        <p class="mb-3">{{ question.text }}</p>
-
-        <div class="space-y-2">
-          <label v-for="(option, i) in question.options" :key="i" class="block">
-            <input
-              type="radio"
-              :name="'question-' + index"
-              :value="option"
-              v-model="userAnswers[index]"
-              class="mr-2"
-            />
-            {{ option }}
+      <div class="space-y-2 mb-6">
+        <div v-for="(option, index) in questions[currentQuestion].options" :key="index">
+          <label class="flex items-center space-x-2">
+            <input type="radio" :value="option" v-model="selectedOption" />
+            <span>{{ option }}</span>
           </label>
         </div>
       </div>
 
-      <div class="flex justify-between">
-        <button
-          @click="submitQuiz"
-          class="bg-green-500 px-4 py-2 rounded hover:bg-green-600"
-        >
-          Submit
-        </button>
-        <button
-          @click="resetQuiz"
-          class="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Reset
-        </button>
-      </div>
+      <button
+        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+        @click="nextQuestion"
+        :disabled="!selectedOption"
+      >
+        {{ currentQuestion < questions.length - 1 ? 'Next' : 'Finish' }}
+      </button>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: "QuizVue",
-  data() {
-    return {
-      questions: [
-        {
-          text: "Lorem ipsum dolor sit amet?",
-          options: ["Option A", "Option B", "Option C", "Option D"]
-        },
-        {
-          text: "Consectetur adipiscing elit?",
-          options: ["Option A", "Option B", "Option C", "Option D"]
-        },
-        {
-          text: "Sed do eiusmod tempor incididunt?",
-          options: ["Option A", "Option B", "Option C", "Option D"]
-        },
-        {
-          text: "Ut labore et dolore magna aliqua?",
-          options: ["Option A", "Option B", "Option C", "Option D"]
-        },
-        {
-          text: "Ut enim ad minim veniam?",
-          options: ["Option A", "Option B", "Option C", "Option D"]
-        }
-      ],
-      userAnswers: {}
-    };
-  },
-  methods: {
-    submitQuiz() {
-      console.log("Submitted answers:", this.userAnswers);
-      alert("Quiz submitted!");
-    },
-    resetQuiz() {
-      this.userAnswers = {};
-    }
+<script setup>
+import { ref } from 'vue'
+import { usePage } from '@inertiajs/vue3'
+
+const props = usePage().props
+const questions = ref(props.questions)
+
+const currentQuestion = ref(0)
+const selectedOption = ref(null)
+
+function nextQuestion() {
+  if (currentQuestion.value < questions.value.length - 1) {
+    currentQuestion.value++
+    selectedOption.value = null
+  } else {
+    alert('Quiz complete!')
+    // Here you can post the answers to Laravel backend if needed
   }
-};
+}
 </script>
 
-<style scoped>
-input[type="radio"] {
-  transform: scale(1.2);
-}
-</style>
 
   
