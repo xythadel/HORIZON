@@ -12,7 +12,7 @@ class VueQuizController extends Controller
     {
         $questions = Quiz::all(); // Fetch all quiz questions from the database
 
-        return Inertia::render('VueModules/QuizVue', [
+        return Inertia::render('settings/VueModules/QuizVue', [
             'questions' => $questions,
         ]);
     }
