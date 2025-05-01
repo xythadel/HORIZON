@@ -3,39 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Quiz;
 use Inertia\Inertia;
 
 class VueQuizController extends Controller
 {
     public function index()
     {
-        $questions = [
-            [
-                'text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                'options' => ['Option A', 'Option B', 'Option C', 'Option D'],
-            ],
-            [
-                'text' => 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                'options' => ['Option A', 'Option B', 'Option C', 'Option D'],
-            ],
-            [
-                'text' => 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
-                'options' => ['Option A', 'Option B', 'Option C', 'Option D'],
-            ],
-            [
-                'text' => 'Duis aute irure dolor in reprehenderit in voluptate velit.',
-                'options' => ['Option A', 'Option B', 'Option C', 'Option D'],
-            ],
-            [
-                'text' => 'Excepteur sint occaecat cupidatat non proident.',
-                'options' => ['Option A', 'Option B', 'Option C', 'Option D'],
-            ],
-        ];
+        $questions = Quiz::all(); // Fetch all quiz questions from the database
 
         return Inertia::render('VueModules/QuizVue', [
             'questions' => $questions,
         ]);
     }
 }
-// Compare this snippet from app/Http/Controllers/VueQuizController.php:
-// <?php

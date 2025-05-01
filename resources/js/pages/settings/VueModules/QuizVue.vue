@@ -1,3 +1,4 @@
+// QuizVue.vue
 <template>
   <div class="min-h-screen bg-gray-900 text-white flex justify-center items-center">
     <div class="bg-gray-800 p-8 rounded shadow-lg w-full max-w-xl">
