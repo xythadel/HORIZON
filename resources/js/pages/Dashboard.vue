@@ -19,7 +19,7 @@
             </nav>
             <!-- logout -->
             <nav class="flex flex-col space-y-6 pl-20 pt-60">
-                <a href="#" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Logout</a>
+                <a href="welcome" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Logout</a>
             </nav>
         </aside>
         <main class="flex h-screen flex-1">
