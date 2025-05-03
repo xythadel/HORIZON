@@ -32,7 +32,8 @@ Route::get('/mylearning', function () {
     return Inertia::render('settings/MyLearning');
 })->name('mylearning');
 
-Route::get('/quizvue', [VueQuizController::class, 'index'])->name('quizvue');
+Route::get('/quizzes', [VueQuizController::class, 'index'])->name('quizzes.index');
+Route::get('/quizzes/{id}', [VueQuizController::class, 'show'])->name('quizzes.show');
 
 Route::get('/quizlara', function () {
     return Inertia::render('settings/LaraModules/QuizLara');
