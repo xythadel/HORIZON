@@ -39,5 +39,11 @@ Route::get('/quizlara', function () {
 })->name('quiz.lara');
 
 
+Route::post('/logout', function () {
+    \Illuminate\Support\Facades\Auth::logout();
+    return redirect('Welcome'); // Or '/signup' if you prefer
+});
+
+
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
