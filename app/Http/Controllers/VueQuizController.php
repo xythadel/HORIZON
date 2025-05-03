@@ -2,18 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Quiz;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class VueQuizController extends Controller
 {
     public function index()
     {
-        $questions = Quiz::all(); // Fetch all quiz questions from the database
-
+        $quizzes = Quiz::with('questions.options')->get();
+        
         return Inertia::render('settings/VueModules/QuizVue', [
-            'questions' => $questions,
+            'quizzes' => $quizzes
+        ]);
+    }
+    
+    public function show($id)
+    {
+        $quiz = Quiz::with('questions.options')->findOrFail($id);
+        
+        return Inertia::render('QuizVue', [
+            'quiz' => $quiz
         ]);
     }
 }
