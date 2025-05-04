@@ -1,49 +1,36 @@
 <template>
- <div class="flex h-screen w-full flex-wrap bg-zinc-800">
-    <!-- Sidebar -->
-    <aside class="relative flex h-screen w-60 flex-col bg-white">
-      <!-- Logo and User Info -->
-      <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Horizon</h1>
-      <!-- Divider -->
-      <div class="absolute left-10 top-[124px] w-40 border-t border-gray-200"></div>
-      <!-- Profile Picture -->
-      <div class="absolute left-4 top-[138px] h-16 w-16 rounded-full bg-white shadow-md"></div>
-      <!-- Username -->
-      <p class="pl-24 pt-16 text-base font-normal text-zinc-800">Berkan Yuksel</p>
+    <div class="flex h-screen w-full flex-wrap bg-zinc-800">
+      <!-- Sidebar -->
+      <aside class="relative flex h-screen w-60 flex-col bg-white">
+        <!-- Logo and User Info -->
+        <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Horizon</h1>
+        <!-- Divider -->
+        <div class="absolute left-10 top-[124px] w-40 border-t border-gray-200"></div>
+        <!-- Profile Picture -->
+        <div class="absolute left-4 top-[138px] h-16 w-16 rounded-full bg-white shadow-md"></div>
+        <!-- Username -->
+        <p class="pl-24 pt-16 text-base font-normal text-zinc-800">Berkan Yuksel</p>
   
         <!--Navigation Panel-->
+        <!-- Dashboard -->
         <nav class="flex flex-col space-y-6 pl-20 pt-14">
-          <a href="dashboard" class="flex items-center text-base font-normal text-zinc-800 hover:text-indigo-600">
-            <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-            </svg>
-            Dashboard
+          <a href="dashboard" class="text-base font-normal text-zinc-800 hover:text-indigo-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+          </svg>
+          Dashboard
           </a>
-          <a href="/mylearning" class="flex items-center text-base font-normal text-zinc-800 hover:text-indigo-600">
-            <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-            </svg>
-            My Learning
-          </a> 
-          <a href="#" class="flex items-center text-base font-medium text-zinc-800 hover:text-indigo-600">
-            <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            </svg>
-            Settings
-          </a>
+          <a href="/mylearning" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a> 
+          <a href="#" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Settings</a>
         </nav>
   
         <!-- Logout -->
-        <nav class="mt-auto mb-10 flex flex-col space-y-6 pl-20">
+        <nav class="flex flex-col space-y-6 pl-20 pt-60">
           <a
             href="#"
             @click.prevent="showLogoutModal = true"
-            class="flex items-center text-base font-normal text-zinc-800 hover:text-indigo-600"
+            class="text-base font-normal text-zinc-800 hover:text-indigo-600"
           >
-            <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-            </svg>
             Logout
           </a>
         </nav>
