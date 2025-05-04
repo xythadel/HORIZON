@@ -1,17 +1,15 @@
 <template>
-    <div class="flex h-screen w-full flex-wrap bg-zinc-800">
-      <!-- Sidebar -->
-      <aside class="relative flex h-screen w-60 flex-col bg-white">
-        <!-- Logo and User Info -->
-        <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Horizon;</h1>
-        <!-- Divider -->
-        <div class="absolute left-10 top-[124px] w-40 border-t border-gray-200"></div>
-        <!-- Profile Picture -->
-        <div class="absolute left-4 top-[138px] h-16 w-16 rounded-full bg-white shadow-md">
-          <img src="/path-to-profile-image.jpg" alt="Profile" class="h-full w-full rounded-full object-cover" />
-        </div>
-        <!-- Username -->
-        <p class="pl-24 pt-16 text-base font-normal text-zinc-800">Berkan Yuksel</p>
+ <div class="flex h-screen w-full flex-wrap bg-zinc-800">
+    <!-- Sidebar -->
+    <aside class="relative flex h-screen w-60 flex-col bg-white">
+      <!-- Logo and User Info -->
+      <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Horizon</h1>
+      <!-- Divider -->
+      <div class="absolute left-10 top-[124px] w-40 border-t border-gray-200"></div>
+      <!-- Profile Picture -->
+      <div class="absolute left-4 top-[138px] h-16 w-16 rounded-full bg-white shadow-md"></div>
+      <!-- Username -->
+      <p class="pl-24 pt-16 text-base font-normal text-zinc-800">Berkan Yuksel</p>
   
         <!--Navigation Panel-->
         <nav class="flex flex-col space-y-6 pl-20 pt-14">
