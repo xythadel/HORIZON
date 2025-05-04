@@ -1,31 +1,50 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\MyLearningController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VueQuizController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return Inertia::render('Welcome');
+})->name('home');
+
+Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// ->middleware(['auth', 'verified'])
+
+Route::get('test', function () {
+    return Inertia::render('test');
+})->name('test');
+
+// Route::get('dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/modulevue', function () {
+    return Inertia::render('settings/VueModules/ModuleVue');
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::get('/modulelara', function () {
+    return Inertia::render('settings/LaraModules/ModuleLara');
 });
 
-require __DIR__.'/auth.php';
+Route::get('/mylearning', function () {
+    return Inertia::render('settings/MyLearning');
+})->name('mylearning');
 
-Auth::routes();
+Route::get('/quizzes', [VueQuizController::class, 'index'])->name('quizzes.index');
+Route::get('/quizzes/{id}', [VueQuizController::class, 'show'])->name('quizzes.show');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/quizlara', function () {
+    return Inertia::render('settings/LaraModules/QuizLara');
+})->name('quiz.lara');
+
+
+Route::post('/logout', function () {
+    \Illuminate\Support\Facades\Auth::logout();
+    return redirect('Welcome'); // Or '/signup' if you prefer
+});
+
+
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
