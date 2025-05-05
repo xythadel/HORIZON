@@ -230,7 +230,7 @@ body {
 
 <script setup>
 import { ref } from 'vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 
 defineProps({
     canLogin: {
@@ -250,10 +250,12 @@ defineProps({
 });
 
 // State management
+
 function Welcome() {
-    window.location.href = route('welcome');  // Navigate to the Welcome.vue page
-}
-const currentView = ref('landing'); // 'landing', 'signup', or 'login'
+    // Using Inertia router
+    router.visit(route('welcome'));
+}  
+    const currentView = ref('landing'); // 'landing', 'signup', or 'login'
 const email = ref('');
 const password = ref('');
 
