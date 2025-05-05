@@ -4,7 +4,7 @@
         <!-- Header -->
         <header class="flex justify-between items-center px-6 py-4">
             <div class="text-xl font-bold flex items-center">
-                <span class="text-white">&lt;horizon/&gt;</span>
+                <button @click="Welcome" class="text-white">&lt;horizon/&gt;</button>
             </div>
             <div v-if="currentView === 'landing'">
                 <button @click="Login" class="text-sm px-4 py-1 text-white/80 hover:text-white">Log In</button>
@@ -250,6 +250,9 @@ defineProps({
 });
 
 // State management
+function Welcome() {
+    window.location.href = route('welcome');  // Navigate to the Welcome.vue page
+}
 const currentView = ref('landing'); // 'landing', 'signup', or 'login'
 const email = ref('');
 const password = ref('');
