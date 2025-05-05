@@ -253,7 +253,7 @@ defineProps({
 
 function Welcome() {
     // Using Inertia router
-    router.visit(route('welcome'));
+    router.visit(route('/'));
 }  
     const currentView = ref('landing'); // 'landing', 'signup', or 'login'
 const email = ref('');
