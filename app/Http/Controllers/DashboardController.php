@@ -1,7 +1,5 @@
 <?php
 
-// app/Http/Controllers/DashboardController.php
-
 namespace App\Http\Controllers;
 
 use App\Models\Course;
@@ -10,23 +8,21 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function __construct()
-    {
-        // Only allow authenticated users to access
-        $this->middleware('auth');
-    }
+    // Temporarily disable authentication for development
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
 
     public function index()
     {
-        $user = Auth::user(); // Now guaranteed not null
+        $user = Auth::user(); // Might be null during development if not logged in
         $courses = Course::all();
 
         return Inertia::render('Dashboard', [
             'user' => $user,
-            'isAdmin' => $user->role === 'admin',
+            'isAdmin' => optional($user)->role === 'admin', // safe check
             'courses' => $courses,
         ]);
     }
 }
-
-
