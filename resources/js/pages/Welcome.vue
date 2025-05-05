@@ -252,9 +252,10 @@ defineProps({
 // State management
 
 function Welcome() {
-    // Using Inertia router
-    router.visit(route('/'));
-}  
+    // Option 1: Using Inertia visit
+    window.Inertia.visit(route('welcome'));
+}
+
 const currentView = ref('landing'); // 'landing', 'signup', or 'login'
 const email = ref('');
 const password = ref('');
