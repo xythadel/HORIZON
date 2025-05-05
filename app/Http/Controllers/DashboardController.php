@@ -1,20 +1,32 @@
 <?php
 
+// app/Http/Controllers/DashboardController.php
+
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        // Only allow authenticated users to access
+        $this->middleware('auth');
+    }
+
     public function index()
     {
-        $courses = Course::get();
+        $user = Auth::user(); // Now guaranteed not null
+        $courses = Course::all();
+
         return Inertia::render('Dashboard', [
-            'courses' => $courses
+            'user' => $user,
+            'isAdmin' => $user->role === 'admin',
+            'courses' => $courses,
         ]);
     }
 }
+
+

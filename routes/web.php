@@ -45,6 +45,11 @@ Route::post('/logout', function () {
     return redirect('Welcome'); // Or '/signup' if you prefer
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
+
+
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
