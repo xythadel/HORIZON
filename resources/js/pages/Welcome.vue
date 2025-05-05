@@ -255,7 +255,7 @@ function Welcome() {
     // Using Inertia router
     router.visit(route('/'));
 }  
-    const currentView = ref('landing'); // 'landing', 'signup', or 'login'
+const currentView = ref('landing'); // 'landing', 'signup', or 'login'
 const email = ref('');
 const password = ref('');
 
