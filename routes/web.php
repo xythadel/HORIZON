@@ -45,8 +45,8 @@ Route::post('/logout', function () {
     return redirect('Welcome'); // Or '/signup' if you prefer
 });
 
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
+Route::get('/admindashboard', function () {
+    return Inertia::render('Admin/AdminDashboard');
 })->name('admin.dashboard');
 
 
