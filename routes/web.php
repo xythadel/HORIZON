@@ -45,6 +45,11 @@ Route::post('/logout', function () {
     return redirect('Welcome'); // Or '/signup' if you prefer
 });
 
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+})->name('admin.dashboard');
+
+
 //Route::middleware(['auth'])->group(function () {
     //Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 //});   
