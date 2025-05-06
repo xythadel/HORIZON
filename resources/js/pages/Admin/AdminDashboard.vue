@@ -1,3 +1,4 @@
+<!--Admin Dashboard-->
 // File: resources/js/admin.js
 import { createApp } from 'vue';
 import AdminDashboard from './components/admin/AdminDashboard.vue';
