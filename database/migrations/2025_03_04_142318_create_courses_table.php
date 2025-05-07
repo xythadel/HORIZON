@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->string('description');
-            $table->string('Vue');
-            $table->string('Laravel');
+            $table->string('name');
+            $table->string('name');
             $table->timestamps();
         });
     }
