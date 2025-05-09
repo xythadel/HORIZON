@@ -9,6 +9,9 @@ Route::middleware('api')->get('/ping', function () {
     return response()->json(['message' => 'API is working']);
 });
 
+;
+
+Route::apiResource('courses', CourseController::class);
 Route::get('/courses', [CourseController::class, 'index']);
 Route::post('/courses', [CourseController::class, 'store']);
 Route::put('/courses/{course}', [CourseController::class, 'update']);
