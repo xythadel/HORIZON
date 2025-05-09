@@ -58,10 +58,10 @@ Route::get('/admindashboard', function () {
 //Route::resource('courses', CourseController::class);
 // routes/web.php
 
-Route::get('/courses/json', [CourseController::class, 'index']);
-Route::post('/courses/json', [CourseController::class, 'store']);
-Route::put('/courses/json/{course}', [CourseController::class, 'update']);
-Route::delete('/courses/json/{course}', [CourseController::class, 'destroy']);
+Route::get('/admin', function () {
+    return view('admin.index'); // This should match your Blade file
+});
+
 
 
 
