@@ -47,10 +47,6 @@ Route::post('/logout', function () {
     return redirect('Welcome'); // Or '/signup' if you prefer
 });
 
-Route::get('/admindashboard', function () {
-    return Inertia::render('Admin/AdminDashboard');
-})->name('admin.dashboard');
-
 
 //Route::middleware(['auth'])->group(function () {
     //Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -62,11 +58,13 @@ Route::get('/admindashboard', function () {
 //Route::get('/admin', function () {
     //return view('admin.index'); // This should match your Blade file
 //});
+
 Route::get('/admin', function () {
-    return Inertia::render('AdminDashboard', [
+    return Inertia::render('Admin/AdminDashboard', [
         'courses' => Course::all()
     ]);
 });
+
 
 
 require __DIR__ . '/settings.php';
