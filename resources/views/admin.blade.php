@@ -1,25 +1,13 @@
+
 @extends('layouts.app')
 
-@vite('resources/js/app.js')
-
 @section('content')
-<div id="admin-app">
-    <admin-dashboard></admin-dashboard>
+<div id="app" class="p-6">
+    <course-manager></course-manager>
 </div>
 @endsection
 
-@vite('resources/js/admin.js')
+@push('scripts')
+    @vite('resources/js/admin.js')
+@endpush
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Panel</title>
-    @vite('resources/js/app.js')
-</head>
-<body>
-    <div id="app" class="p-6">
-        <course-manager></course-manager>
-    </div>
-</body>
-</html>
