@@ -13,7 +13,8 @@ class CourseController extends Controller
     public function index()
     {
         //retrun all courses
-        return response()->json(Course::all());
+        $courses = Course::all();
+        return view('courses.index', compact('courses'));
     }
 
     /**
@@ -22,6 +23,7 @@ class CourseController extends Controller
     public function create()
     {
         //
+        return view('courses.create');
     }
 
     /**
@@ -30,8 +32,13 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         //stores name and description of the course
-        $course = Course::create($request->only(['name', 'description']));
-        return response()->json($course, 201);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        Course::create($validated);
+        return redirect()->route('courses.index')->with('success', 'Course created!');
     }
 
     /**
@@ -40,7 +47,7 @@ class CourseController extends Controller
     public function show(Course $course)
     {
         //shows the course with the given id
-        return response()->json($course);
+        return view('courses.show', compact('course'));
     }
 
     /**
@@ -48,7 +55,9 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        //
+        //edit the course with the given id
+        return view('courses.edit', compact('course'));
+
     }
 
     /**
@@ -57,8 +66,13 @@ class CourseController extends Controller
     public function update(Request $request, Course $course)
     {
         //updates the course with the given id
-        $course->update($request->only(['name', 'description']));
-        return response()->json($course);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $course->update($validated);
+        return redirect()->route('courses.index')->with('success', 'Course updated!');
     }
 
     /**
@@ -67,6 +81,7 @@ class CourseController extends Controller
     public function destroy(Course $course)
     {
         //deletes the course with the given id
-        return response()->json(['message' => 'Course deleted']);
+        $course->delete();
+        return redirect()->route('courses.index')->with('success', 'Course deleted!');
     }
 }

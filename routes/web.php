@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MyLearningController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VueQuizController;
@@ -53,6 +54,8 @@ Route::get('/admindashboard', function () {
 //Route::middleware(['auth'])->group(function () {
     //Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 //});   
+
+Route::resource('courses', CourseController::class);
 
 
 
