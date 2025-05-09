@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MyLearningController;
 use App\Http\Controllers\CourseController;
+use App\Models\Course;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VueQuizController;
@@ -58,10 +59,14 @@ Route::get('/admindashboard', function () {
 //Route::resource('courses', CourseController::class);
 // routes/web.php
 
+//Route::get('/admin', function () {
+    //return view('admin.index'); // This should match your Blade file
+//});
 Route::get('/admin', function () {
-    return view('admin.index'); // This should match your Blade file
+    return Inertia::render('AdminDashboard', [
+        'courses' => Course::all()
+    ]);
 });
-
 
 
 require __DIR__ . '/settings.php';
