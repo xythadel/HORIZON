@@ -6,7 +6,7 @@ import router from './router';
 createApp(App).use(router).mount('#app');
 
 import { createApp } from 'vue';
-import CourseManager from './components/CourseManager.vue';
+import CourseManager from './pages/Admin/AdminDashboard.vue';
 import axios from 'axios';
 
 // Set up CSRF protection for axios
