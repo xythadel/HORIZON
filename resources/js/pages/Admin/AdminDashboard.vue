@@ -2,35 +2,43 @@
   <div class="p-8">
     <h1 class="text-2xl font-bold mb-4">Course Management</h1>
 
+    <!-- Course Form -->
     <form @submit.prevent="createCourse" class="mb-6 flex gap-4">
       <input v-model="form.name" placeholder="Course Name" class="border p-2 rounded" required />
       <input v-model="form.description" placeholder="Description" class="border p-2 rounded" />
       <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add Course</button>
     </form>
 
-    <table class="min-w-full border">
-      <thead>
-        <tr class="bg-gray-200">
-          <th class="p-2 border">Name</th>
-          <th class="p-2 border">Description</th>
-          <th class="p-2 border">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="course in courses" :key="course.id">
-          <td class="p-2 border">
-            <input v-model="course.name" class="w-full border p-1" />
-          </td>
-          <td class="p-2 border">
-            <input v-model="course.description" class="w-full border p-1" />
-          </td>
-          <td class="p-2 border">
-            <button @click="updateCourse(course)" class="text-blue-600 px-2">Update</button>
-            <button @click="deleteCourse(course.id)" class="text-red-600 px-2">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- Courses Table -->
+    <div v-for="course in courses" :key="course.id" class="mb-8 border rounded p-4">
+      <div class="flex justify-between items-center">
+        <div class="flex flex-col gap-1">
+          <input v-model="course.name" class="border p-1" />
+          <input v-model="course.description" class="border p-1" />
+        </div>
+        <div class="flex gap-2">
+          <button @click="updateCourse(course)" class="text-blue-600">Update</button>
+          <button @click="deleteCourse(course.id)" class="text-red-600">Delete</button>
+        </div>
+      </div>
+
+      <!-- Topics Section -->
+      <div class="mt-4 ml-4">
+        <h2 class="font-semibold mb-2">Topics</h2>
+        <form @submit.prevent="createTopic(course.id, course.newTopic)" class="flex gap-2 mb-2">
+          <input v-model="course.newTopic" placeholder="New Topic" class="border p-1 flex-1" />
+          <button class="bg-green-500 text-white px-2 rounded">Add</button>
+        </form>
+
+        <ul class="list-disc pl-5">
+          <li v-for="topic in course.topics" :key="topic.id" class="mb-1 flex justify-between">
+            <input v-model="topic.name" class="border p-1 w-full mr-2" />
+            <button @click="updateTopic(topic)" class="text-blue-600 mr-2">Update</button>
+            <button @click="deleteTopic(topic.id, course.id)" class="text-red-600">Delete</button>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -44,11 +52,17 @@ const form = ref({
   description: ''
 })
 
+// Fetch all courses and their topics
 const fetchCourses = async () => {
-  const response = await axios.get('/api/courses')
-  courses.value = response.data
+  const res = await axios.get('/api/courses')
+  courses.value = res.data.map(course => ({
+    ...course,
+    newTopic: '',
+    topics: course.topics || []
+  }))
 }
 
+// Course CRUD
 const createCourse = async () => {
   await axios.post('/api/courses', form.value)
   form.value.name = ''
@@ -66,6 +80,22 @@ const updateCourse = async (course) => {
 
 const deleteCourse = async (id) => {
   await axios.delete(`/api/courses/${id}`)
+  fetchCourses()
+}
+
+// Topic CRUD
+const createTopic = async (courseId, name) => {
+  await axios.post(`/api/courses/${courseId}/topics`, { name })
+  fetchCourses()
+}
+
+const updateTopic = async (topic) => {
+  await axios.put(`/api/topics/${topic.id}`, { name: topic.name })
+  fetchCourses()
+}
+
+const deleteTopic = async (topicId, courseId) => {
+  await axios.delete(`/api/topics/${topicId}`)
   fetchCourses()
 }
 
