@@ -55,7 +55,14 @@ Route::get('/admindashboard', function () {
     //Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 //});   
 
-Route::resource('courses', CourseController::class);
+//Route::resource('courses', CourseController::class);
+// routes/web.php
+
+Route::get('/courses/json', [CourseController::class, 'index']);
+Route::post('/courses/json', [CourseController::class, 'store']);
+Route::put('/courses/json/{course}', [CourseController::class, 'update']);
+Route::delete('/courses/json/{course}', [CourseController::class, 'destroy']);
+
 
 
 

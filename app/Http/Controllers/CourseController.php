@@ -13,8 +13,7 @@ class CourseController extends Controller
     public function index()
     {
         //retrun all courses
-        $courses = Course::all();
-        return view('courses.index', compact('courses'));
+        return response()->json(Course::all());
     }
 
     /**
