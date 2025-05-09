@@ -84,11 +84,13 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
       showModal: false,
-      courses: [], // Filled by API call or prop
+      courses: [],
       form: {
         name: '',
         description: ''
@@ -96,27 +98,43 @@ export default {
       editingCourse: null
     };
   },
+  mounted() {
+    this.loadCourses();
+  },
   methods: {
+    loadCourses() {
+      axios.get('/api/courses')
+        .then(response => {
+          this.courses = response.data;
+        })
+        .catch(error => console.error(error));
+    },
+    saveCourse() {
+      if (this.editingCourse) {
+        axios.put(`/api/courses/${this.editingCourse.id}`, this.form)
+          .then(() => {
+            this.loadCourses();
+            this.closeModal();
+          })
+          .catch(error => console.error(error));
+      } else {
+        axios.post('/api/courses', this.form)
+          .then(() => {
+            this.loadCourses();
+            this.closeModal();
+          })
+          .catch(error => console.error(error));
+      }
+    },
+    deleteCourse(id) {
+      axios.delete(`/api/courses/${id}`)
+        .then(() => this.loadCourses())
+        .catch(error => console.error(error));
+    },
     editCourse(course) {
       this.editingCourse = course;
       this.form = { ...course };
       this.showModal = true;
-    },
-    deleteCourse(id) {
-      // Add API call or emit event
-      this.courses = this.courses.filter((c) => c.id !== id);
-    },
-    saveCourse() {
-      if (this.editingCourse) {
-        // update
-        const index = this.courses.findIndex((c) => c.id === this.editingCourse.id);
-        this.courses.splice(index, 1, { ...this.editingCourse, ...this.form });
-      } else {
-        // create
-        const newCourse = { ...this.form, id: Date.now() };
-        this.courses.push(newCourse);
-      }
-      this.closeModal();
     },
     closeModal() {
       this.showModal = false;
