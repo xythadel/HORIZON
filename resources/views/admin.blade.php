@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@vite('resources/js/app.js')
+
 @section('content')
 <div id="admin-app">
     <admin-dashboard></admin-dashboard>
