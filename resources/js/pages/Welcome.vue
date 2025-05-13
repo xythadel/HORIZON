@@ -1,4 +1,4 @@
-<template>
+<template> 
     <Head title="Horizon" />
     <div class="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
         <!-- Header -->
@@ -221,7 +221,6 @@
 </template>
 
 <style>
-/* Add any additional styles here */
 body {
     background: #000;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -233,34 +232,16 @@ import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 
 defineProps({
-    canLogin: {
-        type: Boolean,
-    },
-    canRegister: {
-        type: Boolean,
-    },
-    laravelVersion: {
-        type: String,
-        required: true,
-    },
-    phpVersion: {
-        type: String,
-        required: true,
-    },
+    canLogin: Boolean,
+    canRegister: Boolean,
+    laravelVersion: String,
+    phpVersion: String,
 });
 
-// State management
-
-function Welcome() {
-    // Option 1: Using Inertia visit
-    window.Inertia.visit(route('welcome'));
-}
-
-const currentView = ref('landing'); // 'landing', 'signup', or 'login'
+const currentView = ref('landing');
 const email = ref('');
 const password = ref('');
 
-// Functions to change views
 function showSignUp() {
     currentView.value = 'signup';
 }
@@ -271,5 +252,10 @@ function showLogin() {
 
 function showLanding() {
     currentView.value = 'landing';
+}
+
+// ✅ Fixed this function
+function Welcome() {
+    router.visit(route('welcome'));
 }
 </script>
