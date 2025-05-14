@@ -96,7 +96,7 @@
                 <div class="text-center mb-8">
                     <h2 class="text-2xl font-bold">Sign Up</h2>
                 </div>
-                <form @submit.prevent class="space-y-4">
+                <form @submit.prevent="handleSignUp" class="space-y-4">
                     <div>
                         <label class="text-xs text-white/50 block mb-1">Email</label>
                         <input 
@@ -110,9 +110,15 @@
                         <label class="text-xs text-white/50 block mb-1">Password</label>
                         <input 
                             v-model="password"
-                            type="password"
+                            :type="showPassword ? 'text' : 'password'"
                             class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
                         />
+                        <div class="text-xs text-white/50 text-right cursor-pointer mt-1" @click="togglePasswordVisibility">
+                            {{ showPassword ? 'Hide Password' : 'Show Password' }}
+                        </div>
+                    </div>
+                    <div v-if="errorMessage" class="text-red-400 text-sm text-center">
+                        {{ errorMessage }}
                     </div>
                     <button class="w-full bg-white text-black py-3 rounded-xl font-medium hover:bg-white/90 transition mt-6">
                         Sign Up
@@ -132,7 +138,7 @@
                 <div class="text-center mb-8">
                     <h2 class="text-2xl font-bold">Log In</h2>
                 </div>
-                <form @submit.prevent class="space-y-4">
+                <form @submit.prevent="handleLogin" class="space-y-4">
                     <div>
                         <label class="text-xs text-white/50 block mb-1">Email</label>
                         <input 
@@ -146,9 +152,15 @@
                         <label class="text-xs text-white/50 block mb-1">Password</label>
                         <input 
                             v-model="password"
-                            type="password"
+                            :type="showPassword ? 'text' : 'password'"
                             class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
                         />
+                        <div class="text-xs text-white/50 text-right cursor-pointer mt-1" @click="togglePasswordVisibility">
+                            {{ showPassword ? 'Hide Password' : 'Show Password' }}
+                        </div>
+                    </div>
+                    <div v-if="errorMessage" class="text-red-400 text-sm text-center">
+                        {{ errorMessage }}
                     </div>
                     <button class="w-full bg-white text-black py-3 rounded-xl font-medium hover:bg-white/90 transition mt-6">
                         Log In
@@ -181,15 +193,44 @@ defineProps({
 const currentView = ref('landing');
 const email = ref('');
 const password = ref('');
+const showPassword = ref(false);
+const errorMessage = ref('');
 
 function showSignUp() {
     currentView.value = 'signup';
+    clearFields();
 }
 function showLogin() {
     currentView.value = 'login';
+    clearFields();
 }
 function showLanding() {
     currentView.value = 'landing';
+    clearFields();
+}
+function togglePasswordVisibility() {
+    showPassword.value = !showPassword.value;
+}
+function handleLogin() {
+    if (!email.value || !password.value) {
+        errorMessage.value = 'Must input email or password';
+        return;
+    }
+    errorMessage.value = '';
+    // handle login submission here
+}
+function handleSignUp() {
+    if (!email.value || !password.value) {
+        errorMessage.value = 'Must input email or password';
+        return;
+    }
+    errorMessage.value = '';
+    // handle signup submission here
+}
+function clearFields() {
+    email.value = '';
+    password.value = '';
+    errorMessage.value = '';
 }
 </script>
 
