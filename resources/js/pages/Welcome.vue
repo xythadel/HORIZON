@@ -57,15 +57,15 @@
 
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                            <span class="font-medium">Sarah</span>
+                            <span class="font-medium">Darlyn</span>
                             <span class="text-sm text-white/70">Developer</span>
                         </div>
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                            <span class="font-medium">Alejandro</span>
+                            <span class="font-medium">Zach</span>
                             <span class="text-sm text-white/70">CTO</span>
                         </div>
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                            <span class="font-medium">Naomi</span>
+                            <span class="font-medium">Xythadel</span>
                             <span class="text-sm text-white/70">Designer</span>
                         </div>
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
