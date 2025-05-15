@@ -15,7 +15,7 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user(); // Might be null during development if not logged in
-        $courses = Course::with('modules.topics')->get(); // optionally eager load related data
+        $courses = Course::with('topics')->get(); // optionally eager load related data
 
         // Default progress
         $progress = 0;

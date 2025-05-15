@@ -124,7 +124,11 @@
                         Sign Up
                     </button>
                     <div class="text-center text-sm my-4 text-white/50">or</div>
-                    <button class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-xl font-medium hover:bg-teal-400/30 transition flex items-center justify-center">
+                    <button
+                        @click="continueWithGoogle"
+                        type="button"
+                        class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-xl font-medium hover:bg-teal-400/30 transition flex items-center justify-center"
+                    >
                         <span class="mr-2">Continue with</span>
                         <span class="font-bold">Google</span>
                     </button>
@@ -166,7 +170,11 @@
                         Log In
                     </button>
                     <div class="text-center text-sm my-4 text-white/50">or</div>
-                    <button class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-xl font-medium hover:bg-teal-400/30 transition flex items-center justify-center">
+                    <button
+                        @click="continueWithGoogle"
+                        type="button"
+                        class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-xl font-medium hover:bg-teal-400/30 transition flex items-center justify-center"
+                    >
                         <span class="mr-2">Continue with</span>
                         <span class="font-bold">Google</span>
                     </button>
@@ -217,7 +225,6 @@ function handleLogin() {
         return;
     }
     errorMessage.value = '';
-    // handle login submission here
 }
 function handleSignUp() {
     if (!email.value || !password.value) {
@@ -225,7 +232,9 @@ function handleSignUp() {
         return;
     }
     errorMessage.value = '';
-    // handle signup submission here
+}
+function continueWithGoogle() {
+    window.location.href = '/auth/google';
 }
 function clearFields() {
     email.value = '';

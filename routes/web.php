@@ -6,7 +6,10 @@ use App\Models\Course;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VueQuizController;
+use Illuminate\Types\Relations\Role;
 use Inertia\Inertia;
+use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\SocialiteController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -64,6 +67,10 @@ Route::get('/admin', function () {
         'courses' => Course::all()
     ]);
 });
+
+
+Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 
 
 
