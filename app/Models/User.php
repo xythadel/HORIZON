@@ -47,8 +47,4 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function courseProgress()
-{
-    return $this->hasMany(\App\Models\CourseUserProgress::class);
-}
 }
