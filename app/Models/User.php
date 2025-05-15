@@ -47,4 +47,59 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
+    public function topicProgress()
+    {
+        return $this->hasMany(Topic::class);
+    }
+
+    /**
+     * Get the quiz progress records for the user.
+     */
+    public function quizProgress()
+    {
+        return $this->hasMany(Quiz::class);
+    }
+
+    /**
+     * Calculate the user's topic completion percentage.
+     */
+    public function calculateTopicProgress()
+    {
+        $totalTopics = Topic::count();
+        if ($totalTopics === 0) return 0;
+        
+        $completedTopics = $this->topicProgress()
+            ->where('completed', true)
+            ->count();
+            
+        return round(($completedTopics / $totalTopics) * 100);
+    }
+
+    /**
+     * Calculate the user's quiz completion percentage.
+     */
+    public function calculateQuizProgress()
+    {
+        $totalQuizzes = Quiz::count();
+        if ($totalQuizzes === 0) return 0;
+        
+        $completedQuizzes = $this->quizProgress()
+            ->where('completed', true)
+            ->count();
+            
+        return round(($completedQuizzes / $totalQuizzes) * 100);
+    }
+
+    /**
+     * Calculate the user's overall progress
+     */
+    public function calculateOverallProgress()
+    {
+        $topicProgress = $this->calculateTopicProgress();
+        $quizProgress = $this->calculateQuizProgress();
+        
+        // Simple average of topic and quiz progress
+        return round(($topicProgress + $quizProgress) / 2);
+    }
 }

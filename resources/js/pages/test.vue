@@ -37,8 +37,9 @@
                         An open-source model–view–viewmodel front-end JavaScript framework for building user interfaces and single-page applications.
                     </p>
                     <a href="/modulevue">       
-                    <button class="absolute left-[550px] top-[270px] text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
+                        <button class="absolute left-[550px] top-[270px] text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
                     </a>
+
                     <!-- laravel course -->
                     <div class="absolute left-[280px] top-[400px] h-60 w-[400px] rounded-[30px] bg-white"></div>
 
@@ -48,10 +49,51 @@
                         A free and open-source PHP-based web framework for building web applications.
                     </p>
                     <a href="/modulelara">
-                    <button class="absolute left-[550px] top-[590px] text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
-                </a>
+                        <button class="absolute left-[550px] top-[590px] text-xl font-medium text-stone-900 hover:text-green-500">Start</button>
+                    </a>
+
+                    <!-- Circular progress on the right -->
+                    <div class="absolute right-10 top-32 space-y-10">
+                        <div class="flex flex-col items-center">
+                            <CircleProgress
+                                :progress="topicProgress"
+                                :size="120"
+                                :strokeWidth="10"
+                                color="#10B981"
+                            />
+                            <p class="mt-2 text-white">Topics {{ topicProgress }}%</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <CircleProgress
+                                :progress="quizProgress"
+                                :size="120"
+                                :strokeWidth="10"
+                                color="#F59E0B"
+                            />
+                            <p class="mt-2 text-white">Quizzes {{ quizProgress }}%</p>
+                        </div>
+                    </div>
                 </main>
             </div>
         </body>
     </html>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import CircleProgress from 'vue3-circle-progress'
+
+const topicProgress = ref(0)
+const quizProgress = ref(0)
+
+onMounted(async () => {
+  try {
+    const res = await fetch('/api/user-progress')
+    const data = await res.json()
+    topicProgress.value = data.topicProgress
+    quizProgress.value = data.quizProgress
+  } catch (error) {
+    console.error('Failed to fetch progress:', error)
+  }
+})
+</script>

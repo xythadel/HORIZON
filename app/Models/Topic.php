@@ -19,6 +19,12 @@ class Topic extends Model
     {
         return $this->belongsTo(Course::class);
     }
+    
+    public function completedTopics()
+    {
+    return $this->belongsToMany(\App\Models\Topic::class, 'topic_user')->withTimestamps();
+    }
+
     public function quizzes()
     {
     return $this->hasMany(Quiz::class);
