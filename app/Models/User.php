@@ -6,6 +6,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\TopicUserInteraction;
+use App\Models\QuizUserInteraction;
+
 
 class User extends Authenticatable
 {
@@ -48,48 +51,45 @@ class User extends Authenticatable
         ];
     }
     
-    public function topicProgress()
+    
+    public function topicInteractions()
     {
-        return $this->hasMany(Topic::class);
+    return $this->hasMany(TopicUserInteraction::class);
     }
 
     /**
      * Get the quiz progress records for the user.
      */
-    public function quizProgress()
+   public function quizInteractions()
     {
-        return $this->hasMany(Quiz::class);
+    return $this->hasMany(QuizUserInteraction::class);
     }
-
     /**
      * Calculate the user's topic completion percentage.
      */
     public function calculateTopicProgress()
-    {
-        $totalTopics = Topic::count();
-        if ($totalTopics === 0) return 0;
-        
-        $completedTopics = $this->topicProgress()
-            ->where('completed', true)
-            ->count();
-            
-        return round(($completedTopics / $totalTopics) * 100);
-    }
+{
+    $totalTopics = Topic::count();
+    if ($totalTopics === 0) return 0;
 
-    /**
-     * Calculate the user's quiz completion percentage.
-     */
-    public function calculateQuizProgress()
-    {
-        $totalQuizzes = Quiz::count();
-        if ($totalQuizzes === 0) return 0;
-        
-        $completedQuizzes = $this->quizProgress()
-            ->where('completed', true)
-            ->count();
-            
-        return round(($completedQuizzes / $totalQuizzes) * 100);
-    }
+    $completedTopics = $this->topicInteractions()
+        ->where('completed', true)
+        ->count();
+
+    return round(($completedTopics / $totalTopics) * 100);
+}
+
+public function calculateQuizProgress()
+{
+    $totalQuizzes = Quiz::count();
+    if ($totalQuizzes === 0) return 0;
+
+    $completedQuizzes = $this->quizInteractions()
+        ->where('completed', true)
+        ->count();
+
+    return round(($completedQuizzes / $totalQuizzes) * 100);
+}
 
     /**
      * Calculate the user's overall progress
