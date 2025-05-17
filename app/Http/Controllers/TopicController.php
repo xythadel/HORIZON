@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Topic;
+use App\Models\Course;
 use Illuminate\Http\Request;
 
 class TopicController extends Controller
@@ -12,7 +13,7 @@ class TopicController extends Controller
      */
     public function index()
     {
-        //
+        return Topic::all();
     }
 
     /**
@@ -85,15 +86,19 @@ class TopicController extends Controller
     }
 
     public function vueTopics()
-{
+    {   
     $topics = Topic::where('course_id', 1)->get();
     return view('admin.topics.vue', compact('topics'));
-}
+    }
 
 public function laravelTopics()
-{
+    {
     $topics = Topic::where('course_id', 2)->get();
     return view('admin.topics.laravel', compact('topics'));
-}
-
+    }
+        public function getTopicsByCourse($courseId)
+    {
+    $course = Course::with('topics')->findOrFail($courseId);
+    return response()->json($course->topics);
+    }
 }

@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use App\Http\Controllers\CourseController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TopicController;
+use App\Models\Topic;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
@@ -20,6 +22,10 @@ Route::get('/courses', [CourseController::class, 'index']);
 Route::post('/courses', [CourseController::class, 'store']);
 Route::put('/courses/{course}', [CourseController::class, 'update']);
 Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
+Route::get('/courses/{id}/topics', [TopicController::class, 'getTopicsByCourse']);
+Route::get('/topics', [TopicController::class, 'index']);
+
+
 
 Route::middleware(['middleware' => 'auth:sanctum'])->get('/user-progress', function () {
     $user = Auth::user();

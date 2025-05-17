@@ -2,7 +2,7 @@
   <div class="flex h-screen w-full flex-wrap bg-zinc-800">
     <!-- Sidebar -->
     <aside class="relative flex h-screen w-60 flex-col bg-white">
-      <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Vue Framework</h1>
+      <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Horizon</h1>
       <nav class="space-y-2">
         <!-- Navigation Links(Topics) -->
         <div v-for="(topic, index) in topics" :key="index">
@@ -17,8 +17,8 @@
         </div>
       </nav>
       <a href="test" class="absolute bottom-10 left-10 text-base font-normal text-zinc-800 hover:text-indigo-600">
-      <button class="mt-6 text-sm text-gray-600 hover:underline">&larr; Back</button>
-    </a>
+        <button class="mt-6 text-sm text-gray-600 hover:underline">&larr; Back</button>
+      </a>
     </aside>
 
     <!-- Content -->
@@ -50,51 +50,7 @@ export default {
   data() {
     return {
       currentTopicIndex: 0,
-      topics: [
-        {
-          title: "Introduction",
-          content: `<p>Vue.js is a progressive framework for building user interfaces...</p>`,
-          code: `import { createApp } from 'vue'
-const app = createApp({
-  data() {
-    return {
-      message: 'Hello Vue!'
-    }
-  }
-})
-app.mount('#app')`,
-          unlocked: true,
-          completed: false,
-        },
-        {
-          title: "Creating a Vue Application",
-          content: `<p>Learn how to create your first Vue app using the Vue CLI or Vite.</p>` ,
-          code: '',
-          unlocked: false,
-          completed: false,
-        },
-        {
-          title: "Vue Components",
-          content: `<p>Components are reusable Vue instances with a name...</p>` ,
-          code: '',
-          unlocked: false,
-          completed: false,
-        },
-        {
-          title: "Props and Events",
-          content: `<p>Props are custom attributes you can register on a component...</p>` ,
-          code: '',
-          unlocked: false,
-          completed: false,
-        },
-        {
-          title: "Computed Properties and Watchers",
-          content: `<p>Computed properties are cached based on their dependencies...</p>` ,
-          code: '',
-          unlocked: false,
-          completed: false,
-        },
-      ],
+      topics: [],
     };
   },
   computed: {
@@ -102,7 +58,29 @@ app.mount('#app')`,
       return this.topics[this.currentTopicIndex];
     },
   },
+  mounted() {
+    this.fetchTopics();
+  },
   methods: {
+    async fetchTopics() {
+      try {
+        const response = await fetch('/api/topics');
+        const data = await response.json();
+
+        // Mark first topic as unlocked by default
+        if (data.length > 0) {
+          data[0].unlocked = true;
+        }
+
+        this.topics = data.map(topic => ({
+          ...topic,
+          unlocked: topic.unlocked || false,
+          completed: false,
+        }));
+      } catch (error) {
+        console.error('Failed to load topics:', error);
+      }
+    },
     goToTopic(index) {
       if (this.topics[index].unlocked) {
         this.currentTopicIndex = index;

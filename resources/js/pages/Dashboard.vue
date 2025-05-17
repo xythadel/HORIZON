@@ -65,7 +65,7 @@
           <h3 class="mb-4 text-xl font-semibold text-zinc-800">Vue.js</h3>
           <p class="mb-8 text-gray-500">Learn to build dynamic web interfaces with Vue.js, a progressive JavaScript framework.</p>
           <div class="flex justify-end">
-            <a href="#" class="flex items-center text-zinc-800 hover:text-indigo-600">
+            <a href="/modulevue" class="flex items-center text-zinc-800 hover:text-indigo-600">
               Start
               <svg class="ml-1 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -80,7 +80,7 @@
           <h3 class="mb-4 text-xl font-semibold text-zinc-800">Laravel</h3>
           <p class="mb-8 text-gray-500">Master PHP web development with Laravel, the powerful framework for modern applications.</p>
           <div class="flex justify-end">
-            <a href="#" class="flex items-center text-zinc-800 hover:text-indigo-600">
+            <a href="/modulelara" class="flex items-center text-zinc-800 hover:text-indigo-600">
               Start
               <svg class="ml-1 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>

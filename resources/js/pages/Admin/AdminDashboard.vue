@@ -26,14 +26,17 @@
       <div class="mt-4 ml-4">
         <h2 class="font-semibold mb-2">Topics</h2>
         <form @submit.prevent="createTopic(course.id, course.newTopic)" class="flex gap-2 mb-2">
-          <input v-model="course.newTopic" placeholder="New Topic" class="border p-1 flex-1" />
+          <input v-model="course.newTopic.title" placeholder="New Topic Title" class="border p-1 flex-1" />
+          <input v-model="course.newTopic.content" placeholder="New Topic Content" class="border p-1 flex-1" />
           <button class="bg-green-500 text-white px-2 rounded">Add</button>
         </form>
 
         <ul class="list-disc pl-5">
-          <li v-for="topic in course.topics" :key="topic.id" class="mb-1 flex justify-between">
-            <input v-model="topic.name" class="border p-1 w-full mr-2" />
-            <button @click="updateTopic(topic)" class="text-blue-600 mr-2">Update</button>
+          <li v-for="topic in course.topics" :key="topic.id" class="mb-1 flex items-center gap-2">
+            <span class="text-sm text-gray-600">#{{ topic.id }}</span>
+            <input v-model="topic.title" placeholder="Title" class="border p-1 flex-1" />
+            <input v-model="topic.content" placeholder="Content" class="border p-1 flex-1" />
+            <button @click="updateTopic(topic)" class="text-blue-600">Update</button>
             <button @click="deleteTopic(topic.id, course.id)" class="text-red-600">Delete</button>
           </li>
         </ul>
@@ -57,7 +60,7 @@ const fetchCourses = async () => {
   const res = await axios.get('/api/courses')
   courses.value = res.data.map(course => ({
     ...course,
-    newTopic: '',
+    newTopic: { title: '', content: '' },
     topics: course.topics || []
   }))
 }
@@ -84,13 +87,19 @@ const deleteCourse = async (id) => {
 }
 
 // Topic CRUD
-const createTopic = async (courseId, name) => {
-  await axios.post(`/api/courses/${courseId}/topics`, { name })
+const createTopic = async (courseId, topicData) => {
+  await axios.post(`/api/courses/${courseId}/topics`, {
+    title: topicData.title,
+    content: topicData.content
+  })
   fetchCourses()
 }
 
 const updateTopic = async (topic) => {
-  await axios.put(`/api/topics/${topic.id}`, { name: topic.name })
+  await axios.put(`/api/topics/${topic.id}`, {
+    title: topic.title,
+    content: topic.content
+  })
   fetchCourses()
 }
 
