@@ -12,7 +12,7 @@
           <div class="absolute left-4 top-[138px] h-16 w-16 rounded-full bg-white shadow-md"></div>
           <p class="pl-24 pt-16 text-base font-normal text-zinc-800">Berkan Yuksel</p>
           <nav class="flex flex-col space-y-6 pl-20 pt-14">
-            <a href="dashboard" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Dashboard</a>
+            <a href="/test" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Dashboard</a>
             <a href="/mylearning" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a>
             <a href="#" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Settings</a>
           </nav>
