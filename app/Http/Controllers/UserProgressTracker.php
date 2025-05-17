@@ -13,20 +13,20 @@ class UserProgressTracker extends Controller
     // ProgressController.php
 public function userProgress()
 {
-    //$user = auth()->user();THIS IS AN ERROR MUST FIX TOMMORROW
+    $user = auth()->user();
 
     $totalTopics = Topic::count();
-    //$completedTopics = $user->progress()->whereNotNull('topic_id')->where('completed', true)->count();
+    $completedTopics = $user->progress()->whereNotNull('topic_id')->where('completed', true)->count();
 
     $totalQuizzes = Quiz::count();
-    //$completedQuizzes = $user->progress()->whereNotNull('quiz_id')->where('completed', true)->count();
+    $completedQuizzes = $user->progress()->whereNotNull('quiz_id')->where('completed', true)->count();
 
-    //$topicProgress = $totalTopics ? round(($completedTopics / $totalTopics) * 100) : 0;
-    //$quizProgress = $totalQuizzes ? round(($completedQuizzes / $totalQuizzes) * 100) : 0;
+    $topicProgress = $totalTopics ? round(($completedTopics / $totalTopics) * 100) : 0;
+    $quizProgress = $totalQuizzes ? round(($completedQuizzes / $totalQuizzes) * 100) : 0;
 
     return response()->json([
-        //'topicProgress' => $topicProgress,
-        //'quizProgress' => $quizProgress
+        'topicProgress' => $topicProgress,
+        'quizProgress' => $quizProgress
     ]);
 }
 
