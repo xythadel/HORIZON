@@ -72,6 +72,15 @@ Route::get('/admin', function () {
 Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 
+Route::middleware(['auth', 'isAdmin'])->group(function () {
+    Route::get('/admin/dashboard', fn () => Inertia::render('Admin/AdminDashboard', [
+        'courses' => Course::all()  
+    ]));
+});
+
+Route::middleware(['auth', 'isUser'])->group(function () {
+    Route::get('/user/dashboard', fn () => Inertia::render('Dashboard'));
+});
 
 
 require __DIR__ . '/settings.php';
