@@ -68,7 +68,7 @@ Route::get('/admin', function () {
     ]);
 });
 
-
+//For google login 
 Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 
