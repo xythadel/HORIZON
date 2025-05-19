@@ -78,7 +78,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 });
 
 //User routes and Dashboard
-Route::middleware(['auth', 'isUser'])->group(function () {
+Route::middleware(['auth', 'is_user'])->group(function () {
     Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
 });
 
