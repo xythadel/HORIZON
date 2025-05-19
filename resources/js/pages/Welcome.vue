@@ -15,7 +15,7 @@
                 </button>
             </div>
             <div v-else>
-                <button v-if="currentView === 'signup'" @click="showLogin" class="text-sm px-4 py-1 text-white/80 hover:text-white transition duration-200 ease-in-out">
+                <button v-if="currentView === 'signup' || currentView === 'registrationDetails'" @click="showLogin" class="text-sm px-4 py-1 text-white/80 hover:text-white transition duration-200 ease-in-out">
                     Log In
                 </button>
                 <button v-if="currentView === 'login'" @click="showSignUp" class="text-sm px-4 py-1 text-white/80 hover:text-white transition duration-200 ease-in-out">
@@ -54,7 +54,6 @@
                         Meet the team behind<br />
                         <span class="text-3xl md:text-4xl font-bold">Horizon</span>
                     </h2>
-
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
                             <span class="font-medium">Darlyn</span>
@@ -79,7 +78,6 @@
                 <div class="relative h-4 rounded-full bg-gradient-to-r from-blue-500 via-indigo-400 to-blue-300 my-8 w-full"></div>
                 <div class="relative h-4 rounded-full bg-gradient-to-r from-emerald-500 via-green-400 to-teal-400 my-8 w-full"></div>
             </section>
-
             <footer class="py-6 border-t border-white/10 flex justify-between text-sm text-white/50">
                 <div>&lt;horizon/&gt;</div>
                 <div class="flex gap-6">
@@ -90,7 +88,7 @@
             </footer>
         </div>
 
-        <!-- Sign Up Page -->
+        <!-- Sign Up Page (Email and Password) -->
         <div v-if="currentView === 'signup'" class="min-h-[calc(100vh-80px)] flex items-center justify-center">
             <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-lg backdrop-blur-sm">
                 <div class="text-center mb-8">
@@ -99,39 +97,43 @@
                 <form @submit.prevent="handleSignUp" class="space-y-4">
                     <div>
                         <label class="text-xs text-white/50 block mb-1">Email</label>
-                        <input 
-                            v-model="email"
-                            type="email"
-                            class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
-                            placeholder="youremail@example.com"
-                        />
+                        <input v-model="email" type="email" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" placeholder="youremail@example.com" />
                     </div>
                     <div>
                         <label class="text-xs text-white/50 block mb-1">Password</label>
-                        <input 
-                            v-model="password"
-                            :type="showPassword ? 'text' : 'password'"
-                            class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
-                        />
+                        <input v-model="password" :type="showPassword ? 'text' : 'password'" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" />
                         <div class="text-xs text-white/50 text-right cursor-pointer mt-1" @click="togglePasswordVisibility">
                             {{ showPassword ? 'Hide Password' : 'Show Password' }}
                         </div>
                     </div>
-                    <div v-if="errorMessage" class="text-red-400 text-sm text-center">
-                        {{ errorMessage }}
-                    </div>
-                    <button class="w-full bg-white text-black py-3 rounded-xl font-medium hover:bg-white/90 transition mt-6">
-                        Sign Up
-                    </button>
+                    <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
+                    <button class="w-full bg-white text-black py-3 rounded-xl font-medium hover:bg-white/90 transition mt-6">Sign Up</button>
                     <div class="text-center text-sm my-4 text-white/50">or</div>
-                    <button
-                        @click="continueWithGoogle"
-                        type="button"
-                        class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-xl font-medium hover:bg-teal-400/30 transition flex items-center justify-center"
-                    >
+                    <button @click="continueWithGoogle" type="button" class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-xl font-medium hover:bg-teal-400/30 transition flex items-center justify-center">
                         <span class="mr-2">Continue with</span>
                         <span class="font-bold">Google</span>
                     </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Registration Details Page -->
+        <div v-if="currentView === 'registrationDetails'" class="min-h-[calc(100vh-80px)] flex items-center justify-center">
+            <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-lg backdrop-blur-sm">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold">Complete Your Profile</h2>
+                </div>
+                <form @submit.prevent="handleProfileSubmit" class="space-y-4">
+                    <div>
+                        <label class="text-xs text-white/50 block mb-1">Full Name</label>
+                        <input v-model="name" type="text" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" placeholder="Your full name" />
+                    </div>
+                    <div>
+                        <label class="text-xs text-white/50 block mb-1">Birthday</label>
+                        <input v-model="birthday" type="date" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" />
+                    </div>
+                    <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
+                    <button class="w-full bg-white text-black py-3 rounded-xl font-medium hover:bg-white/90 transition mt-6">Finish Registration</button>
                 </form>
             </div>
         </div>
@@ -145,36 +147,19 @@
                 <form @submit.prevent="handleLogin" class="space-y-4">
                     <div>
                         <label class="text-xs text-white/50 block mb-1">Email</label>
-                        <input 
-                            v-model="email"
-                            type="email"
-                            class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
-                            placeholder="youremail@example.com"
-                        />
+                        <input v-model="email" type="email" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" placeholder="youremail@example.com" />
                     </div>
                     <div>
                         <label class="text-xs text-white/50 block mb-1">Password</label>
-                        <input 
-                            v-model="password"
-                            :type="showPassword ? 'text' : 'password'"
-                            class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
-                        />
+                        <input v-model="password" :type="showPassword ? 'text' : 'password'" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" />
                         <div class="text-xs text-white/50 text-right cursor-pointer mt-1" @click="togglePasswordVisibility">
                             {{ showPassword ? 'Hide Password' : 'Show Password' }}
                         </div>
                     </div>
-                    <div v-if="errorMessage" class="text-red-400 text-sm text-center">
-                        {{ errorMessage }}
-                    </div>
-                    <button class="w-full bg-white text-black py-3 rounded-xl font-medium hover:bg-white/90 transition mt-6">
-                        Log In
-                    </button>
+                    <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
+                    <button class="w-full bg-white text-black py-3 rounded-xl font-medium hover:bg-white/90 transition mt-6">Log In</button>
                     <div class="text-center text-sm my-4 text-white/50">or</div>
-                    <button
-                        @click="continueWithGoogle"
-                        type="button"
-                        class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-xl font-medium hover:bg-teal-400/30 transition flex items-center justify-center"
-                    >
+                    <button @click="continueWithGoogle" type="button" class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-xl font-medium hover:bg-teal-400/30 transition flex items-center justify-center">
                         <span class="mr-2">Continue with</span>
                         <span class="font-bold">Google</span>
                     </button>
@@ -191,18 +176,13 @@
 import { ref } from 'vue';
 import { Head } from '@inertiajs/vue3';
 
-defineProps({
-    canLogin: Boolean,
-    canRegister: Boolean,
-    laravelVersion: String,
-    phpVersion: String,
-});
-
 const currentView = ref('landing');
 const email = ref('');
 const password = ref('');
 const showPassword = ref(false);
 const errorMessage = ref('');
+const name = ref('');
+const birthday = ref('');
 
 function showSignUp() {
     currentView.value = 'signup';
@@ -232,6 +212,16 @@ function handleSignUp() {
         return;
     }
     errorMessage.value = '';
+    currentView.value = 'registrationDetails';
+}
+function handleProfileSubmit() {
+    if (!name.value || !birthday.value) {
+        errorMessage.value = 'Please fill in all fields';
+        return;
+    }
+    errorMessage.value = '';
+    alert('Registration complete!');
+    currentView.value = 'login';
 }
 function continueWithGoogle() {
     window.location.href = '/auth/google';
@@ -239,6 +229,8 @@ function continueWithGoogle() {
 function clearFields() {
     email.value = '';
     password.value = '';
+    name.value = '';
+    birthday.value = '';
     errorMessage.value = '';
 }
 </script>

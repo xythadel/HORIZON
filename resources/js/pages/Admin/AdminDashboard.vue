@@ -1,6 +1,6 @@
 <template>
   <div class="p-8">
-    <h1 class="text-2xl font-bold mb-4">Course Management</h1>
+    <h2 class="text-2xl font-bold mb-4">Course Management</h2>
 
     <!-- Course Form -->
     <form @submit.prevent="createCourse" class="mb-6 flex gap-4">
