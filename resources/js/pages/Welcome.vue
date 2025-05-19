@@ -204,11 +204,20 @@ function handleLogin() {
         errorMessage.value = 'Must input email or password';
         return;
     }
+
     errorMessage.value = '';
 
-    // Simulate success or call backend here
-    // Example redirection using Inertia
-    router.visit('/dashboard'); // Redirect to your desired route
+    router.post('/login', {
+        email: email.value,
+        password: password.value,
+    }, {
+        onError: (errors) => {
+            errorMessage.value = errors.email || errors.password || 'Invalid credentials';
+        },
+        onSuccess: () => {
+            // Redirect will happen automatically if Inertia login route does it
+        }
+    });
 }
 function handleSignUp() {
     if (!email.value || !password.value) {
