@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->unsignedTinyInteger('progress_percentage')->default(0); // 0–100
             $table->timestamps();
 
-            $table->unique(['user_id', 'course_id']); // Prevent duplicate progress records
+            $table->unique(['user_id', 'topic_id']); // Prevent duplicate progress records
         });
     }
 
