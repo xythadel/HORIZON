@@ -72,14 +72,14 @@ Route::get('/admin', function () {
 Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 
+// Admin Dashboard
 Route::middleware(['auth', 'isAdmin'])->group(function () {
-    Route::get('/admin/AdminDashboard', fn () => Inertia::render('Admin/AdminDashboard', [
-        'courses' => Course::all()  
-    ]));
+    Route::get('/admin/dashboard', fn () => Inertia::render('Admin/AdminDashboard'))->name('admin');
 });
 
+//User routes and Dashboard
 Route::middleware(['auth', 'isUser'])->group(function () {
-    Route::get('/dashboard', fn () => Inertia::render('Dashboard'));
+    Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
 });
 
 
