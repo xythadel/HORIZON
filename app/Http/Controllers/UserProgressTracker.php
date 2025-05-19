@@ -2,34 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Topic;
-use Illuminate\Http\Request;
-use App\Models\User;  
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Course;
 use App\Models\TopicUserInteraction;
 use App\Models\QuizUserInteraction;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Quiz;
 
 class UserProgressTracker extends Controller
 {
-    // ProgressController.php
-public function userProgress()
-{
-    $user = Auth::user();
+    public function userProgress(): JsonResponse
+    {
+        $user = Auth::user();
 
-    $totalTopics = Topic::count();
-    $completedTopics = $user->topicUserInteractions()->where('completed', true)->count();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
 
-    $totalQuizzes = Quiz::count();
-    $completedQuizzes = $user->quizUserInteractions()->where('completed', true)->count();
+        $courses = Course::with('topics.quizzes')->get();
 
-    $topicProgress = $totalTopics ? round(($completedTopics / $totalTopics) * 100) : 0;
-    $quizProgress = $totalQuizzes ? round(($completedQuizzes / $totalQuizzes) * 100) : 0;
+        $progressByCourse = $courses->map(function ($course) use ($user) {
+            $topicIds = $course->topics->pluck('id');
+            $quizIds = $course->topics->flatMap->quizzes->pluck('id');
 
-    return response()->json([
-        'topicProgress' => $topicProgress,
-        'quizProgress' => $quizProgress
-    ]);
-}
+            $totalTopics = $topicIds->count();
+            $totalQuizzes = $quizIds->count();
 
+            $completedTopics = TopicUserInteraction::where('user_id', $user->id)
+                ->whereIn('topic_id', $topicIds)
+                ->where('completed', true)
+                ->count();
+
+            $completedQuizzes = QuizUserInteraction::where('user_id', $user->id)
+                ->whereIn('quiz_id', $quizIds)
+                ->where('completed', true)
+                ->count();
+
+            $topicProgress = $totalTopics > 0 ? round(($completedTopics / $totalTopics) * 100) : 0;
+            $quizProgress = $totalQuizzes > 0 ? round(($completedQuizzes / $totalQuizzes) * 100) : 0;
+            $overallProgress = round(($topicProgress + $quizProgress) / 2);
+
+            return [
+                'course_id' => $course->id,
+                'course_name' => $course->name,
+                'topic_progress' => $topicProgress,
+                'quiz_progress' => $quizProgress,
+                'overall_progress' => $overallProgress,
+            ];
+        });
+
+        return response()->json(['progress_by_course' => $progressByCourse]);
+    }
 }

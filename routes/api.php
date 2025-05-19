@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\CourseController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\UserProgressTracker;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -27,18 +29,5 @@ Route::get('/topics', [TopicController::class, 'index']);
 
 
 
-Route::middleware(['middleware' => 'auth:sanctum'])->get('/user-progress', function () {
-    $user = Auth::user();
 
-    if (!$user) {
-        return ['error' => 'Unauthenticated'];
-    }
-
-    // Debugging line:
-    dd(get_class($user), method_exists($user, 'calculateTopicProgress'));
-
-    return [
-        'topicProgress' => $user->calculateTopicProgress(),
-        'quizProgress' => $user->calculateQuizProgress(),
-    ];
-});
+Route::middleware(['auth:sanctum'])->get('/user-progress', [UserProgressTracker::class, 'userProgress']);
