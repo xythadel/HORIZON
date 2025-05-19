@@ -174,7 +174,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 
 const currentView = ref('landing');
 const email = ref('');
@@ -205,6 +205,10 @@ function handleLogin() {
         return;
     }
     errorMessage.value = '';
+
+    // Simulate success or call backend here
+    // Example redirection using Inertia
+    router.visit('/dashboard'); // Redirect to your desired route
 }
 function handleSignUp() {
     if (!email.value || !password.value) {
