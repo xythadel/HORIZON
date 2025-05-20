@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VueQuizController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Types\Relations\Role;
 use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
@@ -48,7 +49,7 @@ Route::get('/quizlara', function () {
 Route::post('/logout', function () {
     \Illuminate\Support\Facades\Auth::logout();
     return redirect('Welcome'); // Or '/signup' if you prefer
-});
+}); 
 
 
 //Route::middleware(['auth'])->group(function () {
@@ -62,16 +63,14 @@ Route::post('/logout', function () {
     //return view('admin.index'); // This should match your Blade file
 //});
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin');
 
+    //For google login 
+    Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
+    Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 
-//For google login 
-Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
-Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
-
-// Admin Dashboard
-
-
-
+}); // <-- Close the middleware group
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
