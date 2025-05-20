@@ -63,6 +63,7 @@ Route::post('/logout', function () {
     //return view('admin.index'); // This should match your Blade file
 //});
 
+//Admin routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin');
 
