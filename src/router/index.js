@@ -17,11 +17,17 @@ import { createRouter, createWebHistory } from 'vue-router';
 import ModuleVue from '@/settings/VueModules/ModuleVue.vue';
 import ModuleLara from '@/settings/LaraModules/ModuleLara.vue';
 import MyLearning from '@/settings/VueModules/MyLearning.vue';
+import AdminDashboard from '@/pages/Admin/AdminDashboard.vue';
+import Dashboard from '@/pages/Dashboard.vue';
+import Login from '@/pages/auth/Login.vue';
 
 const routes = [
   { path: '/module-vue', component: ModuleVue },
   { path: '/module-lara', component: ModuleLara },
-  { path: '/my-learning', component: MyLearning }
+  { path: '/my-learning', component: MyLearning },
+  { path: '/admin-dashboard', component: AdminDashboard },
+  { path: '/dashboard', component: Dashboard },
+  { path: '/login', component: Login },
 ];
 
 const router = createRouter({
