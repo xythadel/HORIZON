@@ -18,11 +18,12 @@ class IsUser
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->role === 'user') {
+            // Check if the user is logged in and has the 'user' role
+        if ($request->user() && $request->user()->hasRole('user')) {
             return $next($request);
         }
-
-        // Always return a response
-       abort(403, 'Unauthorized');
+        
+        // Redirect if not a user
+        return redirect('/')->with('error', 'You do not have user access.');
     }
 }
