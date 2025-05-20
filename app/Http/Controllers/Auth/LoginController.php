@@ -33,7 +33,7 @@ class LoginController extends Controller
         $user = Auth::user();
 
         if ($user->role === 'admin') {
-            return '/admin/dashboard';
+            return '/Admin/AdminDashboard';
         }
 
         return '/dashboard'; // default for regular users
