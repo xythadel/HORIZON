@@ -23,6 +23,6 @@ class IsUser
         }
 
         // Always return a response
-        return abort(403, 'Unauthorized');
+       abort(403, 'Unauthorized');
     }
 }
