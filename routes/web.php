@@ -62,27 +62,14 @@ Route::post('/logout', function () {
     //return view('admin.index'); // This should match your Blade file
 //});
 
-Route::get('/admin', function () {
-    return Inertia::render('Admin/AdminDashboard', [
-        'courses' => Course::all()
-    ]);
-});
+
 
 //For google login 
 Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 
 // Admin Dashboard
-Route::middleware(['auth', 'isAdmin'])->group(function () {
-    Route::get('/admin/dashboard', fn () => Inertia::render('Admin/AdminDashboard'))->name('admin');
-});
 
-//User routes and Dashboard
-Route::middleware(['auth', 'isUser'])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-});
 
 
 
