@@ -1,7 +1,7 @@
 <template>
-  <div class="flex min-h-screen">
+  <div class="flex min-h-screen flex-col md:flex-row">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 text-white p-4 flex flex-col justify-between">
+    <aside class="w-full md:w-64 bg-gray-800 text-white p-4 flex flex-col justify-between">
       <div>
         <h2 class="text-xl font-semibold mb-4">Admin Panel</h2>
         <button @click="toggleUsers" class="w-full text-left mb-2 bg-gray-700 p-2 rounded hover:bg-gray-600">
@@ -17,13 +17,13 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-8">
-      <h2 class="text-2xl font-bold mb-4">Course Management</h2>
+    <main class="flex-1 p-4 md:p-8">
+      <h2 class="text-2xl font-bold mb-4">Topic Management</h2>
 
       <!-- User Table -->
-      <div v-if="showUsers" class="mb-6 p-4 bg-white rounded shadow">
+      <div v-if="showUsers" class="mb-6 p-4 bg-white rounded shadow overflow-auto">
         <h3 class="text-lg font-semibold mb-2">Registered Users</h3>
-        <table class="w-full text-left border border-gray-300">
+        <table class="w-full text-left border border-gray-300 text-sm">
           <thead class="bg-gray-100">
             <tr>
               <th class="p-2 border">ID</th>
@@ -45,45 +45,22 @@
         </table>
       </div>
 
-      <!-- Course Form -->
-      <form @submit.prevent="createCourse" class="mb-6 flex gap-4 flex-wrap">
-        <input v-model="form.name" placeholder="Course Name" class="border p-2 rounded w-full md:w-auto" required />
-        <input v-model="form.description" placeholder="Description" class="border p-2 rounded w-full md:w-auto" />
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add Course</button>
-      </form>
+      <!-- Topics CRUD -->
+      <div class="p-4 bg-white rounded shadow">
+        <form @submit.prevent="createStandaloneTopic" class="mb-4 flex flex-wrap gap-2">
+          <input v-model="newStandaloneTopic.title" placeholder="Topic Title" class="border p-2 rounded flex-1 responsive-min-w" required />
+          <input v-model="newStandaloneTopic.content" placeholder="Topic Content" class="border p-2 rounded flex-1 responsive-min-w" required />
+          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Add Topic</button>
+        </form>
 
-      <!-- Courses Table -->
-      <div v-for="course in courses" :key="course.id" class="mb-8 border rounded p-4">
-        <div class="flex justify-between items-center flex-wrap gap-4">
-          <div class="flex flex-col gap-1 flex-grow">
-            <input v-model="course.name" class="border p-1" />
-            <input v-model="course.description" class="border p-1" />
-          </div>
-          <div class="flex gap-2">
-            <button @click="updateCourse(course)" class="text-blue-600">Update</button>
-            <button @click="deleteCourse(course.id)" class="text-red-600">Delete</button>
-          </div>
-        </div>
-
-        <!-- Topics Section -->
-        <div class="mt-4 ml-4">
-          <h2 class="font-semibold mb-2">Topics</h2>
-          <form @submit.prevent="createTopic(course.id, course.newTopic)" class="flex gap-2 flex-wrap mb-2">
-            <input v-model="course.newTopic.title" placeholder="New Topic Title" class="border p-1 flex-1" />
-            <input v-model="course.newTopic.content" placeholder="New Topic Content" class="border p-1 flex-1" />
-            <button class="bg-green-500 text-white px-2 rounded">Add</button>
-          </form>
-
-          <ul class="list-disc pl-5">
-            <li v-for="(topic, i) in course.topics" :key="topic.id" class="mb-1 flex items-center gap-2 flex-wrap">
-              <span class="text-sm text-gray-600">#{{ topic.id }}</span>
-              <input v-model="topic.title" placeholder="Title" class="border p-1 flex-1" />
-              <input v-model="topic.content" placeholder="Content" class="border p-1 flex-1" />
-              <button @click="updateTopic(topic)" class="text-blue-600">Update</button>
-              <button @click="deleteTopic(topic.id, course.id)" class="text-red-600">Delete</button>
-            </li>
-          </ul>
-        </div>
+        <ul>
+          <li v-for="topic in standaloneTopics" :key="topic.id" class="flex flex-wrap items-center gap-2 mb-2">
+            <input v-model="topic.title" class="border p-1 rounded flex-1 responsive-min-w" />
+            <input v-model="topic.content" class="border p-1 rounded flex-1 responsive-min-w" />
+            <button @click="updateStandaloneTopic(topic)" class="text-blue-600">Update</button>
+            <button @click="deleteStandaloneTopic(topic.id)" class="text-red-600">Delete</button>
+          </li>
+        </ul>
       </div>
     </main>
   </div>
@@ -93,26 +70,34 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
-const courses = ref([])
 const users = ref([])
-const form = ref({ name: '', description: '' })
 const showUsers = ref(false)
 
-const fetchCourses = async () => {
-  const res = await axios.get('/api/courses')
-  courses.value = res.data.map(course => {
-    const topics = course.topics || []
-    if (topics.length > 0) topics[0].unlocked = true // Auto unlock first topic
-    return {
-      ...course,
-      newTopic: { title: '', content: '' },
-      topics: topics.map((t, i) => ({
-        ...t,
-        unlocked: i === 0,
-        completed: false
-      }))
-    }
+const standaloneTopics = ref([])
+const newStandaloneTopic = ref({ title: '', content: '' })
+
+const fetchStandaloneTopics = async () => {
+  const res = await axios.get('/api/topics')
+  standaloneTopics.value = res.data
+}
+
+const createStandaloneTopic = async () => {
+  const res = await axios.post('/api/topics', newStandaloneTopic.value)
+  standaloneTopics.value.push(res.data)
+  newStandaloneTopic.value = { title: '', content: '' }
+}
+
+const updateStandaloneTopic = async (topic) => {
+  await axios.put(`/api/topics/${topic.id}`, {
+    title: topic.title,
+    content: topic.content
   })
+  fetchStandaloneTopics()
+}
+
+const deleteStandaloneTopic = async (id) => {
+  await axios.delete(`/api/topics/${id}`)
+  fetchStandaloneTopics()
 }
 
 const fetchUsers = async () => {
@@ -127,62 +112,6 @@ const toggleUsers = async () => {
   }
 }
 
-const createCourse = async () => {
-  await axios.post('/api/courses', form.value)
-  form.value.name = ''
-  form.value.description = ''
-  fetchCourses()
-}
-
-const updateCourse = async (course) => {
-  await axios.put(`/api/courses/${course.id}`, {
-    name: course.name,
-    description: course.description
-  })
-  fetchCourses()
-}
-
-const deleteCourse = async (id) => {
-  await axios.delete(`/api/courses/${id}`)
-  fetchCourses()
-}
-
-const createTopic = async (courseId, topicData) => {
-  if (!topicData.title || !topicData.content) return
-  try {
-    const response = await axios.post(`/api/courses/${courseId}/topics`, {
-      title: topicData.title,
-      content: topicData.content
-    })
-
-    const course = courses.value.find(c => c.id === courseId)
-    if (course) {
-      const newTopic = {
-        ...response.data,
-        unlocked: course.topics.length === 0,
-        completed: false
-      }
-      course.topics.push(newTopic)
-      course.newTopic = { title: '', content: '' }
-    }
-  } catch (error) {
-    console.error('Error adding topic:', error)
-  }
-}
-
-const updateTopic = async (topic) => {
-  await axios.put(`/api/topics/${topic.id}`, {
-    title: topic.title,
-    content: topic.content
-  })
-  fetchCourses()
-}
-
-const deleteTopic = async (topicId, courseId) => {
-  await axios.delete(`/api/topics/${topicId}`)
-  fetchCourses()
-}
-
 const logout = async () => {
   try {
     await axios.post('/logout')
@@ -192,5 +121,14 @@ const logout = async () => {
   }
 }
 
-onMounted(fetchCourses)
+onMounted(fetchStandaloneTopics)
 </script>
+
+<style scoped>
+@media (max-width: 768px) {
+  .responsive-min-w {
+    min-width: 100%;
+  }
+}
+</style>
+<style></style>
