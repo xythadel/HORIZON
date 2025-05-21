@@ -1,25 +1,41 @@
 <template>
-  <div class="flex h-screen">
+  <div class="flex min-h-screen">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-900 text-white p-6 flex flex-col">
-      <h2 class="text-xl font-semibold mb-6">Admin Panel</h2>
-      <button @click="toggleUsers" class="mb-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
-        {{ showUsers ? 'Hide' : 'Show' }} Users
+    <aside class="w-64 bg-gray-800 text-white p-4">
+      <h2 class="text-xl font-semibold mb-4">Admin Panel</h2>
+      <button @click="toggleUsers" class="w-full text-left mb-2 bg-gray-700 p-2 rounded hover:bg-gray-600">
+        Show Users
       </button>
+      <!-- Add more sidebar links here if needed -->
     </aside>
 
     <!-- Main Content -->
-    <div class="flex-1 overflow-y-auto p-8 bg-gray-100">
+    <main class="flex-1 p-8">
       <h2 class="text-2xl font-bold mb-4">Course Management</h2>
 
-      <!-- Show User List -->
+      <!-- User Table -->
       <div v-if="showUsers" class="mb-6 p-4 bg-white rounded shadow">
         <h3 class="text-lg font-semibold mb-2">Registered Users</h3>
-        <ul class="list-disc pl-6">
-          <li v-for="user in users" :key="user.id">
-            {{ user.name }} - {{ user.email }}
-          </li>
-        </ul>
+        <table class="w-full text-left border border-gray-300">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="p-2 border">ID</th>
+              <th class="p-2 border">Name</th>
+              <th class="p-2 border">Email</th>
+              <th class="p-2 border">Role</th>
+              <th class="p-2 border">Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50">
+              <td class="p-2 border">{{ user.id }}</td>
+              <td class="p-2 border">{{ user.name }}</td>
+              <td class="p-2 border">{{ user.email }}</td>
+              <td class="p-2 border">{{ user.role }}</td>
+              <td class="p-2 border">{{ new Date(user.created_at).toLocaleString() }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- Course Form -->
@@ -30,7 +46,7 @@
       </form>
 
       <!-- Courses Table -->
-      <div v-for="course in courses" :key="course.id" class="mb-8 border rounded p-4 bg-white shadow">
+      <div v-for="course in courses" :key="course.id" class="mb-8 border rounded p-4">
         <div class="flex justify-between items-center">
           <div class="flex flex-col gap-1">
             <input v-model="course.name" class="border p-1" />
@@ -62,7 +78,7 @@
           </ul>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -70,14 +86,11 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
+// States
 const courses = ref([])
 const users = ref([])
+const form = ref({ name: '', description: '' })
 const showUsers = ref(false)
-
-const form = ref({
-  name: '',
-  description: ''
-})
 
 // Fetch all courses and their topics
 const fetchCourses = async () => {
@@ -89,12 +102,12 @@ const fetchCourses = async () => {
   }))
 }
 
+// Fetch users
 const fetchUsers = async () => {
   const res = await axios.get('/api/users')
   users.value = res.data
 }
 
-// Toggle visibility of users
 const toggleUsers = async () => {
   showUsers.value = !showUsers.value
   if (showUsers.value && users.value.length === 0) {
