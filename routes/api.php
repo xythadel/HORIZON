@@ -26,6 +26,8 @@ Route::post('/courses', [CourseController::class, 'store']);
 Route::put('/courses/{course}', [CourseController::class, 'update']);
 Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
 Route::get('/courses/{id}/topics', [TopicController::class, 'getTopicsByCourse']);
+Route::post('/courses/{id}/topics', [TopicController::class, 'store']);
+
 //Topics CRUD
 Route::get('/topics', [TopicController::class, 'index']);
 Route::post('/topics', [TopicController::class, 'store']);
