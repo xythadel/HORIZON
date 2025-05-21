@@ -65,7 +65,7 @@ Route::post('/logout', function () {
 
 //Admin routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin');
+    Route::get('/Admin/AdminDashboard', [AdminController::class, 'index'])->name('admin');
 
     //For google login 
     Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
