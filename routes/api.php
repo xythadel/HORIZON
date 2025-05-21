@@ -26,6 +26,9 @@ Route::put('/courses/{course}', [CourseController::class, 'update']);
 Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
 Route::get('/courses/{id}/topics', [TopicController::class, 'getTopicsByCourse']);
 Route::get('/topics', [TopicController::class, 'index']);
+Route::get('/users', function () {
+    return User::select('id', 'name', 'email', 'role', 'created_at')->get();
+});
 
 
 
