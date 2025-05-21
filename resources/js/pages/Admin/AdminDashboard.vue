@@ -4,9 +4,14 @@
     <aside class="w-full md:w-64 bg-gray-800 text-white p-4 flex flex-col justify-between">
       <div>
         <h2 class="text-xl font-semibold mb-4">Admin Panel</h2>
-        <button @click="toggleUsers" class="w-full text-left mb-2 bg-gray-700 p-2 rounded hover:bg-gray-600">
-          Show Users
-        </button>
+        <nav class="flex flex-col gap-2">
+          <button @click="showSection = 'users'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+            Show Users
+          </button>
+          <button @click="showSection = 'topics'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+            Manage Topics
+          </button>
+        </nav>
       </div>
       <button
         @click="logout"
@@ -18,11 +23,9 @@
 
     <!-- Main Content -->
     <main class="flex-1 p-4 md:p-8">
-      <h2 class="text-2xl font-bold mb-4">Topic Management</h2>
-
       <!-- User Table -->
-      <div v-if="showUsers" class="mb-6 p-4 bg-white rounded shadow overflow-auto">
-        <h3 class="text-lg font-semibold mb-2">Registered Users</h3>
+      <div v-if="showSection === 'users'" class="mb-6 p-4 bg-white rounded shadow overflow-auto">
+        <h3 class="text-2xl font-bold mb-4">Registered Users</h3>
         <table class="w-full text-left border border-gray-300 text-sm">
           <thead class="bg-gray-100">
             <tr>
@@ -46,45 +49,53 @@
       </div>
 
       <!-- Topics CRUD -->
-      <div class="p-4 bg-white rounded shadow">
-        <form @submit.prevent="createStandaloneTopic" class="mb-4 flex flex-wrap gap-2">
-          <input v-model="newStandaloneTopic.title" placeholder="Topic Title" class="border p-2 rounded flex-1 responsive-min-w" required />
-          <input v-model="newStandaloneTopic.content" placeholder="Topic Content" class="border p-2 rounded flex-1 responsive-min-w" required />
-          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Add Topic</button>
-        </form>
+      <div v-if="showSection === 'topics'" class="p-4 bg-white rounded shadow">
+        <h2 class="text-2xl font-bold mb-4">Topic Management</h2>
 
-        <ul>
-          <li v-for="topic in standaloneTopics" :key="topic.id" class="flex flex-wrap items-center gap-2 mb-2">
-            <input v-model="topic.title" class="border p-1 rounded flex-1 responsive-min-w" />
-            <input v-model="topic.content" class="border p-1 rounded flex-1 responsive-min-w" />
-            <button @click="updateStandaloneTopic(topic)" class="text-blue-600">Update</button>
-            <button @click="deleteStandaloneTopic(topic.id)" class="text-red-600">Delete</button>
-          </li>
-        </ul>
+        <div v-for="course in courses" :key="course.id" class="mb-6">
+          <h3 class="text-xl font-semibold mb-2">{{ course.name }}</h3>
+          <p class="mb-2 text-gray-600">{{ course.description }}</p>
+
+          <form @submit.prevent="createStandaloneTopicForCourse(course.id)" class="mb-4 flex flex-wrap gap-2">
+            <input v-model="newTopics[course.id].title" placeholder="Topic Title" class="border p-2 rounded flex-1 responsive-min-width" required />
+            <input v-model="newTopics[course.id].content" placeholder="Topic Content" class="border p-2 rounded flex-1 responsive-min-width" required />
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Add Topic</button>
+          </form>
+
+          <ul>
+            <li v-for="topic in standaloneTopics.filter(t => t.course_id === course.id)" :key="topic.id" class="flex flex-wrap items-center gap-2 mb-2">
+              <input v-model="topic.title" class="border p-1 rounded flex-1 responsive-min-width" />
+              <input v-model="topic.content" class="border p-1 rounded flex-1 responsive-min-width" />
+              <button @click="updateStandaloneTopic(topic)" class="text-blue-600">Update</button>
+              <button @click="deleteStandaloneTopic(topic.id)" class="text-red-600">Delete</button>
+            </li>
+          </ul>
+        </div>
       </div>
     </main>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 
 const users = ref([])
-const showUsers = ref(false)
-
 const standaloneTopics = ref([])
-const newStandaloneTopic = ref({ title: '', content: '' })
+const newTopics = ref({})
+const showSection = ref('topics')
+const courses = ref([])
 
 const fetchStandaloneTopics = async () => {
   const res = await axios.get('/api/topics')
   standaloneTopics.value = res.data
 }
 
-const createStandaloneTopic = async () => {
-  const res = await axios.post('/api/topics', newStandaloneTopic.value)
+const createStandaloneTopicForCourse = async (courseId) => {
+  const topicData = newTopics.value[courseId]
+  const res = await axios.post('/api/topics', { ...topicData, course_id: courseId })
   standaloneTopics.value.push(res.data)
-  newStandaloneTopic.value = { title: '', content: '' }
+  newTopics.value[courseId] = { title: '', content: '' }
 }
 
 const updateStandaloneTopic = async (topic) => {
@@ -105,12 +116,21 @@ const fetchUsers = async () => {
   users.value = res.data
 }
 
-const toggleUsers = async () => {
-  showUsers.value = !showUsers.value
-  if (showUsers.value && users.value.length === 0) {
+const fetchCourses = async () => {
+  const res = await axios.get('/api/courses')
+  courses.value = res.data.filter(course => course.name === 'Laravel Frameworks' || course.name === 'Vue Frameworks')
+  res.data.forEach(course => {
+    if (!newTopics.value[course.id]) {
+      newTopics.value[course.id] = { title: '', content: '' }
+    }
+  })
+}
+
+watch(showSection, async (newVal) => {
+  if (newVal === 'users' && users.value.length === 0) {
     await fetchUsers()
   }
-}
+})
 
 const logout = async () => {
   try {
@@ -121,14 +141,8 @@ const logout = async () => {
   }
 }
 
-onMounted(fetchStandaloneTopics)
+onMounted(() => {
+  fetchStandaloneTopics()
+  fetchCourses()
+})
 </script>
-
-<style scoped>
-@media (max-width: 768px) {
-  .responsive-min-w {
-    min-width: 100%;
-  }
-}
-</style>
-<style></style>
