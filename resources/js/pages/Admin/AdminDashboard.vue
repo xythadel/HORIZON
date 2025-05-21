@@ -7,7 +7,6 @@
         <button @click="toggleUsers" class="w-full text-left mb-2 bg-gray-700 p-2 rounded hover:bg-gray-600">
           Show Users
         </button>
-        <!-- Add more sidebar links here if needed -->
       </div>
       <button
         @click="logout"
@@ -76,7 +75,7 @@
           </form>
 
           <ul class="list-disc pl-5">
-            <li v-for="topic in course.topics" :key="topic.id" class="mb-1 flex items-center gap-2 flex-wrap">
+            <li v-for="(topic, i) in course.topics" :key="topic.id" class="mb-1 flex items-center gap-2 flex-wrap">
               <span class="text-sm text-gray-600">#{{ topic.id }}</span>
               <input v-model="topic.title" placeholder="Title" class="border p-1 flex-1" />
               <input v-model="topic.content" placeholder="Content" class="border p-1 flex-1" />
@@ -94,23 +93,28 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
-// States
 const courses = ref([])
 const users = ref([])
 const form = ref({ name: '', description: '' })
 const showUsers = ref(false)
 
-// Fetch all courses and their topics
 const fetchCourses = async () => {
   const res = await axios.get('/api/courses')
-  courses.value = res.data.map(course => ({
-    ...course,
-    newTopic: { title: '', content: '' },
-    topics: course.topics || []
-  }))
+  courses.value = res.data.map(course => {
+    const topics = course.topics || []
+    if (topics.length > 0) topics[0].unlocked = true // Auto unlock first topic
+    return {
+      ...course,
+      newTopic: { title: '', content: '' },
+      topics: topics.map((t, i) => ({
+        ...t,
+        unlocked: i === 0,
+        completed: false
+      }))
+    }
+  })
 }
 
-// Fetch users
 const fetchUsers = async () => {
   const res = await axios.get('/api/users')
   users.value = res.data
@@ -123,7 +127,6 @@ const toggleUsers = async () => {
   }
 }
 
-// Course CRUD
 const createCourse = async () => {
   await axios.post('/api/courses', form.value)
   form.value.name = ''
@@ -144,13 +147,27 @@ const deleteCourse = async (id) => {
   fetchCourses()
 }
 
-// Topic CRUD
 const createTopic = async (courseId, topicData) => {
-  await axios.post(`/api/courses/${courseId}/topics`, {
-    title: topicData.title,
-    content: topicData.content
-  })
-  fetchCourses()
+  if (!topicData.title || !topicData.content) return
+  try {
+    const response = await axios.post(`/api/courses/${courseId}/topics`, {
+      title: topicData.title,
+      content: topicData.content
+    })
+
+    const course = courses.value.find(c => c.id === courseId)
+    if (course) {
+      const newTopic = {
+        ...response.data,
+        unlocked: course.topics.length === 0,
+        completed: false
+      }
+      course.topics.push(newTopic)
+      course.newTopic = { title: '', content: '' }
+    }
+  } catch (error) {
+    console.error('Error adding topic:', error)
+  }
 }
 
 const updateTopic = async (topic) => {
@@ -166,7 +183,6 @@ const deleteTopic = async (topicId, courseId) => {
   fetchCourses()
 }
 
-// Logout
 const logout = async () => {
   try {
     await axios.post('/logout')
