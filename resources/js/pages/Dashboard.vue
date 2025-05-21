@@ -19,21 +19,13 @@
       <!-- Navigation Panel -->
       <nav class="flex flex-col space-y-6 pl-20 pt-14">
         <a href="dashboard" class="text-base font-normal text-zinc-800 hover:text-indigo-600">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
-        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
-        </svg>
-        Dashboard
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+          </svg>
+          Dashboard
         </a>
         <a href="/mylearning" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a> 
         <a href="#" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Settings</a>
-        <!-- Admin Panel (Visible Only to Admins) -->
-        <a
-          v-if="isAdmin"
-          href="/admin"
-          class="text-base font-semibold text-red-600 hover:text-red-800"
-        >
-          Admin Panel
-        </a>
       </nav>
 
       <!-- Logout -->
@@ -124,7 +116,6 @@ import { router } from '@inertiajs/vue3';
 export default {
   props: {
     user: Object,
-    isAdmin: Boolean,
     courses: Array
   },
   data() {
