@@ -29,22 +29,15 @@ class LoginController extends Controller
     /**
      * Redirect users based on their role after login.
      */
-    //protected function redirectTo()
-    //{
-      // $role = Auth::user()->role;
+    protected function redirectTo()
+    {
+       $role = Auth::user()->role;
 
-    //if ($role === 'admin') {
-        //return '/Admin/AdminDashboard';
-    //}
-    //return '/dashboard';
-    //}
-
-    protected function authenticated(Request $request, $user)
-{
-    if ($user->role === 'admin') {
-        return redirect('/Admin/AdminDashboard');
+    if ($role === 'admin') {
+        return '/admin'; // Make sure this matches the route in Vue/Inertia
     }
+    return '/dashboard';
 
-    return redirect('/dashboard');
-}
+
+    }
 }
