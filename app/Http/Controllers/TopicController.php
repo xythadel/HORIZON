@@ -31,11 +31,12 @@ class TopicController extends Controller
 {
     $request->validate([
         'name' => 'required|string|max:1000',
-        'course_id' => 'required|exists:courses,id',
+        'content' => 'required|exists:courses,id',
     ]);
 
     Topic::create([
         'name' => $request->name,
+        'content' => $request->content,
         'course_id' => $request->course_id,
     ]);
 
