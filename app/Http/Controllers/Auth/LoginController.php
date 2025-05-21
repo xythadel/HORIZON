@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+
 
 class LoginController extends Controller
 {
@@ -37,7 +39,42 @@ class LoginController extends Controller
         return '/admin'; // Make sure this matches the route in Vue/Inertia
     }
     return '/dashboard';
+    }
+public function login(Request $request): RedirectResponse
+{
+    // Validate credentials
+    $credentials = $request->only('email', 'password');
+
+    // Attempt login
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+
+        // Get fresh user with latest role
+        $user = Auth::user();
+        $role = $user->role;
+
+        // Redirect based on role
+        if ($role === 'admin') {
+            return redirect('/admin');
+        }
+
+        return redirect('/dashboard');
+    }
+
+    // If login fails
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ]);
+}
 
 
+    
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->json(['message' => 'Logged out']);
     }
 }

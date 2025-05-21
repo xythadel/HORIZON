@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VueQuizController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Types\Relations\Role;
+use App\Http\Controllers\AuthController;
 use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\SocialiteController;
@@ -67,6 +68,7 @@ Route::post('/logout', function () {
 //Route::middleware(['auth'])->group(function () {
     //Route::get('/Admin/AdminDashboard', [AdminController::class, 'index'])->name('admin');
 //});
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
