@@ -170,7 +170,7 @@ const deleteTopic = async (topicId, courseId) => {
 const logout = async () => {
   try {
     await axios.post('/logout')
-    window.location.href = '/Welcome'
+    window.location.href = 'Welcome'
   } catch (error) {
     console.error('Logout failed:', error)
   }
