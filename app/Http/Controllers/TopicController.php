@@ -37,7 +37,7 @@ class TopicController extends Controller
     $topic = new Topic();
     $topic->title = $validated['title'];
     $topic->content = $validated['content'];
-    $topic->course_id = $validated['course_id'];
+    //$topic->course_id = $course_id;
     $topic->save();
 
     return response()->json($topic, 201);
