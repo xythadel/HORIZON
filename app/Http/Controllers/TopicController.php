@@ -29,18 +29,19 @@ class TopicController extends Controller
      */
     public function store(Request $request)
 {
-    $request->validate([
-        'name' => 'required|string|max:1000',
-        'content' => 'required|exists:courses,id',
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string',
+        'course_id' => 'required|integer|exists:courses,id',
     ]);
 
-    Topic::create([
-        'name' => $request->name,
-        'content' => $request->content,
-        'course_id' => $request->course_id,
-    ]);
+    $topic = new Topic();
+    $topic->title = $validated['title'];
+    $topic->content = $validated['content'];
+    $topic->course_id = $validated['course_id'];
+    $topic->save();
 
-    return back()->with('success', 'Topic created successfully.');
+    return response()->json($topic, 201);
 }
 
 
