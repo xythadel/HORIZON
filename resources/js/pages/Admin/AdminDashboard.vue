@@ -1,22 +1,24 @@
 <template>
-  <div class="flex min-h-screen">
+  <div class="flex flex-col min-h-screen md:flex-row">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 text-white p-4">
+    <aside class="w-full md:w-64 bg-gray-800 text-white p-4">
       <h2 class="text-xl font-semibold mb-4">Admin Panel</h2>
       <button @click="toggleUsers" class="w-full text-left mb-2 bg-gray-700 p-2 rounded hover:bg-gray-600">
         Show Users
       </button>
-      <!-- Add more sidebar links here if needed -->
+      <button @click="logout" class="w-full text-left bg-red-600 p-2 rounded hover:bg-red-500">
+        Logout
+      </button>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-8">
+    <main class="flex-1 p-4 md:p-8">
       <h2 class="text-2xl font-bold mb-4">Course Management</h2>
 
       <!-- User Table -->
-      <div v-if="showUsers" class="mb-6 p-4 bg-white rounded shadow">
+      <div v-if="showUsers" class="mb-6 p-4 bg-white rounded shadow overflow-auto">
         <h3 class="text-lg font-semibold mb-2">Registered Users</h3>
-        <table class="w-full text-left border border-gray-300">
+        <table class="w-full text-left border border-gray-300 text-sm">
           <thead class="bg-gray-100">
             <tr>
               <th class="p-2 border">ID</th>
@@ -39,20 +41,20 @@
       </div>
 
       <!-- Course Form -->
-      <form @submit.prevent="createCourse" class="mb-6 flex gap-4">
-        <input v-model="form.name" placeholder="Course Name" class="border p-2 rounded" required />
-        <input v-model="form.description" placeholder="Description" class="border p-2 rounded" />
+      <form @submit.prevent="createCourse" class="mb-6 flex flex-col md:flex-row gap-4">
+        <input v-model="form.name" placeholder="Course Name" class="border p-2 rounded flex-1" required />
+        <input v-model="form.description" placeholder="Description" class="border p-2 rounded flex-1" />
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add Course</button>
       </form>
 
       <!-- Courses Table -->
       <div v-for="course in courses" :key="course.id" class="mb-8 border rounded p-4">
-        <div class="flex justify-between items-center">
-          <div class="flex flex-col gap-1">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+          <div class="flex flex-col gap-1 w-full md:w-3/4">
             <input v-model="course.name" class="border p-1" />
             <input v-model="course.description" class="border p-1" />
           </div>
-          <div class="flex gap-2">
+          <div class="flex gap-2 mt-2 md:mt-0">
             <button @click="updateCourse(course)" class="text-blue-600">Update</button>
             <button @click="deleteCourse(course.id)" class="text-red-600">Delete</button>
           </div>
@@ -61,14 +63,14 @@
         <!-- Topics Section -->
         <div class="mt-4 ml-4">
           <h2 class="font-semibold mb-2">Topics</h2>
-          <form @submit.prevent="createTopic(course.id, course.newTopic)" class="flex gap-2 mb-2">
+          <form @submit.prevent="createTopic(course.id, course.newTopic)" class="flex flex-col md:flex-row gap-2 mb-2">
             <input v-model="course.newTopic.title" placeholder="New Topic Title" class="border p-1 flex-1" />
             <input v-model="course.newTopic.content" placeholder="New Topic Content" class="border p-1 flex-1" />
-            <button class="bg-green-500 text-white px-2 rounded">Add</button>
+            <button class="bg-green-500 text-white px-2 py-1 rounded">Add</button>
           </form>
 
           <ul class="list-disc pl-5">
-            <li v-for="topic in course.topics" :key="topic.id" class="mb-1 flex items-center gap-2">
+            <li v-for="topic in course.topics" :key="topic.id" class="mb-1 flex flex-col md:flex-row items-start md:items-center gap-2">
               <span class="text-sm text-gray-600">#{{ topic.id }}</span>
               <input v-model="topic.title" placeholder="Title" class="border p-1 flex-1" />
               <input v-model="topic.content" placeholder="Content" class="border p-1 flex-1" />
@@ -85,14 +87,14 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
 
-// States
 const courses = ref([])
 const users = ref([])
 const form = ref({ name: '', description: '' })
 const showUsers = ref(false)
+const router = useRouter()
 
-// Fetch all courses and their topics
 const fetchCourses = async () => {
   const res = await axios.get('/api/courses')
   courses.value = res.data.map(course => ({
@@ -102,7 +104,6 @@ const fetchCourses = async () => {
   }))
 }
 
-// Fetch users
 const fetchUsers = async () => {
   const res = await axios.get('/api/users')
   users.value = res.data
@@ -115,7 +116,6 @@ const toggleUsers = async () => {
   }
 }
 
-// Course CRUD
 const createCourse = async () => {
   await axios.post('/api/courses', form.value)
   form.value.name = ''
@@ -136,7 +136,6 @@ const deleteCourse = async (id) => {
   fetchCourses()
 }
 
-// Topic CRUD
 const createTopic = async (courseId, topicData) => {
   await axios.post(`/api/courses/${courseId}/topics`, {
     title: topicData.title,
@@ -158,5 +157,18 @@ const deleteTopic = async (topicId, courseId) => {
   fetchCourses()
 }
 
+const logout = async () => {
+  await axios.post('/logout')
+  router.push('/')
+}
+
 onMounted(fetchCourses)
 </script>
+
+<style scoped>
+@media (max-width: 768px) {
+  aside {
+    width: 100%;
+  }
+}
+</style>
