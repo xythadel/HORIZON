@@ -123,12 +123,10 @@ export default {
       showLogoutModal: false,
     };
   },
-  confirmLogout() {
-    router.post('/logout', {}, {
-      onFinish: () => {
-        window.location.href = '/login';
-      }
-    });
+  methods: {
+    confirmLogout() {
+      router.post('/logout');
+    }
   }
 };
 </script>
