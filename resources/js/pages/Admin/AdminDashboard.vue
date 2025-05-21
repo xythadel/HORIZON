@@ -93,9 +93,13 @@ const fetchStandaloneTopics = async () => {
 
 const createStandaloneTopicForCourse = async (courseId) => {
   const topicData = newTopics.value[courseId]
-  const res = await axios.post('/api/topics', { ...topicData, course_id: courseId })
-  standaloneTopics.value.push(res.data)
-  newTopics.value[courseId] = { title: '', content: '' }
+  try {
+    const res = await axios.post(`/api/courses/${courseId}/topics`, topicData)
+    standaloneTopics.value.push(res.data)
+    newTopics.value[courseId] = { title: '', content: '' }
+  } catch (error) {
+    console.error(`Failed to add topic to course ${courseId}:`, error.response?.data || error.message)
+  }
 }
 
 const updateStandaloneTopic = async (topic) => {
