@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VueQuizController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Types\Relations\Role;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-
 use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\SocialiteController;
@@ -66,26 +64,14 @@ Route::post('/logout', function () {
 //});
 
 //Admin routes
-//Route::middleware(['auth'])->group(function () {
-    //Route::get('/Admin/AdminDashboard', [AdminController::class, 'index'])->name('admin');
-//});
-Route::post('/login', [AuthenticatedSessionController::class, 'login']);
-
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard'); // Your user dashboard Vue component
-    });
-
-      Route::get('/admin', function () {
-        return Inertia::render('Admin/AdminDashboard'); // Your admin Vue component
-    });
-});
+    Route::get('/admin/AdminDashboard', [AdminController::class, 'index'])->name('admin');
 
     //For google login 
     Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
     Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 
- // <-- Close the middleware group
+}); // <-- Close the middleware group
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
