@@ -18,14 +18,21 @@ Route::middleware('api')->get('/ping', function () {
 });
 
 ;
-
+//API routes for courses, topics, quizzes, and user progress
+//Courses CRUD
 Route::apiResource('courses', CourseController::class);
 Route::get('/courses', [CourseController::class, 'index']);
 Route::post('/courses', [CourseController::class, 'store']);
 Route::put('/courses/{course}', [CourseController::class, 'update']);
 Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
 Route::get('/courses/{id}/topics', [TopicController::class, 'getTopicsByCourse']);
+//Topics CRUD
 Route::get('/topics', [TopicController::class, 'index']);
+Route::post('/topics', [TopicController::class, 'store']);
+Route::put('/topics/{id}', [TopicController::class, 'update']);
+Route::delete('/topics/{id}', [TopicController::class, 'destroy']);
+Route::get('/courses/{id}/topics', [TopicController::class, 'getTopicsByCourse']);
+//USERS
 Route::get('/users', function () {
     return User::select('id', 'name', 'email', 'role', 'created_at')->get();
 });
