@@ -57,10 +57,33 @@
           <p class="mb-2 text-gray-600">{{ course.description }}</p>
 
           <form @submit.prevent="createStandaloneTopicForCourse(course.id)" class="mb-4 flex flex-wrap gap-2">
-            <input v-model="newTopics[course.id].title" placeholder="Topic Title" class="border p-2 rounded flex-1 responsive-min-width" required />
-            <input v-model="newTopics[course.id].content" placeholder="Topic Content" class="border p-2 rounded flex-1 responsive-min-width" required />
-            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Add Topic</button>
+            <input 
+              v-model="newTopics[course.id].title" 
+              placeholder="Topic Title" 
+              class="border p-2 rounded flex-1 responsive-min-width" 
+              required
+              :disabled="newTopics[course.id].loading"
+            />
+            <input 
+              v-model="newTopics[course.id].content" 
+              placeholder="Topic Content" 
+              class="border p-2 rounded flex-1 responsive-min-width" 
+              required
+              :disabled="newTopics[course.id].loading"
+            />
+            <button 
+              type="submit" 
+              class="bg-green-600 text-white px-4 py-2 rounded"
+              :disabled="newTopics[course.id].loading"
+            >
+              <span v-if="newTopics[course.id].loading">Adding...</span>
+              <span v-else>Add Topic</span>
+            </button>
           </form>
+
+          <div v-if="errorMessages[course.id]" class="text-red-500 mb-2">
+            {{ errorMessages[course.id] }}
+          </div>
 
           <ul>
             <li v-for="topic in standaloneTopics.filter(t => t.course_id === course.id)" :key="topic.id" class="flex flex-wrap items-center gap-2 mb-2">
@@ -82,52 +105,103 @@ import axios from 'axios'
 
 const users = ref([])
 const standaloneTopics = ref([])
-const newTopics = ref({})
-const showSection = ref('topics')
 const courses = ref([])
+const showSection = ref('topics')
+const errorMessages = ref({})
+
+// Initialize newTopics with loading state
+const newTopics = ref({})
 
 const fetchStandaloneTopics = async () => {
-  const res = await axios.get('/api/topics')
-  standaloneTopics.value = res.data
+  try {
+    const res = await axios.get('/api/topics')
+    standaloneTopics.value = res.data
+  } catch (error) {
+    console.error('Failed to fetch topics:', error)
+  }
 }
 
 const createStandaloneTopicForCourse = async (courseId) => {
-  const topicData = newTopics.value[courseId]
   try {
-    const res = await axios.post(`/api/courses/${courseId}/topics`, topicData)
-    standaloneTopics.value.push(res.data)
-    newTopics.value[courseId] = { title: '', content: '' }
+    // Reset previous error
+    errorMessages.value[courseId] = ''
+    
+    // Set loading state
+    newTopics.value[courseId].loading = true
+    
+    const response = await axios.post(`/api/courses/${courseId}/topics`, {
+      title: newTopics.value[courseId].title,
+      content: newTopics.value[courseId].content
+    })
+    
+    // Update local state
+    standaloneTopics.value.push(response.data)
+    
+    // Reset form
+    newTopics.value[courseId] = { 
+      title: '', 
+      content: '', 
+      loading: false 
+    }
+    
   } catch (error) {
-    console.error(`Failed to add topic to course ${courseId}:`, error.response?.data || error.message)
+    console.error(`Failed to add topic to course ${courseId}:`, error)
+    errorMessages.value[courseId] = error.response?.data?.message || 'Failed to add topic'
+  } finally {
+    newTopics.value[courseId].loading = false
   }
 }
 
 const updateStandaloneTopic = async (topic) => {
-  await axios.put(`/api/topics/${topic.id}`, {
-    title: topic.title,
-    content: topic.content
-  })
-  fetchStandaloneTopics()
+  try {
+    await axios.put(`/api/topics/${topic.id}`, {
+      title: topic.title,
+      content: topic.content
+    })
+    await fetchStandaloneTopics()
+  } catch (error) {
+    console.error('Failed to update topic:', error)
+  }
 }
 
 const deleteStandaloneTopic = async (id) => {
-  await axios.delete(`/api/topics/${id}`)
-  fetchStandaloneTopics()
+  try {
+    await axios.delete(`/api/topics/${id}`)
+    await fetchStandaloneTopics()
+  } catch (error) {
+    console.error('Failed to delete topic:', error)
+  }
 }
 
 const fetchUsers = async () => {
-  const res = await axios.get('/api/users')
-  users.value = res.data
+  try {
+    const res = await axios.get('/api/users')
+    users.value = res.data
+  } catch (error) {
+    console.error('Failed to fetch users:', error)
+  }
 }
 
 const fetchCourses = async () => {
-  const res = await axios.get('/api/courses')
-  courses.value = res.data.filter(course => course.name === 'Laravel Frameworks' || course.name === 'Vue Frameworks')
-  res.data.forEach(course => {
-    if (!newTopics.value[course.id]) {
-      newTopics.value[course.id] = { title: '', content: '' }
-    }
-  })
+  try {
+    const res = await axios.get('/api/courses')
+    courses.value = res.data.filter(course => 
+      course.name === 'Laravel Frameworks' || course.name === 'Vue Frameworks'
+    )
+    
+    // Initialize newTopics for each course
+    courses.value.forEach(course => {
+      if (!newTopics.value[course.id]) {
+        newTopics.value[course.id] = { 
+          title: '', 
+          content: '',
+          loading: false 
+        }
+      }
+    })
+  } catch (error) {
+    console.error('Failed to fetch courses:', error)
+  }
 }
 
 watch(showSection, async (newVal) => {
@@ -150,3 +224,9 @@ onMounted(() => {
   fetchCourses()
 })
 </script>
+
+<style scoped>
+.responsive-min-width {
+  min-width: 200px;
+}
+</style>
