@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\TopicUserInteraction;
 use App\Models\QuizUserInteraction;
+use App\Models\Topic;
+use App\Models\Quiz;
 
 
 class User extends Authenticatable
