@@ -78,8 +78,5 @@ Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
 }); 
 
 require __DIR__ . '/settings.php';
-Route::get('/login', function () {
-    return Inertia::render('/');
-});
 require __DIR__ . '/auth.php';
  // <-- Close the middleware group
