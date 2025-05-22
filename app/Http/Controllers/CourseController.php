@@ -70,4 +70,12 @@ class CourseController extends Controller
         $course->delete();
         return response()->json(['message' => 'Course deleted']);
     }
+    // app/Http/Controllers/CourseController.php
+
+    public function getTopicsByCourse($id)
+    {
+    $course = Course::with('topics')->findOrFail($id);
+    return response()->json($course->topics);
+    }
+
 } 
