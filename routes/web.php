@@ -11,6 +11,7 @@ use Illuminate\Types\Relations\Role;
 use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\SocialiteController;
+use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -66,6 +67,12 @@ Route::post('/logout', function () {
 //Admin routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/Admin/AdminDashboard', [AdminController::class, 'index'])->name('admin');
+
+    Route::middleware('auth')->group(function () {
+    Route::get('/complete-registration', [App\Http\Controllers\Auth\CompleteRegistrationController::class, 'showForm'])->name('complete.registration');
+    Route::post('/complete-registration', [App\Http\Controllers\Auth\CompleteRegistrationController::class, 'submitForm']);
+});
+
 
     //For google login 
     Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
