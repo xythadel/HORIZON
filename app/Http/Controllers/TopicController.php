@@ -27,7 +27,7 @@ class TopicController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $course_id)
 {
     $validated = $request->validate([
         'title' => 'required|string|max:255',
@@ -38,7 +38,7 @@ class TopicController extends Controller
     $topic = new Topic();
     $topic->title = $validated['title'];
     $topic->content = $validated['content'];
-    $topic->course_id = $validated['course_id'];
+    $topic->course_id = $course_id;;
     $topic->save();
 
     return response()->json($topic, 201);
