@@ -30,9 +30,8 @@ Route::delete('/topics/{topic}', [TopicController::class, 'destroy']);
 // User Routes
 Route::get('/users', [AdminController::class, 'getAllUsers']);
 
-// Auth Routes
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/register/details', [AuthController::class, 'registerDetails']);
+
+
 
 // Progress Route (requires auth)
 Route::middleware(['auth:sanctum'])->get('/user-progress', [UserProgressTracker::class, 'userProgress']);

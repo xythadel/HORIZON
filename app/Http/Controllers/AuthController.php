@@ -8,25 +8,6 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
-{
-    $validated = $request->validate([
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:6',
-        'name' => 'required|string|max:255',
-        'birthday' => 'required|date',
-    ]);
-
-    $user = User::create([
-        'email' => $validated['email'],
-        'password' => Hash::make($validated['password']),
-        'name' => $validated['name'],
-        'birthday' => $validated['birthday'],
-        'role' => 'user', // default role if not specified
-    ]);
-
-    return response()->json(['message' => 'User registered successfully']);
-}
 
     public function login(Request $request)
     {
