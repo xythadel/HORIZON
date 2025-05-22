@@ -10,6 +10,7 @@ use App\Models\Topic;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RegisterController;
 
 
 
@@ -42,5 +43,8 @@ Route::get('/users', function () {
 
 //sign up route
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register/details', [AuthController::class, 'registerDetails']);
+
+
 
 Route::middleware(['auth:sanctum'])->get('/user-progress', [UserProgressTracker::class, 'userProgress']);
