@@ -1,54 +1,38 @@
 <?php
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\CourseController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\UserProgressTracker;
-use App\Models\Topic;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\AdminController;
 
-
-
-// Example API route
+// Health check route
 Route::middleware('api')->get('/ping', function () {
     return response()->json(['message' => 'API is working']);
 });
 
-;
-//API routes for courses, topics, quizzes, and user progress
-//Courses CRUD
-Route::apiResource('courses', CourseController::class);
-Route::get('/courses', [CourseController::class, 'index']);
+// Course Routes
+Route::get('/courses', [CourseController::class, 'getAllCourses']);
 Route::post('/courses', [CourseController::class, 'store']);
 Route::put('/courses/{course}', [CourseController::class, 'update']);
 Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
 Route::post('/courses/{course_id}/topics', [TopicController::class, 'store']);
-//Topics CRUD
-Route::get('/topics', [TopicController::class, 'index']);
+Route::get('/courses/{id}/topics', [CourseController::class, 'getTopicsByCourse']);
+
+// Topic Routes
+Route::get('/topics', [TopicController::class, 'getAllTopics']);
 Route::post('/topics', [TopicController::class, 'store']);
 Route::put('/topics/{id}', [TopicController::class, 'update']);
 Route::delete('/topics/{topic}', [TopicController::class, 'destroy']);
-Route::get('/courses/{id}/topics', [CourseController::class, 'getTopicsByCourse']);
-//USERS
-Route::get('/users', function () {
-    return User::select('id', 'name', 'email', 'role', 'created_at')->get();
-});
 
-
+// User Routes
 Route::get('/users', [AdminController::class, 'getAllUsers']);
 
-
-
-//sign up route
+// Auth Routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/register/details', [AuthController::class, 'registerDetails']);
 
-
-
+// Progress Route (requires auth)
 Route::middleware(['auth:sanctum'])->get('/user-progress', [UserProgressTracker::class, 'userProgress']);
