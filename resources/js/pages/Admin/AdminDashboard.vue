@@ -127,7 +127,7 @@ const errorMessages = ref({})
 const newTopics = ref({})
 const expandedCourses = ref({})
 
-// Fetch Topics
+// Fetch data
 const fetchStandaloneTopics = async () => {
   try {
     const res = await axios.get('/api/topics')
@@ -137,7 +137,6 @@ const fetchStandaloneTopics = async () => {
   }
 }
 
-// Fetch Users
 const fetchUsers = async () => {
   try {
     const res = await axios.get('/api/users')
@@ -147,15 +146,13 @@ const fetchUsers = async () => {
   }
 }
 
-// Fetch Courses
 const fetchCourses = async () => {
   try {
     const res = await axios.get('/api/courses')
     courses.value = res.data.filter(course =>
       course.name === 'Laravel Frameworks' || course.name === 'Vue Frameworks'
     )
-    
-    // Initialize reactive states
+
     courses.value.forEach(course => {
       if (!newTopics.value[course.id]) {
         newTopics.value[course.id] = { title: '', content: '', loading: false }
@@ -169,12 +166,10 @@ const fetchCourses = async () => {
   }
 }
 
-// Toggle dropdown visibility
 const toggleCourse = (courseId) => {
   expandedCourses.value[courseId] = !expandedCourses.value[courseId]
 }
 
-// Create Topic
 const createStandaloneTopicForCourse = async (courseId) => {
   try {
     errorMessages.value[courseId] = ''
@@ -187,43 +182,42 @@ const createStandaloneTopicForCourse = async (courseId) => {
 
     standaloneTopics.value.push(response.data)
 
-    newTopics.value[courseId] = {
-      title: '',
-      content: '',
-      loading: false
-    }
+    newTopics.value[courseId] = { title: '', content: '', loading: false }
   } catch (error) {
-    console.error(`Failed to add topic to course ${courseId}:`, error)
     errorMessages.value[courseId] = error.response?.data?.message || 'Failed to add topic'
   } finally {
     newTopics.value[courseId].loading = false
   }
 }
 
-// Update Topic
+// ✅ Responsive Update
 const updateStandaloneTopic = async (topic) => {
   try {
     await axios.put(`/api/topics/${topic.id}`, {
       title: topic.title,
       content: topic.content
     })
-    await fetchStandaloneTopics()
+    alert('Topic updated successfully.')
   } catch (error) {
-    console.error('Failed to update topic:', error)
+    console.error('Update failed:', error)
+    alert(error.response?.data?.message || 'Failed to update topic.')
   }
 }
 
-// Delete Topic
+// ✅ Fixed Delete
 const deleteStandaloneTopic = async (id) => {
   try {
-    await axios.delete(`/api/topics/${id}`)
-    await fetchStandaloneTopics()
+    await axios.delete(`/api/topics/${id}`);
+    // Remove from local array immediately
+    standaloneTopics.value = standaloneTopics.value.filter(topic => topic.id !== id);
+    alert('Topic deleted successfully.');
   } catch (error) {
-    console.error('Failed to delete topic:', error)
+    console.error('Delete failed:', error);
+    alert(error.response?.data?.message || 'Failed to delete topic.');
   }
 }
 
-// Watch section change to load users if needed
+// Load users if section changes
 watch(showSection, async (newVal) => {
   if (newVal === 'users' && users.value.length === 0) {
     await fetchUsers()
@@ -240,12 +234,13 @@ const logout = async () => {
   }
 }
 
-// Initial data fetch
+// Initial data
 onMounted(() => {
   fetchStandaloneTopics()
   fetchCourses()
 })
 </script>
+
 
 <style scoped>
 .responsive-min-width {

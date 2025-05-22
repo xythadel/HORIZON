@@ -32,7 +32,7 @@ Route::post('/courses/{course_id}/topics', [TopicController::class, 'store']);
 Route::get('/topics', [TopicController::class, 'index']);
 Route::post('/topics', [TopicController::class, 'store']);
 Route::put('/topics/{id}', [TopicController::class, 'update']);
-Route::delete('/topics/{id}', [TopicController::class, 'destroy']);
+Route::delete('/topics/{topic}', [TopicController::class, 'destroy']);
 Route::get('/courses/{id}/topics', [CourseController::class, 'getTopicsByCourse']);
 //USERS
 Route::get('/users', function () {
