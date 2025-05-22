@@ -238,6 +238,7 @@ function handleProfileSubmit() {
     router.post('/register', {
         email: email.value,
         password: password.value,
+        password_confirmation: password.value,
         name: name.value,
         birthday: birthday.value,
     }, {
