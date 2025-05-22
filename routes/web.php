@@ -53,7 +53,7 @@ Route::get('/quizlara', function () {
 
 Route::post('/logout', function () {
     \Illuminate\Support\Facades\Auth::logout();
-    return redirect('Welcome'); // Or '/signup' if you prefer
+    return redirect('/'); // Or '/signup' if you prefer
 });
 
 Route::get('/login', function () {
