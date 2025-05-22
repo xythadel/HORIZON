@@ -9,7 +9,10 @@
       <!-- Profile Picture -->
       <div class="absolute left-4 top-[138px] h-16 w-16 rounded-full bg-white shadow-md"></div>
       <!-- Username -->
-      <p class="pl-24 pt-16 text-base font-normal text-zinc-800">Berkan Yuksel</p>
+      <p v-if="user" class="pl-24 pt-16 text-base font-normal text-zinc-800">
+      {{ user.name }}
+      </p>
+
 
       <!--Navigation Panel-->
       <!-- Dashboard -->
@@ -87,6 +90,9 @@
 import { router } from '@inertiajs/vue3';
 
 export default {
+  props: {
+    user: Object, 
+  },
   data() {
     return {
       userProgress: [
