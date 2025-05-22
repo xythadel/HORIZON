@@ -6,27 +6,32 @@ use App\Http\Controllers\Controller;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
 
 class GoogleController extends Controller
 {
-    public function redirect()
-    {
-        return Socialite::driver('google')->redirect();
+public function handleGoogleCallback()
+{
+    $user = Socialite::driver('google')->user();
+
+    $existingUser = User::where('email', $user->getEmail())->first();
+
+    if ($existingUser) {
+        Auth::login($existingUser);
+
+        return redirect('/'); // Your Vue app entry point
     }
 
-    public function callback()
-    {
-        $googleUser = Socialite::driver('google')->user();
+    // If user doesn't exist, create one or redirect to registration step
+    $newUser = User::create([
+        'name' => $user->getName(),
+        'email' => $user->getEmail(),
+        // You may want to store google_id, etc.
+    ]);
 
-        $user = User::firstOrCreate([
-            'email' => $googleUser->getEmail(),
-        ], [
-            'name' => $googleUser->getName(),
-            'password' => bcrypt(str()->random(24)), // random password for security
-        ]);
+    Auth::login($newUser);
 
-        Auth::login($user);
-
-        return redirect('/dashboard'); // or wherever you want
-    }
+    return redirect('/'); // Or wherever your Vue app handles logged-in state
+}
 }
