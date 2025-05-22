@@ -72,9 +72,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/complete-registration', [App\Http\Controllers\Auth\CompleteRegistrationController::class, 'showForm'])->name('complete.registration');
     Route::post('/complete-registration', [App\Http\Controllers\Auth\CompleteRegistrationController::class, 'submitForm']);
 });
-
+//Google route
 Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
-    Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
+Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 }); 
 
 require __DIR__ . '/settings.php';
