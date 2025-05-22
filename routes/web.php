@@ -17,7 +17,11 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard'); // <-- this should match a Vue page
+    })->name('dashboard');
+});
 // ->middleware(['auth', 'verified'])
 
 Route::get('test', function () {
@@ -50,7 +54,12 @@ Route::get('/quizlara', function () {
 Route::post('/logout', function () {
     \Illuminate\Support\Facades\Auth::logout();
     return redirect('Welcome'); // Or '/signup' if you prefer
-}); 
+});
+
+Route::get('/login', function () {
+    return Inertia::render('Auth/Login'); // This matches your Vue login page
+})->middleware('guest')->name('login');
+
 
 
 //Route::middleware(['auth'])->group(function () {
