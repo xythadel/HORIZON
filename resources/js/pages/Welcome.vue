@@ -232,9 +232,22 @@ function handleProfileSubmit() {
         errorMessage.value = 'Please fill in all fields';
         return;
     }
+
     errorMessage.value = '';
-    alert('Registration complete!');
-    currentView.value = 'login';
+
+    router.post('/register', {
+        email: email.value,
+        password: password.value,
+        name: name.value,
+        birthday: birthday.value,
+    }, {
+        onError: (errors) => {
+            errorMessage.value = errors.email || errors.password || errors.name || errors.birthday || 'Something went wrong';
+        },
+        onSuccess: () => {
+            currentView.value = 'login'; // Move to login page after successful sign-up
+        }
+    });
 }
 function continueWithGoogle() {
     window.location.href = '/auth/google';
@@ -247,6 +260,7 @@ function clearFields() {
     errorMessage.value = '';
 }
 </script>
+
 
 <style>
 body {
