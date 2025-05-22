@@ -10,24 +10,24 @@ class AuthController extends Controller
 {
     public function register(Request $request)
 {
-    $request->validate([
+    $validated = $request->validate([
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|min:6',
         'name' => 'required|string|max:255',
-        'email' => 'required|string|email|unique:users',
-        'password' => 'required|string|min:6|confirmed'
+        'birthday' => 'required|date',
     ]);
 
     $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'role' => 'user' // or whatever default role you want
+        'email' => $validated['email'],
+        'password' => Hash::make($validated['password']),
+        'name' => $validated['name'],
+        'birthday' => $validated['birthday'],
+        'role' => 'user', // default role if not specified
     ]);
 
-    return response()->json([
-        'message' => 'Registration successful',
-        'user' => $user
-    ]);
+    return response()->json(['message' => 'User registered successfully']);
 }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
