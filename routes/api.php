@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\AdminController;
 
 
 
@@ -38,6 +39,10 @@ Route::get('/courses/{id}/topics', [CourseController::class, 'getTopicsByCourse'
 Route::get('/users', function () {
     return User::select('id', 'name', 'email', 'role', 'created_at')->get();
 });
+
+
+Route::get('/users', [AdminController::class, 'getAllUsers']);
+
 
 
 //sign up route

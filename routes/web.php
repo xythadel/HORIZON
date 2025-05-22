@@ -56,11 +56,6 @@ Route::post('/logout', function () {
     return redirect('/'); // Or '/signup' if you prefer
 });
 
-Route::get('/login', function () {
-    return Inertia::render('Auth/Login'); // This matches your Vue login page
-})->middleware('guest')->name('login');
-
-
 
 //Route::middleware(['auth'])->group(function () {
     //Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
