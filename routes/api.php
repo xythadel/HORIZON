@@ -36,3 +36,7 @@ Route::get('/courses/{id}/topics', [CourseController::class, 'getTopicsByCourse'
 
 // ✅ Progress Tracking (Requires Auth)
 Route::middleware(['auth:sanctum'])->get('/user-progress', [UserProgressTracker::class, 'userProgress']);
+
+//Settings For User Management
+Route::put('/settings/update', [UserController::class, 'update'])->middleware('auth');
+
