@@ -67,10 +67,6 @@ Route::post('/logout', function () {
 // routes/web.php
 
 
-Route::get('/admin/courses', [CourseController::class, 'index']);
-Route::get('/admin/topics', [TopicController::class, 'index']);
-Route::get('/admin/users', [UserController::class, 'index']);
-
 
 //Route::get('/admin', function () {
     //return view('admin.index'); // This should match your Blade file
