@@ -66,6 +66,7 @@ Route::post('/logout', function () {
 //Route::resource('courses', CourseController::class);
 // routes/web.php
 
+Route::get('/admin/topics', [TopicController::class, 'index']);
 
 
 //Route::get('/admin', function () {
