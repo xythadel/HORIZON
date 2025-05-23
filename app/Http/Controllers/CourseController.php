@@ -12,8 +12,8 @@ class CourseController extends Controller
      */
     public function index()
     {
-        //retrun all courses
-        return response()->json(Course::all());
+        return Course::all();
+
     }
 
     /**
