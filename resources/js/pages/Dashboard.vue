@@ -12,8 +12,8 @@
       <div class="absolute left-4 top-[138px] h-16 w-16 rounded-full bg-white shadow-md"></div>
 
       <!-- Username (Dynamic) -->
-      <p v-if="user" class="pl-24 pt-16 text-base font-normal text-zinc-800">
-        {{ user.name }}
+      <p v-if="user && user.name" class="pl-24 pt-16 text-base font-normal text-zinc-800">
+       {{ user.name }}
       </p>
 
       <!-- Navigation Panel -->
