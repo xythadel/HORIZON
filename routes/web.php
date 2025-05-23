@@ -66,13 +66,6 @@ Route::post('/logout', function () {
 //Route::resource('courses', CourseController::class);
 // routes/web.php
 
-Route::get('/admin/topics', [TopicController::class, 'index']);
-
-Route::middleware(['auth'])->group(function () {
-    Route::put('/settings/update', [UserController::class, 'update']);
-});
-
-
 //Route::get('/admin', function () {
     //return view('admin.index'); // This should match your Blade file
 //});

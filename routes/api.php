@@ -1,42 +1,39 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\UserProgressTracker;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Admin\UserController;
+use App\Models\Topic;
+use App\Models\User;
 
-// ✅ Health Check
-Route::get('/ping', fn () => response()->json(['message' => 'API is working']));
-
-// ✅ Admin API Routes
-Route::prefix('admin')->group(function () {
-    // Users
-    Route::get('/users', [UserController::class, 'index']);
-
-    // Courses
-    Route::get('/courses', [CourseController::class, 'index']);
-    Route::post('/courses', [CourseController::class, 'store']);
-    Route::put('/courses/{course}', [CourseController::class, 'update']);
-    Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
-
-    // Topics (using the correct controller)
-    Route::get('/topics', [TopicController::class, 'index']);
-    Route::post('/courses/{course}/topics', [TopicController::class, 'store']);
-    Route::put('/topics/{topic}', [TopicController::class, 'update']);
-    Route::delete('/topics/{topic}', [TopicController::class, 'destroy']);
+// Health check route
+Route::middleware('api')->get('/ping', function () {
+    return response()->json(['message' => 'API is working']);
 });
 
-// ✅ Public Routes
-Route::get('/courses', [CourseController::class, 'getAllCourses']);
-Route::get('/topics', [TopicController::class, 'getAllTopics'] ?? [TopicController::class, 'index']); // optional
-Route::get('/courses/{id}/topics', [CourseController::class, 'getTopicsByCourse']);
+// --- Original Routes ---
 
-// ✅ Progress Tracking (Requires Auth)
+// Course Routes
+Route::apiResource('courses', CourseController::class);
+Route::get('/courses', [CourseController::class, 'index']);
+Route::post('/courses', [CourseController::class, 'store']);
+Route::put('/courses/{course}', [CourseController::class, 'update']);
+Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
+
+// Topic Routes
+Route::get('/courses/{id}/topics', [TopicController::class, 'getTopicsByCourse']);
+Route::get('/topics', [TopicController::class, 'index']);
+
+// User Progress (protected)
 Route::middleware(['auth:sanctum'])->get('/user-progress', [UserProgressTracker::class, 'userProgress']);
 
-//Settings For User Management
-Route::put('/settings/update', [UserController::class, 'update'])->middleware('auth');
+// --- Admin Aliases (for frontend compatibility) ---
 
+Route::prefix('admin')->group(function () {
+    // Route aliases for frontend Axios calls
+    Route::get('/topics', [TopicController::class, 'index']);
+    Route::get('/courses', [CourseController::class, 'index']);
+});
