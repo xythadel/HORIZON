@@ -10,18 +10,27 @@ class TopicController extends Controller
 {
     public function index()
     {
-        return Topic::all();
+        $topics = Topic::all();
+        return response()->json($topics);
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'course_id' => 'required|exists:courses,id',
-        ]);
+         $validatedData = $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string',
+    ]);
 
-        $topic = Topic::create($validated);
-        return response()->json($topic, 201);
+    // Add the course ID from the request (adjust 'course_id' if your request uses a different key)
+    $validatedData['course_id'] = $request->input('course_id');
+
+    // Create and return the new topic
+    $topic = Topic::create($validatedData);
+
+    return response()->json([
+        'message' => 'Topic created successfully.',
+        'topic' => $topic,
+    ], 201);
     }
 
     public function show(Topic $topic)
