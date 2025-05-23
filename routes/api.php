@@ -30,6 +30,14 @@ Route::get('/topics', [TopicController::class, 'index']);
 // User Progress (protected)
 Route::middleware(['auth:sanctum'])->get('/user-progress', [UserProgressTracker::class, 'userProgress']);
 
+Route::prefix('courses/{course}')->group(function () {
+    Route::get('topics', [TopicController::class, 'index']);
+    Route::post('topics', [TopicController::class, 'store']);
+    Route::put('topics/{topic}', [TopicController::class, 'update']);
+    Route::delete('topics/{topic}', [TopicController::class, 'destroy']);
+});
+
+
 // --- Admin Aliases (for frontend compatibility) ---
 
 Route::prefix('admin')->group(function () {
