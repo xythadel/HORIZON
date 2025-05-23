@@ -7,6 +7,8 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\UserProgressTracker;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\UserController;
+
 
 // Health check route
 Route::middleware('api')->get('/ping', function () {
@@ -29,6 +31,19 @@ Route::delete('/topics/{topic}', [TopicController::class, 'destroy']);
 
 // User Routes
 Route::get('/users', [AdminController::class, 'getAllUsers']);
+
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/courses', [CourseController::class, 'index']);
+
+    Route::get('/topics', [TopicController::class, 'index']);
+    Route::post('/courses/{course}/topics', [TopicController::class, 'store']);
+    Route::put('/topics/{topic}', [TopicController::class, 'update']);
+    Route::delete('/topics/{topic}', [TopicController::class, 'destroy']);
+});
+
 
 
 
