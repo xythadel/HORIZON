@@ -15,7 +15,7 @@ class TopicController extends Controller
     public function index()
     {
        // return Topic::all();
-        return response()->json(Topic::all());
+         return Topic::all(); 
     }
 
     /**
@@ -32,19 +32,13 @@ class TopicController extends Controller
     public function store(Request $request, $course_id)
 {
     $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'content' => 'required|string',
+            'name' => 'required|string|max:255',
+            'course_id' => 'required|exists:courses,id',
+        ]);
 
-    ]);
-
-    $topic = new Topic();
-    $topic->title = $validated['title'];
-    $topic->content = $validated['content'];
-    $topic->course_id = $course_id;;
-    $topic->save();
-
-    return response()->json($topic, 201);
-}
+            $topic = Topic::create($validated);
+            return response()->json($topic, 201);
+        }
 
 
     /**
@@ -52,7 +46,7 @@ class TopicController extends Controller
      */
     public function show(Topic $topic)
     {
-        //
+        return $topic;
     }
 
     /**
