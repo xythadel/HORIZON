@@ -9,6 +9,8 @@ use App\Http\Controllers\VueQuizController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Types\Relations\Role;
 use Inertia\Inertia;
+use App\Http\Controllers\Admin\TopicController;
+use App\Http\Controllers\Admin\UserController;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\Auth\LoginController;
@@ -63,6 +65,12 @@ Route::post('/logout', function () {
 
 //Route::resource('courses', CourseController::class);
 // routes/web.php
+
+
+Route::get('/admin/courses', [CourseController::class, 'index']);
+Route::get('/admin/topics', [TopicController::class, 'index']);
+Route::get('/admin/users', [UserController::class, 'index']);
+
 
 //Route::get('/admin', function () {
     //return view('admin.index'); // This should match your Blade file
