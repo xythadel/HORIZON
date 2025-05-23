@@ -32,6 +32,9 @@ Route::delete('/topics/{topic}', [TopicController::class, 'destroy']);
 // User Routes
 Route::get('/users', [AdminController::class, 'getAllUsers']);
 
+Route::get('/admin/courses', [CourseController::class, 'index']);
+Route::get('/admin/topics', [TopicController::class, 'index']);
+Route::get('/admin/users', [UserController::class, 'index']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
