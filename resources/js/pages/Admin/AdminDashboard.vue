@@ -130,7 +130,7 @@ const expandedCourses = ref({})
 // Fetch data
 const fetchStandaloneTopics = async () => {
   try {
-    const res = await axios.get('/api/topics')
+    const res = await axios.get('/api/admin/topics')
     standaloneTopics.value = res.data
   } catch (error) {
     console.error('Failed to fetch topics:', error)
@@ -139,7 +139,7 @@ const fetchStandaloneTopics = async () => {
 
 const fetchUsers = async () => {
   try {
-    const res = await axios.get('/api/users')
+    const res = await axios.get('/api/admin/users')
     users.value = res.data
   } catch (error) {
     console.error('Failed to fetch users:', error)
@@ -148,7 +148,7 @@ const fetchUsers = async () => {
 
 const fetchCourses = async () => {
   try {
-    const res = await axios.get('/api/courses')
+    const res = await axios.get('/api/admin/courses')
     courses.value = res.data.filter(course =>
       course.name === 'Laravel Frameworks' || course.name === 'Vue Frameworks'
     )
@@ -175,7 +175,7 @@ const createStandaloneTopicForCourse = async (courseId) => {
     errorMessages.value[courseId] = ''
     newTopics.value[courseId].loading = true
 
-    const response = await axios.post(`/api/courses/${courseId}/topics`, {
+    const response = await axios.post(`/api/admin/courses/${courseId}/topics`, {
       title: newTopics.value[courseId].title,
       content: newTopics.value[courseId].content
     })
@@ -190,10 +190,9 @@ const createStandaloneTopicForCourse = async (courseId) => {
   }
 }
 
-// ✅ Responsive Update
 const updateStandaloneTopic = async (topic) => {
   try {
-    await axios.put(`/api/topics/${topic.id}`, {
+    await axios.put(`/api/admin/topics/${topic.id}`, {
       title: topic.title,
       content: topic.content
     })
@@ -204,27 +203,23 @@ const updateStandaloneTopic = async (topic) => {
   }
 }
 
-// ✅ Fixed Delete
 const deleteStandaloneTopic = async (id) => {
   try {
-    await axios.delete(`/api/topics/${id}`);
-    // Remove from local array immediately
-    standaloneTopics.value = standaloneTopics.value.filter(topic => topic.id !== id);
-    alert('Topic deleted successfully.');
+    await axios.delete(`/api/admin/topics/${id}`)
+    standaloneTopics.value = standaloneTopics.value.filter(topic => topic.id !== id)
+    alert('Topic deleted successfully.')
   } catch (error) {
-    console.error('Delete failed:', error);
-    alert(error.response?.data?.message || 'Failed to delete topic.');
+    console.error('Delete failed:', error)
+    alert(error.response?.data?.message || 'Failed to delete topic.')
   }
 }
 
-// Load users if section changes
 watch(showSection, async (newVal) => {
   if (newVal === 'users' && users.value.length === 0) {
     await fetchUsers()
   }
 })
 
-// Logout
 const logout = async () => {
   try {
     await axios.post('/logout')
@@ -234,12 +229,12 @@ const logout = async () => {
   }
 }
 
-// Initial data
 onMounted(() => {
   fetchStandaloneTopics()
   fetchCourses()
 })
 </script>
+
 
 
 <style scoped>
