@@ -26,7 +26,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::model('user', \App\Models\User::class);
     }
     public function map(): void
-    {
+    {   
         $this->mapApiRoutes();
         $this->mapWebRoutes();
     }
