@@ -29,6 +29,9 @@ Route::get('/topics', [TopicController::class, 'index']);
 
 // User Progress (protected)
 Route::middleware(['auth:sanctum'])->get('/user-progress', [UserProgressTracker::class, 'userProgress']);
+Route::get('/users', function () {
+    return User::select('id', 'name', 'email', 'role', 'created_at')->get();
+});
 
 Route::prefix('courses/{course}')->group(function () {
     Route::get('topics', [TopicController::class, 'index']);
@@ -44,4 +47,5 @@ Route::prefix('admin')->group(function () {
     // Route aliases for frontend Axios calls
     Route::get('/topics', [TopicController::class, 'index']);
     Route::get('/courses', [CourseController::class, 'index']);
+    Route::get('/users', [\App\Http\Controllers\UserController::class, 'index']);
 });
