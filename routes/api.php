@@ -48,5 +48,5 @@ Route::prefix('admin')->group(function () {
     // Route aliases for frontend Axios calls
     Route::get('/topics', [TopicController::class, 'index']);
     Route::get('/courses', [CourseController::class, 'index']);
-    Route::get('/users', [\App\Http\Controllers\UserController::class, 'index']);
+    Route::get('/users', [UserController::class, 'index']);
 });
