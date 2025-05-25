@@ -9,8 +9,6 @@ use App\Http\Controllers\VueQuizController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Types\Relations\Role;
 use Inertia\Inertia;
-use App\Http\Controllers\Admin\TopicController;
-use App\Http\Controllers\Admin\UserController;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\Auth\LoginController;
