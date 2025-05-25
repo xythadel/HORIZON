@@ -13,7 +13,6 @@ class CourseController extends Controller
     public function index()
     {
         return Course::all();
-
     }
 
     /**
