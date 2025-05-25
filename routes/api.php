@@ -21,9 +21,7 @@ Route::middleware('api')->get('/ping', function () {
 Route::apiResource('courses', CourseController::class);
 Route::get('/courses', [CourseController::class, 'index']);
 Route::post('/courses', [CourseController::class, 'store']);
-Route::put('/courses/{course}', [CourseController::class, 'update']);
-Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
-
+Route::get('/courses/{course}', [CourseController::class, 'show']);
 // Topic Routes
 Route::get('/courses/{id}/topics', [TopicController::class, 'getTopicsByCourse']);
 Route::get('/topics', [TopicController::class, 'index']);

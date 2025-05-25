@@ -130,7 +130,7 @@ const expandedCourses = ref({})
 // Fetch data
 const fetchStandaloneTopics = async () => {
   try {
-    const res = await axios.get('/api/admin/topics')
+    const res = await axios.get('/api/topics')
     standaloneTopics.value = res.data
   } catch (error) {
     console.error('Failed to fetch topics:', error)
@@ -139,7 +139,7 @@ const fetchStandaloneTopics = async () => {
 
 const fetchUsers = async () => {
   try {
-    const res = await axios.get('/api/admin/users')
+    const res = await axios.get('/api/users')
     users.value = res.data
   } catch (error) {
     console.error('Failed to fetch users:', error)
@@ -148,7 +148,7 @@ const fetchUsers = async () => {
 
 const fetchCourses = async () => {
   try {
-    const res = await axios.get('/api/admin/courses')
+    const res = await axios.get('/api/courses')
     courses.value = res.data.filter(course =>
       course.name === 'Laravel Frameworks' || course.name === 'Vue Frameworks'
     )
@@ -175,7 +175,7 @@ const createStandaloneTopicForCourse = async (courseId) => {
     errorMessages.value[courseId] = ''
     newTopics.value[courseId].loading = true
 
-    const response = await axios.post(`/api/admin/courses/${courseId}/topics`, {
+    const response = await axios.post(`/api/courses/${courseId}/topics`, {
       title: newTopics.value[courseId].title,
       content: newTopics.value[courseId].content
     })
@@ -192,7 +192,7 @@ const createStandaloneTopicForCourse = async (courseId) => {
 
 const updateStandaloneTopic = async (topic) => {
   try {
-    await axios.put(`/api/admin/topics/${topic.id}`, {
+    await axios.put(`/api//topics/${topic.id}`, {
       title: topic.title,
       content: topic.content
     })
@@ -205,7 +205,7 @@ const updateStandaloneTopic = async (topic) => {
 
 const deleteStandaloneTopic = async (id) => {
   try {
-    await axios.delete(`/api/admin/topics/${id}`)
+    await axios.delete(`/api/topics/${id}`)
     standaloneTopics.value = standaloneTopics.value.filter(topic => topic.id !== id)
     alert('Topic deleted successfully.')
   } catch (error) {
