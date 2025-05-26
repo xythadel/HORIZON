@@ -88,6 +88,7 @@
 
 <script>
 import { router } from '@inertiajs/vue3';
+import axios from 'axios';
 
 export default {
   props: {
@@ -95,17 +96,43 @@ export default {
   },
   data() {
     return {
-      userProgress: [
-        { name: 'Vue.js', progress: 0 },
-        { name: 'Laravel', progress: 0 },
-      ],
+      userProgress: [],
       showLogoutModal: false,
     };
   },
+  mounted() {
+    this.fetchProgress();
+  },
   methods: {
+    fetchProgress() {
+      axios.get('/mylearning/progress')
+        .then(response => {
+          this.userProgress = response.data.map(entry => {
+            const course = entry.course;
+            const lastTopicId = entry.last_topic_id;
+            const totalTopics = course.topics.length;
+
+            let currentIndex = course.topics.findIndex(topic => topic.id === lastTopicId);
+            currentIndex = currentIndex === -1 ? 0 : currentIndex + 1;
+
+            const progress = totalTopics > 0
+              ? Math.round((currentIndex / totalTopics) * 100)
+              : 0;
+
+            return {
+              name: course.name,
+              progress: progress,
+            };
+          });
+        })
+        .catch(error => {
+          console.error('Failed to load progress:', error);
+        });
+    },
     confirmLogout() {
       router.post('/logout');
     }
   }
 };
 </script>
+

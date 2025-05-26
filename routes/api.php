@@ -8,6 +8,7 @@ use App\Http\Controllers\TopicController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\UserProgressTracker;
+use App\Http\Controllers\MyLearningController;
 use App\Models\Topic;
 use App\Models\User;
 
@@ -50,3 +51,11 @@ Route::prefix('courses/{course}')->group(function () {
     Route::put('topics/{topic}', [TopicController::class, 'update']);
     Route::delete('topics/{topic}', [TopicController::class, 'destroy']);
 });
+
+Route::middleware('auth')->group(function () {
+    Route::post('/mylearning/start/{courseId}', [MyLearningController::class, 'start']);
+    Route::get('/mylearning/progress', [MyLearningController::class, 'progress']);
+    Route::put('/mylearning/update-topic/{courseId}/{topicId}', [MyLearningController::class, 'updateTopic']);
+});
+
+

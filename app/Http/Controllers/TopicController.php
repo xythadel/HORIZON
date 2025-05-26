@@ -6,6 +6,7 @@ use App\Models\Topic;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class TopicController extends Controller
 {
@@ -85,10 +86,16 @@ class TopicController extends Controller
      */
     public function destroy(Topic $topic)
     {
-       Log::info('Deleting topic:', ['id' => $topic->id]);
-       $topic->delete();
+          Log::info('Deleting topic:', ['id' => $topic->id]);
 
-      return response()->json(['message' => 'Topic deleted successfully.']);
+    // Reset last_topic_id in user_courses for any user pointing to this topic
+    DB::table('user_courses')
+        ->where('last_topic_id', $topic->id)
+        ->update(['last_topic_id' => null]);
+
+    $topic->delete();
+
+    return response()->json(['message' => 'Topic deleted successfully.']);
     }
 
     public function vueTopics()

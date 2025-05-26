@@ -10,6 +10,7 @@ use App\Models\TopicUserInteraction;
 use App\Models\QuizUserInteraction;
 use App\Models\Topic;
 use App\Models\Quiz;
+use App\Models\UserCourse;
 
 
 class User extends Authenticatable
@@ -106,4 +107,9 @@ public function calculateQuizProgress()
         // Simple average of topic and quiz progress
         return round(($topicProgress + $quizProgress) / 2);
     }
+    public function userCourses()
+{
+    return $this->hasMany(UserCourse::class);
+}
+
 }

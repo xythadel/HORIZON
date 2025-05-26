@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\UserCourse;
 
 class Course extends Model
 {
@@ -58,4 +59,9 @@ class Course extends Model
         
         return round(($completedItems / $totalItems) * 100);
     }
+    public function userCourses()
+{
+    return $this->hasMany(UserCourse::class);
+}
+
 }
