@@ -35,6 +35,8 @@ Route::post('/courses/{course}/topics', [TopicController::class, 'store']);
 // Topic Routes
 Route::get('/courses/{id}/topics', [TopicController::class, 'getTopicsByCourse']);
 Route::get('/topics', [TopicController::class, 'index']);
+//this delete route is for deleting a topic by its ID
+Route::delete('/topics/{topic}', [TopicController::class, 'destroy']);
 
 // User Progress (protected)
 Route::middleware(['auth:sanctum'])->get('/user-progress', [UserProgressTracker::class, 'userProgress']);
