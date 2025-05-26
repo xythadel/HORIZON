@@ -12,9 +12,10 @@
       <div class="absolute left-4 top-[138px] h-16 w-16 rounded-full bg-white shadow-md"></div>
 
       <!-- Username (Dynamic) -->
-      <p v-if="user && user.name" class="pl-24 pt-16 text-base font-normal text-zinc-800">
+      <p v-if="user" class="pl-24 pt-16 text-base font-normal text-zinc-800">
        {{ user.name }}
       </p>
+
 
       <!-- Navigation Panel -->
       <nav class="flex flex-col space-y-6 pl-20 pt-14">
@@ -110,23 +111,17 @@
   </div>
 </template>
 
-<script>
-import { router } from '@inertiajs/vue3';
+<script setup>
+import { ref } from 'vue'
+import { usePage, router } from '@inertiajs/vue3'
 
-export default {
-  props: {
-    user: Object,
-    courses: Array
-  },
-  data() {
-    return {
-      showLogoutModal: false,
-    };
-  },
-  methods: {
-    confirmLogout() {
-      router.post('/logout');
-    }
-  }
-};
+const { auth } = usePage().props
+const user = auth.user
+
+const showLogoutModal = ref(false)
+
+function confirmLogout() {
+  router.post('/logout')
+}
 </script>
+

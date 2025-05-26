@@ -5,9 +5,10 @@
       <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Horizon</h1>
       <div class="absolute left-10 top-[124px] w-40 border-t border-gray-200"></div>
       <div class="absolute left-4 top-[138px] h-16 w-16 rounded-full bg-white shadow-md"></div>
-      <p v-if="user" class="pl-24 pt-16 text-base font-normal text-zinc-800">
-        {{ user.name }}
-      </p>
+      <p v-if="user && user.name" class="pl-24 pt-16 text-base font-normal text-zinc-800">
+    {{ user.name }}
+  </p>
+
 
       <!--Navigation Panel-->
       <nav class="flex flex-col space-y-6 pl-20 pt-14">
