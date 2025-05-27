@@ -105,7 +105,7 @@ export default {
   },
   methods: {
     fetchProgress() {
-      axios.get('/mylearning/progress')
+      axios.get('api/mylearning/progress')
         .then(response => {
           this.userProgress = response.data.map(entry => {
             const course = entry.course;

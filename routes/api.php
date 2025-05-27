@@ -52,10 +52,11 @@ Route::prefix('courses/{course}')->group(function () {
     Route::delete('topics/{topic}', [TopicController::class, 'destroy']);
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/mylearning/start/{courseId}', [MyLearningController::class, 'start']);
     Route::get('/mylearning/progress', [MyLearningController::class, 'progress']);
     Route::put('/mylearning/update-topic/{courseId}/{topicId}', [MyLearningController::class, 'updateTopic']);
 });
+
 
 
