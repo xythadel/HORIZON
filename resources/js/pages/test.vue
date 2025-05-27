@@ -13,10 +13,10 @@
       <nav class="flex flex-col space-y-6 pl-20 pt-14">
         <a href="/test" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Dashboard</a>
         <a href="/mylearning" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a>
-        <a href="#" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Settings</a>
+        <a href="/settings" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Settings</a>
       </nav>
 
-      <!-- Logout -->
+      <!-- Logout -->/
       <nav class="flex flex-col space-y-6 pl-20 pt-60">
         <a
           href="#"
@@ -120,7 +120,7 @@ const showLogoutModal = ref(false)
 function confirmLogout() {
   router.post('/logout', {}, {
     onFinish: () => {
-      window.location.href = '/login'
+      window.location.href = '/logout'
     }
   })
 }
