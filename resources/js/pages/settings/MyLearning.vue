@@ -5,10 +5,9 @@
       <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Horizon</h1>
       <div class="absolute left-10 top-[124px] w-40 border-t border-gray-200"></div>
       <div class="absolute left-4 top-[138px] h-16 w-16 rounded-full bg-white shadow-md"></div>
-      <p v-if="user && user.name" class="pl-24 pt-16 text-base font-normal text-zinc-800">
-    {{ user.name }}
-  </p>
-
+      <p v-if="auth?.user" class="pl-24 pt-16 text-base font-normal text-zinc-800">
+        {{ auth.user.name }}
+      </p>
 
       <!--Navigation Panel-->
       <nav class="flex flex-col space-y-6 pl-20 pt-14">
@@ -35,7 +34,7 @@
     </aside>
 
     <!-- Main Content -->
-    <div class="flex-1 p-8 text-white">
+    <div class="flex-1 p-8 text-white overflow-y-auto">
       <h2 class="text-2xl font-bold">My Learning</h2>
       <div v-if="userProgress.length" class="mt-6 space-y-4">
         <div
@@ -59,50 +58,50 @@
       </div>
       <p v-else class="mt-6 text-gray-400">You haven't started any courses yet.</p>
     </div>
-  </div>
 
-  <!-- Logout Confirmation Modal -->
-  <div
-    v-if="showLogoutModal"
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-  >
-    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm text-center text-gray-800">
-      <h2 class="text-xl font-semibold mb-4">Are you sure?</h2>
-      <p class="mb-6">Do you really want to logout from your account?</p>
-      <div class="flex justify-center space-x-4">
-        <button
-          @click="confirmLogout"
-          class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-        >
-          Yes, Logout
-        </button>
-        <button
-          @click="showLogoutModal = false"
-          class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
-        >
-          Cancel
-        </button>
+    <!-- Logout Confirmation Modal -->
+    <div
+      v-if="showLogoutModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm text-center text-gray-800">
+        <h2 class="text-xl font-semibold mb-4">Are you sure?</h2>
+        <p class="mb-6">Do you really want to logout from your account?</p>
+        <div class="flex justify-center space-x-4">
+          <button
+            @click="confirmLogout"
+            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+          >
+            Yes, Logout
+          </button>
+          <button
+            @click="showLogoutModal = false"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { router } from '@inertiajs/vue3';
-import axios from 'axios';
+import { router } from '@inertiajs/vue3'
+import axios from 'axios'
 
 export default {
   props: {
-    user: Object,
+    auth: Object
   },
   data() {
     return {
       userProgress: [],
-      showLogoutModal: false,
-    };
+      showLogoutModal: false
+    }
   },
   mounted() {
-    this.fetchProgress();
+    this.fetchProgress()
   },
   methods: {
     fetchProgress() {
@@ -140,5 +139,5 @@ export default {
       router.visit(`/courses/${courseId}/topics/${topicId}`);
     }
   }
-};
+}
 </script>
