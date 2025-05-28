@@ -1,4 +1,5 @@
 <template>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <div class="flex min-h-screen flex-col md:flex-row">
     <!-- Sidebar -->
     <aside class="w-full md:w-64 bg-gray-800 text-white p-4 flex flex-col justify-between">
