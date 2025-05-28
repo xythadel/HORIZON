@@ -5,7 +5,6 @@ use App\Http\Controllers\CourseController;
 use App\Models\Course;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\VueQuizController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Types\Relations\Role;
 use Inertia\Inertia;
@@ -43,8 +42,7 @@ Route::get('/mylearning', function () {
     return Inertia::render('settings/MyLearning');
 })->name('mylearning');
 
-Route::get('/quizzes', [VueQuizController::class, 'index'])->name('quizzes.index');
-Route::get('/quizzes/{id}', [VueQuizController::class, 'show'])->name('quizzes.show');
+
 
 Route::get('/quizlara', function () {
     return Inertia::render('settings/LaraModules/QuizLara');

@@ -45,6 +45,7 @@ Route::get('/users', function () {
     return User::select('id', 'name', 'email', 'role', 'created_at')->get();
 });
 
+// Course Topics Routes
 Route::prefix('courses/{course}')->group(function () {
     Route::get('topics', [TopicController::class, 'index']);
     Route::post('topics', [TopicController::class, 'store']);
@@ -52,11 +53,20 @@ Route::prefix('courses/{course}')->group(function () {
     Route::delete('topics/{topic}', [TopicController::class, 'destroy']);
 });
 
+//Mylearning Routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/mylearning/start/{courseId}', [MyLearningController::class, 'start']);
     Route::get('/mylearning/progress', [MyLearningController::class, 'progress']);
     Route::put('/mylearning/update-topic/{courseId}/{topicId}', [MyLearningController::class, 'updateTopic']);
 });
+
+
+// Quiz Routes
+Route::get('/quizzes', [QuizController::class, 'index']);
+Route::post('/quizzes', [QuizController::class, 'store']);
+Route::put('/quizzes/{quiz}', [QuizController::class, 'update']);
+Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy']);
+
 
 
 
