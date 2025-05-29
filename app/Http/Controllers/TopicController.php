@@ -34,6 +34,7 @@ class TopicController extends Controller
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'content' => 'required|string',
+        'course_id' => 'required|integer|exists:courses,id',
 
     ]);
 

@@ -178,7 +178,8 @@ const createStandaloneTopicForCourse = async (courseId) => {
 
     const response = await axios.post(`/api/courses/${courseId}/topics`, {
       title: newTopics.value[courseId].title,
-      content: newTopics.value[courseId].content
+      content: newTopics.value[courseId].content,
+      course_id: courseId
     })
 
     standaloneTopics.value.push(response.data)
