@@ -176,10 +176,10 @@ const createStandaloneTopicForCourse = async (courseId) => {
     errorMessages.value[courseId] = ''
     newTopics.value[courseId].loading = true
 
-    const response = await axios.post(`/api/courses/${courseId}/topics`, {
+    const response = await axios.post(`/api/courses/${parseInt(courseId.id || courseId)}/topics`, {
       title: newTopics.value[courseId].title,
       content: newTopics.value[courseId].content,
-      course_id: courseId
+      course_id: parseInt(courseId.id || courseId)// To test this tommorow
     })
 
     standaloneTopics.value.push(response.data)
@@ -191,6 +191,7 @@ const createStandaloneTopicForCourse = async (courseId) => {
     newTopics.value[courseId].loading = false
   }
 }
+
 
 const updateStandaloneTopic = async (topic) => {
   try {

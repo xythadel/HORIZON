@@ -31,7 +31,7 @@ Route::apiResource('courses', CourseController::class)
     ->only(['index', 'store', 'show', 'update', 'destroy']);
 Route::get('/courses', [CourseController::class, 'index']);
 Route::post('/courses', [CourseController::class, 'store']);
-Route::post('/courses/{course}/topics', [TopicController::class, 'store']);
+Route::post('/courses/{course_id}/topics', [TopicController::class, 'store']);
 
 // Topic Routes
 Route::get('/courses/{id}/topics', [TopicController::class, 'getTopicsByCourse']);
