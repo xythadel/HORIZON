@@ -37,6 +37,8 @@ class TopicController extends Controller
 
     ]);
 
+     $course = Course::findOrFail($course_id); 
+
     $topic = new Topic();
     $topic->title = $validated['title'];
     $topic->content = $validated['content'];

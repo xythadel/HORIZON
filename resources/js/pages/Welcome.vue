@@ -251,7 +251,7 @@ function handleProfileSubmit() {
     });
 }
 function continueWithGoogle() {
-    window.location.href = '/auth/google';
+    window.location.href = '/auth/redirect/google';
 }
 function clearFields() {
     email.value = '';

@@ -99,14 +99,14 @@
 
             <ul>
               <li 
-                v-for="topic in standaloneTopics.filter(t => t.course_id === course.id)" 
+                v-for="topic in standaloneTopics[course.id] || []" 
                 :key="topic.id" 
                 class="flex flex-wrap items-center gap-2 mb-2"
               >
                 <input v-model="topic.title" class="border p-1 rounded flex-1 responsive-min-width" />
                 <input v-model="topic.content" class="border p-1 rounded flex-1 responsive-min-width" />
                 <button @click="updateStandaloneTopic(topic)" class="text-blue-600">Update</button>
-                <button @click="deleteStandaloneTopic(topic.id)" class="text-red-600">Delete</button>
+                <button @click="deleteStandaloneTopic(topic.id, course.id)" class="text-red-600">Delete</button>
               </li>
             </ul>
           </div>
@@ -121,20 +121,84 @@ import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 
 const users = ref([])
-const standaloneTopics = ref([])
+const standaloneTopics = ref({}) // courseId -> array of topics
 const courses = ref([])
 const showSection = ref('topics')
 const errorMessages = ref({})
 const newTopics = ref({})
 const expandedCourses = ref({})
 
-// Fetch data
-const fetchStandaloneTopics = async () => {
+const fetchCourses = async () => {
   try {
-    const res = await axios.get('/api/topics')
-    standaloneTopics.value = res.data
+    const res = await axios.get('/api/courses')
+    courses.value = res.data.filter(course =>
+      course.name === 'Laravel Frameworks' || course.name === 'Vue Frameworks'
+    )
+
+    courses.value.forEach(course => {
+      newTopics.value[course.id] = { title: '', content: '', loading: false }
+      expandedCourses.value[course.id] = false
+    })
   } catch (error) {
-    console.error('Failed to fetch topics:', error)
+    console.error('Failed to fetch courses:', error)
+  }
+}
+
+const fetchStandaloneTopics = async () => {
+  standaloneTopics.value = {}
+
+  for (const course of courses.value) {
+    try {
+      const res = await axios.get(`/api/courses/${course.id}/topics`)
+      standaloneTopics.value[course.id] = res.data
+    } catch (error) {
+      console.error(`Failed to fetch topics for course ${course.id}`, error)
+    }
+  }
+}
+
+
+
+const createStandaloneTopicForCourse = async (courseId) => {
+  try {
+    errorMessages.value[courseId] = ''
+    newTopics.value[courseId].loading = true
+
+    const response = await axios.post(`/api/courses/${courseId}/topics`, {
+      title: newTopics.value[courseId].title,
+      content: newTopics.value[courseId].content
+    })
+
+    standaloneTopics.value[courseId].push(response.data)
+    newTopics.value[courseId] = { title: '', content: '', loading: false }
+  } catch (error) {
+    errorMessages.value[courseId] = error.response?.data?.message || 'Failed to add topic'
+  } finally {
+    newTopics.value[courseId].loading = false
+  }
+}
+
+const updateStandaloneTopic = async (topic) => {
+  try {
+    await axios.put(`/api/topics/${topic.id}`, {
+      title: topic.title,
+      content: topic.content
+    })
+    alert('Topic updated successfully.')
+  } catch (error) {
+    console.error('Update failed:', error)
+    alert(error.response?.data?.message || 'Failed to update topic.')
+  }
+}
+
+const deleteStandaloneTopic = async (id, courseId) => {
+  try {
+    await axios.delete(`/api/topics/${id}`)
+    standaloneTopics.value[courseId] = standaloneTopics.value[courseId].filter(t => t.id !== id)
+    alert('Topic deleted successfully.')
+  } catch (error) {
+    console.error('Delete failed:', error)
+    alert(error.response?.data?.message || 'Failed to delete topic.')
   }
 }
 
@@ -147,81 +211,15 @@ const fetchUsers = async () => {
   }
 }
 
-const fetchCourses = async () => {
-  try {
-    const res = await axios.get('/api/courses')
-    courses.value = res.data.filter(course =>
-      course.name === 'Laravel Frameworks' || course.name === 'Vue Frameworks'
-    )
-
-    courses.value.forEach(course => {
-      if (!newTopics.value[course.id]) {
-        newTopics.value[course.id] = { title: '', content: '', loading: false }
-      }
-      if (!(course.id in expandedCourses.value)) {
-        expandedCourses.value[course.id] = false
-      }
-    })
-  } catch (error) {
-    console.error('Failed to fetch courses:', error)
-  }
-}
-
-const toggleCourse = (courseId) => {
-  expandedCourses.value[courseId] = !expandedCourses.value[courseId]
-}
-
-const createStandaloneTopicForCourse = async (courseId) => {
-  try {
-    errorMessages.value[courseId] = ''
-    newTopics.value[courseId].loading = true
-
-    const response = await axios.post(`/api/courses/${parseInt(courseId.id || courseId)}/topics`, {
-      title: newTopics.value[courseId].title,
-      content: newTopics.value[courseId].content,
-      course_id: parseInt(courseId.id || courseId)// To test this tommorow
-    })
-
-    standaloneTopics.value.push(response.data)
-
-    newTopics.value[courseId] = { title: '', content: '', loading: false }
-  } catch (error) {
-    errorMessages.value[courseId] = error.response?.data?.message || 'Failed to add topic'
-  } finally {
-    newTopics.value[courseId].loading = false
-  }
-}
-
-
-const updateStandaloneTopic = async (topic) => {
-  try {
-    await axios.put(`/api//topics/${topic.id}`, {
-      title: topic.title,
-      content: topic.content
-    })
-    alert('Topic updated successfully.')
-  } catch (error) {
-    console.error('Update failed:', error)
-    alert(error.response?.data?.message || 'Failed to update topic.')
-  }
-}
-
-const deleteStandaloneTopic = async (id) => {
-  try {
-    await axios.delete(`/api/topics/${id}`)
-    standaloneTopics.value = standaloneTopics.value.filter(topic => topic.id !== id)
-    alert('Topic deleted successfully.')
-  } catch (error) {
-    console.error('Delete failed:', error)
-    alert(error.response?.data?.message || 'Failed to delete topic.')
-  }
-}
-
 watch(showSection, async (newVal) => {
   if (newVal === 'users' && users.value.length === 0) {
     await fetchUsers()
   }
 })
+
+const toggleCourse = (courseId) => {
+  expandedCourses.value[courseId] = !expandedCourses.value[courseId]
+}
 
 const logout = async () => {
   try {
@@ -229,16 +227,15 @@ const logout = async () => {
     window.location.href = '/'
   } catch (error) {
     console.error('Logout failed:', error)
+    alert('Logout failed.')
   }
 }
 
-onMounted(() => {
-  fetchStandaloneTopics()
-  fetchCourses()
+onMounted(async () => {
+  await fetchCourses()
+  await fetchStandaloneTopics()
 })
 </script>
-
-
 
 <style scoped>
 .responsive-min-width {
