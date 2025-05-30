@@ -107,18 +107,21 @@
                <!-- Team Section -->
                 <div class="my-16">
                 <!-- Title Container -->
-                <div class="relative inline-block">
-                    <h2 class="text-2xl md:text-3xl font-bold mb-0 z-10 relative">
+               <div class="flex items-center space-x-6 max-w-full">
+                <!-- Left text block -->
+                <div class="flex flex-col">
+                    <h2 class="text-2xl md:text-3xl font-bold leading-tight">
                     Meet the team behind
                     </h2>
-                    <div class="h-[64px] w-[700px] bg-gradient-to-l from-transparent to-red-500 rounded-l-full mt-[-30px] mb-[-300px] mx-[350px]"></div>
+                    <span class="text-4xl md:text-5xl font-bold mt-2 block">Horizon</span>
                 </div>
 
-                <!-- Horizon Title -->
-                <div class="mt-2">
-                    <span class="text-4xl md:text-5xl font-bold block">Horizon</span>
+                <!-- Gradient bar next to text -->
+               <div class="overflow-hidden w-[500px] h-[64px] rounded-l-full mt-[-30px] mb-[-10px] ml-[600px]">
+                <div class="h-full w-[600px] bg-gradient-to-l from-transparent to-red-500 rounded-l-full"></div>
                 </div>
 
+                </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
                         <img src="/Photos/Darlyn.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
@@ -151,7 +154,7 @@
                     from-transparent to-blue-500
                     rounded-r-full
                     my-4
-                    ml-[10px]
+                    ml-auto
                 "></div>
                 <div class="
                     h-[74px]
@@ -160,14 +163,10 @@
                     from-transparent to-green-500
                     rounded-l-full
                     my-4
-                    ml-auto"></div>
+                    ml-4"></div>
             </section>
             <footer class="py-6 border-t border-white/10 flex justify-between text-sm text-white/50">
                 <div>&lt;horizon/&gt;</div>
-                <div class="flex gap-6">
-                    <span>About</span>
-                    <span>Courses</span>
-                </div>
                 <div>© 2025 Horizon. All rights reserved.</div>
             </footer>
         </div>
