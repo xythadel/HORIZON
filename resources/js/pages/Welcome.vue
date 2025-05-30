@@ -242,7 +242,7 @@
             </div>
 
             <!-- Right side: Profile form -->
-            <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-full backdrop-blur-sm">
+            <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-xl backdrop-blur-sm">
                 <div class="text-center mb-8">
                 <h2 class="text-2xl font-bold">Complete Your Profile</h2>
                 </div>
