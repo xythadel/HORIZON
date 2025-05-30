@@ -18,8 +18,6 @@ Route::middleware('api')->get('/ping', function () {
 
 // ✅ Courses
 Route::apiResource('courses', CourseController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
-Route::get('/courses', [CourseController::class, 'index']);
-Route::post('/courses', [CourseController::class, 'store']);
 
 // ✅ Vue Topics (uses shared `topics` table, expects `module_name`)
 Route::get('/courses/{id}/topics', [TopicController::class, 'getTopicsByCourse']);
@@ -55,4 +53,3 @@ Route::get('/quizzes', [QuizController::class, 'index']);
 Route::post('/quizzes', [QuizController::class, 'store']);
 Route::put('/quizzes/{quiz}', [QuizController::class, 'update']);
 Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy']);
-            
