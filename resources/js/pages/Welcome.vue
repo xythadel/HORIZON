@@ -27,148 +27,317 @@
         <!-- Landing Page -->
         <div v-if="currentView === 'landing'" class="container mx-auto px-6">
             <section class="py-12 md:py-20 max-w-5xl mx-auto">
-                <div class="mb-16">
-                    <h1 class="text-3xl md:text-4xl font-bold leading-tight mb-6">
-                        Learn how to code<br />and kickstart your<br />programming journey<br />with Horizon!
-                    </h1>
-                    <div class="flex flex-col md:flex-row gap-4 mt-8 max-w-md">
-                        <div class="text-sm text-white/70">
-                            <p>New to programming? Horizon provides you with all you need to know, and learn thrilling concepts, built to provide an outstanding learning experience.</p>
-                        </div>
-                        <div class="mt-8">
-                            <button @click="showSignUp" class="bg-white text-black px-6 py-3 rounded-full font-medium hover:bg-white/90 transition">
-                                Let's start coding
-                            </button>
-                        </div>
-                    </div>
+        <div class="mb-16 flex flex-col md:flex-row gap-8 items-start">
+            <!-- Left side: big heading text -->
+            <h1 class="text-3xl md:text-4xl font-bold leading-tight md:w-1/2">
+            Learn how to code<br />
+            and kickstart your<br />
+            programming journey<br />
+            with Horizon!
+            </h1>
+
+            <!-- Right side: smaller paragraph + button below -->
+            <div class="md:w-1/2 flex flex-col">
+            <p class="text-sm text-white/70">
+                New to programming? Horizon provides you with all you need to know, and learn thrilling concepts, built to provide an outstanding learning experience.
+            </p>
+            <button
+                @click="showSignUp"
+                class="mt-4 bg-transparent text-white py-3 rounded-full font-medium border border-white hover:bg-white/10 transition w-48"
+            >
+                Let's start coding
+            </button>
+            </div>
+        </div>
+
+
+              <!-- Decorative Gradient Bars - Fixed px Sizes & Alternating Alignment -->
+                <div class="w-full overflow-hidden px-4">
+
+                <!-- Bar 1: -->
+                <div class="
+                    h-[56px]                           <!-- Bar height -->
+                    w-[full]                          <!-- Bar width-->
+                    bg-gradient-to-r                   <!-- Gradient direction: left ➝ right -->
+                    from-transparent to-purple-600     <!-- Gradient colors -->
+                    my-4                               <!-- Vertical margin -->
+                    ml-[400px]                    <!-- Shorten from left -->  
+                "></div>
+
+                <!-- Bar 2: -->
+                <div class="
+                    h-[56px]
+                    w-[600px]
+                    bg-gradient-to-r                   <!-- Gradient direction-->
+                    from-transparent to-violet-400
+                    rounded-r-full                     <!-- Rounded direction-->
+                    my-4
+                    ml-[10px]                            <!-- Push to the right -->
+                "></div>
+
+                <!-- Bar 3: -->
+                <div class="
+                    h-[56px]
+                    w-[900px]
+                    bg-gradient-to-l
+                    from-transparent to-yellow-500
+                    rounded-l-full
+                    my-4
+                    ml-auto                            <!-- Align to the right -->
+                "></div>
+
+                <!-- Bar 4:  -->
+                <div class="
+                    h-[56px]
+                    w-[900px]
+                    bg-gradient-to-r
+                    from-transparent to-orange-500
+                    rounded-r-full
+                    my-4
+                    ml-[10px]
+                "></div>
+
                 </div>
 
-                <!-- Decorative Bars -->
-                <div class="relative h-4 rounded-full bg-gradient-to-r from-purple-700 via-pink-500 to-purple-900 my-8 w-full"></div>
-                <div class="relative h-4 rounded-full bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-600 my-8 w-full"></div>
-                <div class="relative h-4 rounded-full bg-gradient-to-r from-orange-500 via-red-500 to-orange-400 my-8 w-full"></div>
 
-                <!-- Team Section -->
+
+
+
+
+               <!-- Team Section -->
                 <div class="my-16">
-                    <h2 class="text-2xl md:text-3xl font-bold mb-10">
-                        Meet the team behind<br />
-                        <span class="text-3xl md:text-4xl font-bold">Horizon</span>
+                <!-- Title Container -->
+               <div class="flex items-center space-x-6 max-w-full">
+                <!-- Left text block -->
+                <div class="flex flex-col">
+                    <h2 class="text-2xl md:text-3xl font-bold leading-tight">
+                    Meet the team behind
                     </h2>
+                    <span class="text-4xl md:text-5xl font-bold mt-2 block">Horizon</span>
+                </div>
+
+                <!-- Gradient bar next to text -->
+               <div class="overflow-hidden w-[500px] h-[64px] rounded-l-full mt-[-30px] mb-[-10px] ml-[600px]">
+                <div class="h-full w-[600px] bg-gradient-to-l from-transparent to-red-500 rounded-l-full"></div>
+                </div>
+
+                </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                            <span class="font-medium">Darlyn</span>
-                            <span class="text-sm text-white/70">Developer</span>
+                        <img src="/Photos/Darlyn.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
+                        <span class="font-medium">Darlyn</span>
+                        <span class="text-sm text-white/70">Developer</span>
                         </div>
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                            <span class="font-medium">Zach</span>
-                            <span class="text-sm text-white/70">CTO</span>
+                        <img src="/Photos/Zach.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
+                        <span class="font-medium">Zach</span>
+                        <span class="text-sm text-white/70">CTO</span>
                         </div>
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                            <span class="font-medium">Xythadel</span>
-                            <span class="text-sm text-white/70">Designer</span>
+                        <img src="/Photos/Xytha.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
+                        <span class="font-medium">Xythadel</span>
+                        <span class="text-sm text-white/70">Designer</span>
                         </div>
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                            <span class="font-medium">Wilson</span>
-                            <span class="text-sm text-white/70">Developer</span>
+                        <img src="/Photos/Wilson.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
+                        <span class="font-medium">Wilson</span>
+                        <span class="text-sm text-white/70">Developer</span>
                         </div>
                     </div>
-                </div>
+                    </div>
 
                 <!-- More bars -->
-                <div class="relative h-4 rounded-full bg-gradient-to-r from-blue-500 via-indigo-400 to-blue-300 my-8 w-full"></div>
-                <div class="relative h-4 rounded-full bg-gradient-to-r from-emerald-500 via-green-400 to-teal-400 my-8 w-full"></div>
+                  <div class="
+                    h-[74px]
+                    w-[900px]
+                    bg-gradient-to-r
+                    from-transparent to-blue-500
+                    rounded-r-full
+                    my-4
+                    ml-auto
+                "></div>
+                <div class="
+                    h-[74px]
+                    w-[900px]
+                    bg-gradient-to-l
+                    from-transparent to-green-500
+                    rounded-l-full
+                    my-4
+                    ml-4"></div>
             </section>
             <footer class="py-6 border-t border-white/10 flex justify-between text-sm text-white/50">
                 <div>&lt;horizon/&gt;</div>
-                <div class="flex gap-6">
-                    <span>About</span>
-                    <span>Courses</span>
-                </div>
                 <div>© 2025 Horizon. All rights reserved.</div>
             </footer>
         </div>
 
-        <!-- Sign Up Page (Email and Password) -->
-        <div v-if="currentView === 'signup'" class="min-h-[calc(100vh-80px)] flex items-center justify-center">
-            <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-lg backdrop-blur-sm">
-                <div class="text-center mb-8">
-                    <h2 class="text-2xl font-bold">Sign Up</h2>
-                </div>
-                <form @submit.prevent="handleSignUp" class="space-y-4">
-                    <div>
-                        <label class="text-xs text-white/50 block mb-1">Email</label>
-                        <input v-model="email" type="email" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" placeholder="youremail@example.com" />
-                    </div>
-                    <div>
-                        <label class="text-xs text-white/50 block mb-1">Password</label>
-                        <input v-model="password" :type="showPassword ? 'text' : 'password'" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" />
-                        <div class="text-xs text-white/50 text-right cursor-pointer mt-1" @click="togglePasswordVisibility">
-                            {{ showPassword ? 'Hide Password' : 'Show Password' }}
-                        </div>
-                    </div>
-                    <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
-                    <button class="w-full bg-white text-black py-3 rounded-xl font-medium hover:bg-white/90 transition mt-6">Sign Up</button>
-                    <div class="text-center text-sm my-4 text-white/50">or</div>
-                    <button @click="continueWithGoogle" type="button" class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-xl font-medium hover:bg-teal-400/30 transition flex items-center justify-center">
-                        <span class="mr-2">Continue with</span>
-                        <span class="font-bold">Google</span>
-                    </button>
-                </form>
+       <!-- Sign Up Page (Email and Password) -->
+            <div v-if="currentView === 'signup'" class="min-h-[calc(100vh-80px)] flex items-center justify-center px-6">
+            <!-- Left side: placeholder for info -->
+            <div class="hidden md:flex flex-col justify-center w-1/2 pr-12 text-white">
+                <!-- Add your info content here -->
+                <h2 class="text-4xl font-bold mb-4">Join Us!</h2>
+                <p class="text-lg text-white/70">
+                Create an account to unlock full access and start your adventure with Horizon.
+                </p>
             </div>
-        </div>
 
-        <!-- Registration Details Page -->
-        <div v-if="currentView === 'registrationDetails'" class="min-h-[calc(100vh-80px)] flex items-center justify-center">
-            <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-lg backdrop-blur-sm">
+            <!-- Right side: Sign Up form -->
+            <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-xl backdrop-blur-sm">
                 <div class="text-center mb-8">
-                    <h2 class="text-2xl font-bold">Complete Your Profile</h2>
+                <h2 class="text-2xl font-bold">Sign Up</h2>
                 </div>
-                <form @submit.prevent="handleProfileSubmit" class="space-y-4">
-                    <div>
-                        <label class="text-xs text-white/50 block mb-1">Full Name</label>
-                        <input v-model="name" type="text" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" placeholder="Your full name" />
+                <form @submit.prevent="handleSignUp" class="space-y-6">
+                <div>
+                    <label class="text-xs text-white/50 block mb-1">Email</label>
+                    <input
+                    v-model="email"
+                    type="email"
+                    class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
+                    placeholder="youremail@example.com"
+                    />
+                </div>
+                <div>
+                    <label class="text-xs text-white/50 block mb-1">Password</label>
+                    <input
+                    v-model="password"
+                    :type="showPassword ? 'text' : 'password'"
+                    class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
+                    />
+                    <div
+                    class="text-xs text-white/50 text-right cursor-pointer mt-1"
+                    @click="togglePasswordVisibility"
+                    >
+                    {{ showPassword ? 'Hide Password' : 'Show Password' }}
                     </div>
-                    <div>
-                        <label class="text-xs text-white/50 block mb-1">Birthday</label>
-                        <input v-model="birthday" type="date" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" />
-                    </div>
-                    <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
-                    <button class="w-full bg-white text-black py-3 rounded-xl font-medium hover:bg-white/90 transition mt-6">Finish Registration</button>
+                </div>
+                <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
+                <button
+                    class="w-full bg-white text-black py-3 rounded-full font-medium hover:bg-white/90 transition"
+                >
+                    Sign Up
+                </button>
+                <div class="text-center text-sm my-4 text-white/50">or</div>
+                <button
+                    @click="continueWithGoogle"
+                    type="button"
+                    class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-full font-medium hover:bg-teal-400/30 transition flex items-center justify-center"
+                >
+                    <span class="mr-2">Continue with</span>
+                    <span class="font-bold">Google</span>
+                </button>
                 </form>
             </div>
-        </div>
+            </div>
+
+            <!-- Registration Details Page -->
+            <div v-if="currentView === 'registrationDetails'" class="min-h-[calc(100vh-80px)] flex items-center justify-center px-6">
+            <!-- Left side: placeholder for info -->
+            <div class="hidden md:flex flex-col justify-center w-1/2 pr-12 text-white">
+                <!-- Add your info content here -->
+                <h2 class="text-4xl font-bold mb-4">Almost There!</h2>
+                <p class="text-lg text-white/70">
+                Complete your profile to personalize your experience.
+                </p>
+            </div>
+
+            <!-- Right side: Profile form -->
+            <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-full backdrop-blur-sm">
+                <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold">Complete Your Profile</h2>
+                </div>
+                <form @submit.prevent="handleProfileSubmit" class="space-y-6">
+                <div>
+                    <label class="text-xs text-white/50 block mb-1">Full Name</label>
+                    <input
+                    v-model="name"
+                    type="text"
+                    class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
+                    placeholder="Your full name"
+                    />
+                </div>
+                <div>
+                    <label class="text-xs text-white/50 block mb-1">Birthday</label>
+                    <input
+                    v-model="birthday"
+                    type="date"
+                    class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
+                    />
+                </div>
+                <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
+                <button
+                    class="w-full bg-white text-black py-3 rounded-full font-medium hover:bg-white/90 transition"
+                >
+                    Finish Registration
+                </button>
+                </form>
+            </div>
+            </div>
+
 
         <!-- Login Page -->
-        <div v-if="currentView === 'login'" class="min-h-[calc(100vh-80px)] flex items-center justify-center">
-            <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-lg backdrop-blur-sm">
-                <div class="text-center mb-8">
-                    <h2 class="text-2xl font-bold">Log In</h2>
+                <div v-if="currentView === 'login'" class="min-h-[calc(100vh-80px)] flex items-center justify-center px-6">
+                <!-- Left side: placeholder for your info -->
+                <div class="hidden md:flex flex-col justify-center w-1/2 pr-12 text-white">
+                    <!-- Add your info content here -->
+                    <h2 class="text-4xl font-bold mb-4">Welcome Back!</h2>
+                    <p class="text-lg text-white/70">
+                    Enter your credentials to access your account and continue your coding journey with Horizon.
+                    </p>
                 </div>
-                <form @submit.prevent="handleLogin" class="space-y-4">
+
+                <!-- Right side: Login form -->
+                <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-xl backdrop-blur-sm">
+                    <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold">Log In</h2>
+                    </div>
+                    <form @submit.prevent="handleLogin" class="space-y-6">
                     <div>
                         <label class="text-xs text-white/50 block mb-1">Email</label>
-                        <input v-model="email" type="email" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" placeholder="youremail@example.com" />
+                        <input
+                        v-model="email"
+                        type="email"
+                        class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
+                        placeholder="youremail@example.com"
+                        />
                     </div>
                     <div>
                         <label class="text-xs text-white/50 block mb-1">Password</label>
-                        <input v-model="password" :type="showPassword ? 'text' : 'password'" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" />
-                        <div class="text-xs text-white/50 text-right cursor-pointer mt-1" @click="togglePasswordVisibility">
-                            {{ showPassword ? 'Hide Password' : 'Show Password' }}
+                        <input
+                        v-model="password"
+                        :type="showPassword ? 'text' : 'password'"
+                        class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
+                        />
+                        <div
+                        class="text-xs text-white/50 text-right cursor-pointer mt-1"
+                        @click="togglePasswordVisibility"
+                        >
+                        {{ showPassword ? 'Hide Password' : 'Show Password' }}
                         </div>
                     </div>
                     <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
-                    <button class="w-full bg-white text-black py-3 rounded-xl font-medium hover:bg-white/90 transition mt-6">Log In</button>
+                    <button
+                        class="w-full bg-white text-black py-3 rounded-full font-medium hover:bg-white/90 transition"
+                    >
+                        Log In
+                    </button>
                     <div class="text-center text-sm my-4 text-white/50">or</div>
-                    <button @click="continueWithGoogle" type="button" class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-xl font-medium hover:bg-teal-400/30 transition flex items-center justify-center">
+                    <button
+                        @click="continueWithGoogle"
+                        type="button"
+                        class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-full font-medium hover:bg-teal-400/30 transition flex items-center justify-center"
+                    >
                         <span class="mr-2">Continue with</span>
                         <span class="font-bold">Google</span>
                     </button>
                     <div class="text-center text-xs text-white/50 mt-6">
-                        Don't have an account? <button @click="showSignUp" class="text-white underline">Sign up</button>
+                        Don't have an account?
+                        <button @click="showSignUp" class="text-white underline">Sign up</button>
                     </div>
-                </form>
-            </div>
-        </div>
+                    </form>
+                </div>
+                </div>
+
     </div>
 </template>
 
