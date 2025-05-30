@@ -8,6 +8,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\UserProgressTracker;
 use App\Http\Controllers\MyLearningController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\OptionController;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -53,3 +55,17 @@ Route::get('/quizzes', [QuizController::class, 'index']);
 Route::post('/quizzes', [QuizController::class, 'store']);
 Route::put('/quizzes/{quiz}', [QuizController::class, 'update']);
 Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy']);
+
+// Nested Questions under a Quiz
+Route::get('/quizzes/{quiz}/questions', [QuestionController::class, 'index']);
+Route::post('/quizzes/{quiz}/questions', [QuestionController::class, 'store']);
+Route::get('/questions/{question}', [QuestionController::class, 'show']);
+Route::put('/questions/{question}', [QuestionController::class, 'update']);
+Route::delete('/questions/{question}', [QuestionController::class, 'destroy']);
+
+// Nested Options under a Question
+Route::get('/questions/{question}/options', [OptionController::class, 'index']);
+Route::post('/questions/{question}/options', [OptionController::class, 'store']);
+Route::get('/options/{option}', [OptionController::class, 'show']);
+Route::put('/options/{option}', [OptionController::class, 'update']);
+Route::delete('/options/{option}', [OptionController::class, 'destroy']);
