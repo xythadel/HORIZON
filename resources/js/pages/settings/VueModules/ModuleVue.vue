@@ -3,8 +3,7 @@
     <!-- Sidebar -->
     <aside class="relative flex h-screen w-60 flex-col bg-white">
       <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Horizon</h1>
-      <nav class="space-y-2">
-        <!-- Navigation Links(Topics) -->
+      <nav class="space-y-2 mt-6">
         <div v-for="(topic, index) in topics" :key="index">
           <button
             class="block w-full text-left px-6 py-3 text-base text-black font-normal hover:bg-gray-100 transition duration-200"
@@ -21,18 +20,27 @@
       </a>
     </aside>
 
-    <!-- Content -->
-    <main class="flex-1 p-10">
+    <!-- Main Content -->
+    <main class="flex-1 p-10 overflow-y-auto">
       <div v-if="currentTopic">
-        <h1 class="text-2xl font-bold mb-4">{{ currentTopic.title }}</h1>
-        <div v-html="currentTopic.content" class="prose prose-invert max-w-none"></div>
+        <!-- Topic Title -->
+        <h1 class="text-2xl font-bold mb-1 text-white">{{ currentTopic.title }}</h1>
 
-        <!-- Code snippet -->
+        <!-- Module Name -->
+        <p class="text-sm text-gray-300 mb-6">{{ currentTopic.module_name }}</p>
+
+        <!-- Scrollable Content -->
+        <div
+          v-html="formattedContent"
+          class="topic-content text-white leading-relaxed max-h-64 overflow-y-auto pr-2"
+        ></div>
+
+        <!-- Code Snippet -->
         <div v-if="currentTopic.code" class="bg-gray-900 text-green-300 p-4 rounded my-4 font-mono">
           <pre>{{ currentTopic.code }}</pre>
         </div>
 
-        <!-- Mark topic as complete -->
+        <!-- Quiz Button -->
         <button
           v-if="!currentTopic.completed"
           class="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
@@ -57,6 +65,43 @@ export default {
     currentTopic() {
       return this.topics[this.currentTopicIndex];
     },
+    formattedContent() {
+      if (!this.currentTopic?.content) return '';
+
+      const lines = this.currentTopic.content
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line !== '');
+      let html = '';
+      let inList = false;
+
+      lines.forEach((line) => {
+        if (line.startsWith('•')) {
+          if (!inList) {
+            html += '<ul>';
+            inList = true;
+          }
+          html += `<li>${line.slice(1).trim()}</li>`;
+        } else {
+          if (inList) {
+            html += '</ul>';
+            inList = false;
+          }
+
+          if (line.endsWith(':')) {
+            html += `<p class="mt-4 mb-2 font-semibold">${line}</p>`;
+          } else {
+            html += `<p>${line}</p>`;
+          }
+        }
+      });
+
+      if (inList) {
+        html += '</ul>';
+      }
+
+      return html;
+    }
   },
   mounted() {
     this.fetchTopics();
@@ -64,10 +109,9 @@ export default {
   methods: {
     async fetchTopics() {
       try {
-        const response = await fetch('/api/topics');
+        const response = await fetch('/api/topics'); // ❗ Using original route as you asked — do not change
         const data = await response.json();
 
-        // Mark first topic as unlocked by default
         if (data.length > 0) {
           data[0].unlocked = true;
         }
@@ -99,7 +143,35 @@ export default {
 </script>
 
 <style scoped>
-.prose p {
+.topic-content {
+  color: white;
+  font-size: 1.1rem;
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+}
+
+.topic-content::-webkit-scrollbar {
+  width: 8px;
+}
+.topic-content::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+.topic-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.topic-content p {
   margin-bottom: 1rem;
+}
+
+.topic-content ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.topic-content li {
+  margin-bottom: 0.5rem;
 }
 </style>

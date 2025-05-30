@@ -55,3 +55,4 @@ Route::get('/quizzes', [QuizController::class, 'index']);
 Route::post('/quizzes', [QuizController::class, 'store']);
 Route::put('/quizzes/{quiz}', [QuizController::class, 'update']);
 Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy']);
+            
