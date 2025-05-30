@@ -69,56 +69,23 @@
 
           <div v-if="expandedCourses[course.id]" class="p-4">
             <form @submit.prevent="createStandaloneTopicForCourse(course.id)" class="mb-4 w-full space-y-4">
-              <!-- Title Field -->
               <div class="flex flex-col">
-                <label class="font-medium text-sm mb-1">
-                  Title<span class="text-red-500">*</span>
-                </label>
-                <input 
-                  v-model="newTopics[course.id].title" 
-                  placeholder="Enter topic title" 
-                  class="border p-2 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                  :disabled="newTopics[course.id].loading"
-                />
+                <label class="font-medium text-sm mb-1">Title<span class="text-red-500">*</span></label>
+                <input v-model="newTopics[course.id].title" placeholder="Enter topic title" class="border p-2 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" required :disabled="newTopics[course.id].loading" />
               </div>
 
-              <!-- Module Name Field -->
               <div class="flex flex-col">
-                <label class="font-medium text-sm mb-1">
-                  Module Name<span class="text-red-500">*</span>
-                </label>
-                <input 
-                  v-model="newTopics[course.id].module_name" 
-                  placeholder="Enter module name" 
-                  class="border p-2 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                  :disabled="newTopics[course.id].loading"
-                />
+                <label class="font-medium text-sm mb-1">Module Name<span class="text-red-500">*</span></label>
+                <input v-model="newTopics[course.id].module_name" placeholder="Enter module name" class="border p-2 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" required :disabled="newTopics[course.id].loading" />
               </div>
 
-              <!-- Content Field -->
               <div class="flex flex-col">
-                <label class="font-medium text-sm mb-1">
-                  Content<span class="text-red-500">*</span>
-                </label>
-                <textarea 
-                  v-model="newTopics[course.id].content" 
-                  placeholder="Describe the topic in detail..."
-                  class="border p-2 rounded-md bg-white resize-y focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  rows="6"
-                  required
-                  :disabled="newTopics[course.id].loading"
-                ></textarea>
+                <label class="font-medium text-sm mb-1">Content<span class="text-red-500">*</span></label>
+                <textarea v-model="newTopics[course.id].content" placeholder="Describe the topic in detail..." class="border p-2 rounded-md bg-white resize-y focus:outline-none focus:ring-2 focus:ring-blue-500" rows="6" required :disabled="newTopics[course.id].loading"></textarea>
                 <p class="text-sm text-gray-500 mt-1">Please enter a Guide description.</p>
               </div>
 
-              <!-- Submit Button -->
-              <button 
-                type="submit" 
-                class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md"
-                :disabled="newTopics[course.id].loading"
-              >
+              <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md" :disabled="newTopics[course.id].loading">
                 <span v-if="newTopics[course.id].loading">Adding...</span>
                 <span v-else>Add Topic</span>
               </button>
@@ -129,15 +96,40 @@
             </div>
 
             <ul>
-              <li 
-                v-for="topic in standaloneTopics[course.id] || []" 
-                :key="topic.id" 
-                class="flex flex-wrap items-center gap-2 mb-2"
-              >
-                <input v-model="topic.title" class="border p-1 rounded flex-1 responsive-min-width" />
-                <input v-model="topic.content" class="border p-1 rounded flex-1 responsive-min-width" />
-                <button @click="updateStandaloneTopic(topic)" class="text-blue-600">Update</button>
-                <button @click="deleteStandaloneTopic(topic.id, course.id)" class="text-red-600">Delete</button>
+              <li v-for="topic in standaloneTopics[course.id] || []" :key="topic.id" class="border rounded p-3 mb-3 bg-gray-50">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <h4 class="font-semibold text-lg">{{ topic.title }}</h4>
+                    <p class="text-sm text-gray-600">{{ topic.module_name }}</p>
+                  </div>
+                  <div class="flex gap-2">
+                    <button @click="editingTopicId = editingTopicId === topic.id ? null : topic.id" class="text-blue-600">
+                      {{ editingTopicId === topic.id ? 'Cancel' : 'Edit' }}
+                    </button>
+                    <button @click="deleteStandaloneTopic(topic.id, course.id)" class="text-red-600">Delete</button>
+                  </div>
+                </div>
+
+                <div v-if="editingTopicId === topic.id" class="mt-4 space-y-4">
+                  <div class="flex flex-col">
+                    <label class="text-sm font-medium mb-1">Title</label>
+                    <input v-model="topic.title" class="border p-2 rounded" />
+                  </div>
+                  <div class="flex flex-col">
+                    <label class="text-sm font-medium mb-1">Module Name</label>
+                    <input v-model="topic.module_name" class="border p-2 rounded" />
+                  </div>
+                  <div class="flex flex-col">
+                    <label class="text-sm font-medium mb-1">Content</label>
+                    <textarea v-model="topic.content" rows="4" class="border p-2 rounded resize-y"></textarea>
+                  </div>
+                  <div class="flex gap-2">
+                    <button @click="updateStandaloneTopic(topic)" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                      Save
+                    </button>
+                    <button @click="editingTopicId = null" class="text-gray-600 underline">Cancel</button>
+                  </div>
+                </div>
               </li>
             </ul>
           </div>
@@ -158,6 +150,7 @@ const showSection = ref('topics')
 const errorMessages = ref({})
 const newTopics = ref({})
 const expandedCourses = ref({})
+const editingTopicId = ref(null)
 
 const fetchCourses = async () => {
   try {
@@ -224,9 +217,11 @@ const updateStandaloneTopic = async (topic) => {
 
     await axios.put(updateUrl, {
       title: topic.title,
-      content: topic.content
+      content: topic.content,
+      module_name: topic.module_name
     })
     alert('Topic updated successfully.')
+    editingTopicId.value = null
   } catch (error) {
     console.error('Update failed:', error)
     alert(error.response?.data?.message || 'Failed to update topic.')
