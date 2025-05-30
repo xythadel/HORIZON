@@ -171,87 +171,173 @@
             </footer>
         </div>
 
-        <!-- Sign Up Page (Email and Password) -->
-        <div v-if="currentView === 'signup'" class="min-h-[calc(100vh-80px)] flex items-center justify-center">
-            <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-lg backdrop-blur-sm">
-                <div class="text-center mb-8">
-                    <h2 class="text-2xl font-bold">Sign Up</h2>
-                </div>
-                <form @submit.prevent="handleSignUp" class="space-y-4">
-                    <div>
-                        <label class="text-xs text-white/50 block mb-1">Email</label>
-                        <input v-model="email" type="email" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" placeholder="youremail@example.com" />
-                    </div>
-                    <div>
-                        <label class="text-xs text-white/50 block mb-1">Password</label>
-                        <input v-model="password" :type="showPassword ? 'text' : 'password'" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" />
-                        <div class="text-xs text-white/50 text-right cursor-pointer mt-1" @click="togglePasswordVisibility">
-                            {{ showPassword ? 'Hide Password' : 'Show Password' }}
-                        </div>
-                    </div>
-                    <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
-                    <button class="w-full bg-white text-black py-3 rounded-xl font-medium hover:bg-white/90 transition mt-6">Sign Up</button>
-                    <div class="text-center text-sm my-4 text-white/50">or</div>
-                    <button @click="continueWithGoogle" type="button" class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-xl font-medium hover:bg-teal-400/30 transition flex items-center justify-center">
-                        <span class="mr-2">Continue with</span>
-                        <span class="font-bold">Google</span>
-                    </button>
-                </form>
+       <!-- Sign Up Page (Email and Password) -->
+            <div v-if="currentView === 'signup'" class="min-h-[calc(100vh-80px)] flex items-center justify-center px-6">
+            <!-- Left side: placeholder for info -->
+            <div class="hidden md:flex flex-col justify-center w-1/2 pr-12 text-white">
+                <!-- Add your info content here -->
+                <h2 class="text-4xl font-bold mb-4">Join Us!</h2>
+                <p class="text-lg text-white/70">
+                Create an account to unlock full access and start your adventure with Horizon.
+                </p>
             </div>
-        </div>
 
-        <!-- Registration Details Page -->
-        <div v-if="currentView === 'registrationDetails'" class="min-h-[calc(100vh-80px)] flex items-center justify-center">
-            <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-lg backdrop-blur-sm">
+            <!-- Right side: Sign Up form -->
+            <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-xl backdrop-blur-sm">
                 <div class="text-center mb-8">
-                    <h2 class="text-2xl font-bold">Complete Your Profile</h2>
+                <h2 class="text-2xl font-bold">Sign Up</h2>
                 </div>
-                <form @submit.prevent="handleProfileSubmit" class="space-y-4">
-                    <div>
-                        <label class="text-xs text-white/50 block mb-1">Full Name</label>
-                        <input v-model="name" type="text" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" placeholder="Your full name" />
+                <form @submit.prevent="handleSignUp" class="space-y-6">
+                <div>
+                    <label class="text-xs text-white/50 block mb-1">Email</label>
+                    <input
+                    v-model="email"
+                    type="email"
+                    class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
+                    placeholder="youremail@example.com"
+                    />
+                </div>
+                <div>
+                    <label class="text-xs text-white/50 block mb-1">Password</label>
+                    <input
+                    v-model="password"
+                    :type="showPassword ? 'text' : 'password'"
+                    class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
+                    />
+                    <div
+                    class="text-xs text-white/50 text-right cursor-pointer mt-1"
+                    @click="togglePasswordVisibility"
+                    >
+                    {{ showPassword ? 'Hide Password' : 'Show Password' }}
                     </div>
-                    <div>
-                        <label class="text-xs text-white/50 block mb-1">Birthday</label>
-                        <input v-model="birthday" type="date" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" />
-                    </div>
-                    <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
-                    <button class="w-full bg-white text-black py-3 rounded-xl font-medium hover:bg-white/90 transition mt-6">Finish Registration</button>
+                </div>
+                <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
+                <button
+                    class="w-full bg-white text-black py-3 rounded-full font-medium hover:bg-white/90 transition"
+                >
+                    Sign Up
+                </button>
+                <div class="text-center text-sm my-4 text-white/50">or</div>
+                <button
+                    @click="continueWithGoogle"
+                    type="button"
+                    class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-full font-medium hover:bg-teal-400/30 transition flex items-center justify-center"
+                >
+                    <span class="mr-2">Continue with</span>
+                    <span class="font-bold">Google</span>
+                </button>
                 </form>
             </div>
-        </div>
+            </div>
+
+            <!-- Registration Details Page -->
+            <div v-if="currentView === 'registrationDetails'" class="min-h-[calc(100vh-80px)] flex items-center justify-center px-6">
+            <!-- Left side: placeholder for info -->
+            <div class="hidden md:flex flex-col justify-center w-1/2 pr-12 text-white">
+                <!-- Add your info content here -->
+                <h2 class="text-4xl font-bold mb-4">Almost There!</h2>
+                <p class="text-lg text-white/70">
+                Complete your profile to personalize your experience.
+                </p>
+            </div>
+
+            <!-- Right side: Profile form -->
+            <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-full backdrop-blur-sm">
+                <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold">Complete Your Profile</h2>
+                </div>
+                <form @submit.prevent="handleProfileSubmit" class="space-y-6">
+                <div>
+                    <label class="text-xs text-white/50 block mb-1">Full Name</label>
+                    <input
+                    v-model="name"
+                    type="text"
+                    class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
+                    placeholder="Your full name"
+                    />
+                </div>
+                <div>
+                    <label class="text-xs text-white/50 block mb-1">Birthday</label>
+                    <input
+                    v-model="birthday"
+                    type="date"
+                    class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
+                    />
+                </div>
+                <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
+                <button
+                    class="w-full bg-white text-black py-3 rounded-full font-medium hover:bg-white/90 transition"
+                >
+                    Finish Registration
+                </button>
+                </form>
+            </div>
+            </div>
+
 
         <!-- Login Page -->
-        <div v-if="currentView === 'login'" class="min-h-[calc(100vh-80px)] flex items-center justify-center">
-            <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-lg backdrop-blur-sm">
-                <div class="text-center mb-8">
-                    <h2 class="text-2xl font-bold">Log In</h2>
+                <div v-if="currentView === 'login'" class="min-h-[calc(100vh-80px)] flex items-center justify-center px-6">
+                <!-- Left side: placeholder for your info -->
+                <div class="hidden md:flex flex-col justify-center w-1/2 pr-12 text-white">
+                    <!-- Add your info content here -->
+                    <h2 class="text-4xl font-bold mb-4">Welcome Back!</h2>
+                    <p class="text-lg text-white/70">
+                    Enter your credentials to access your account and continue your coding journey with Horizon.
+                    </p>
                 </div>
-                <form @submit.prevent="handleLogin" class="space-y-4">
+
+                <!-- Right side: Login form -->
+                <div class="bg-gray-800/30 w-full max-w-md p-8 rounded-xl backdrop-blur-sm">
+                    <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold">Log In</h2>
+                    </div>
+                    <form @submit.prevent="handleLogin" class="space-y-6">
                     <div>
                         <label class="text-xs text-white/50 block mb-1">Email</label>
-                        <input v-model="email" type="email" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" placeholder="youremail@example.com" />
+                        <input
+                        v-model="email"
+                        type="email"
+                        class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
+                        placeholder="youremail@example.com"
+                        />
                     </div>
                     <div>
                         <label class="text-xs text-white/50 block mb-1">Password</label>
-                        <input v-model="password" :type="showPassword ? 'text' : 'password'" class="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none" />
-                        <div class="text-xs text-white/50 text-right cursor-pointer mt-1" @click="togglePasswordVisibility">
-                            {{ showPassword ? 'Hide Password' : 'Show Password' }}
+                        <input
+                        v-model="password"
+                        :type="showPassword ? 'text' : 'password'"
+                        class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none"
+                        />
+                        <div
+                        class="text-xs text-white/50 text-right cursor-pointer mt-1"
+                        @click="togglePasswordVisibility"
+                        >
+                        {{ showPassword ? 'Hide Password' : 'Show Password' }}
                         </div>
                     </div>
                     <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
-                    <button class="w-full bg-white text-black py-3 rounded-xl font-medium hover:bg-white/90 transition mt-6">Log In</button>
+                    <button
+                        class="w-full bg-white text-black py-3 rounded-full font-medium hover:bg-white/90 transition"
+                    >
+                        Log In
+                    </button>
                     <div class="text-center text-sm my-4 text-white/50">or</div>
-                    <button @click="continueWithGoogle" type="button" class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-xl font-medium hover:bg-teal-400/30 transition flex items-center justify-center">
+                    <button
+                        @click="continueWithGoogle"
+                        type="button"
+                        class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-full font-medium hover:bg-teal-400/30 transition flex items-center justify-center"
+                    >
                         <span class="mr-2">Continue with</span>
                         <span class="font-bold">Google</span>
                     </button>
                     <div class="text-center text-xs text-white/50 mt-6">
-                        Don't have an account? <button @click="showSignUp" class="text-white underline">Sign up</button>
+                        Don't have an account?
+                        <button @click="showSignUp" class="text-white underline">Sign up</button>
                     </div>
-                </form>
-            </div>
-        </div>
+                    </form>
+                </div>
+                </div>
+
     </div>
 </template>
 
