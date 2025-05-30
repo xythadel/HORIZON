@@ -34,6 +34,7 @@ class TopicController extends Controller
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'content' => 'required|string',
+        'module_name' => 'required|string|max:255',
 
     ]);
 
@@ -42,6 +43,7 @@ class TopicController extends Controller
     $topic = new Topic();
     $topic->title = $validated['title'];
     $topic->content = $validated['content'];
+    $topic->module_name = $validated['module_name'];
     $topic->course_id = $course_id;;
     $topic->save();
 
@@ -73,11 +75,13 @@ class TopicController extends Controller
        $request->validate([
         'title' => 'required|string|max:255',
         'content' => 'required|string',
+        'module_name' => 'required|string|max:255',
     ]);
 
     $topic->update([
         'title' => $request->title,
         'content' => $request->content,
+        'module_name' => $request->module_name,
     ]);
 
     return response()->json(['message' => 'Topic updated successfully.', 'topic' => $topic]);
@@ -106,14 +110,4 @@ class TopicController extends Controller
     return view('admin.topics.vue', compact('topics'));
     }
 
-public function laravelTopics()
-    {
-    $topics = Topic::where('course_id', 2)->get();
-    return view('admin.topics.laravel', compact('topics'));
-    }
-        public function getTopicsByCourse($courseId)
-    {
-    $course = Course::with('topics')->findOrFail($courseId);
-    return response()->json($course->topics);
-    }
 }

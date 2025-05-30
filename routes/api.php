@@ -1,8 +1,9 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\TopicController;
-use App\Http\Controllers\LaravelTopicController; // ✅ New controller
+use App\Http\Controllers\LaravelTopicController; // ✅ Laravel-specific controller
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\UserProgressTracker;
@@ -20,18 +21,18 @@ Route::apiResource('courses', CourseController::class)->only(['index', 'store', 
 Route::get('/courses', [CourseController::class, 'index']);
 Route::post('/courses', [CourseController::class, 'store']);
 
-// ✅ Vue Topics (uses shared `topics` table)
+// ✅ Vue Topics (uses shared `topics` table, expects `module_name`)
 Route::get('/courses/{id}/topics', [TopicController::class, 'getTopicsByCourse']);
-Route::post('/courses/{course_id}/topics', [TopicController::class, 'store']);
+Route::post('/courses/{course_id}/topics', [TopicController::class, 'store']); // expects: title, content, module_name
 Route::get('/topics', [TopicController::class, 'index']);
 Route::get('/topics/{topic}', [TopicController::class, 'show']);
-Route::put('/topics/{topic}', [TopicController::class, 'update']);
+Route::put('/topics/{topic}', [TopicController::class, 'update']); // expects: title, content, module_name
 Route::delete('/topics/{topic}', [TopicController::class, 'destroy']);
 
-// ✅ Laravel Topics (uses separate `laravel_topics` table)
+// ✅ Laravel Topics (uses separate `laravel_topics` table, expects `module_name`)
 Route::get('/courses/{course}/laravel-topics', [LaravelTopicController::class, 'index']);
-Route::post('/courses/{course}/laravel-topics', [LaravelTopicController::class, 'store']);
-Route::put('/laravel-topics/{laravelTopic}', [LaravelTopicController::class, 'update']);
+Route::post('/courses/{course}/laravel-topics', [LaravelTopicController::class, 'store']); // expects: title, content, module_name
+Route::put('/laravel-topics/{laravelTopic}', [LaravelTopicController::class, 'update']); // expects: title, content, module_name
 Route::delete('/laravel-topics/{laravelTopic}', [LaravelTopicController::class, 'destroy']);
 
 // ✅ Users (admin listing)

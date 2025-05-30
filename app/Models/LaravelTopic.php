@@ -10,6 +10,7 @@ class LaravelTopic extends Model
         'course_id', 
         'title', 
         'content',
+        'module_name', // Assuming you want to track the module name
     ];
 
     public function course()

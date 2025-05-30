@@ -19,12 +19,15 @@ class LaravelTopicController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
+            'module_name' => 'required|string|max:255',
+            
         ]);
 
         $topic = LaravelTopic::create([
             'course_id' => $course->id,
             'title' => $validated['title'],
             'content' => $validated['content'],
+            'module_name' => $validated['module_name'], 
         ]);
 
         return response()->json($topic, 201);
