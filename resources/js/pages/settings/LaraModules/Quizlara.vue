@@ -15,7 +15,7 @@
             </div>
           </div>
   
-          <button class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+          <button class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded xl">
             Next
           </button>
         </div>
