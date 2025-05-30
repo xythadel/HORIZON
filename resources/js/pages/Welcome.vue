@@ -27,56 +27,140 @@
         <!-- Landing Page -->
         <div v-if="currentView === 'landing'" class="container mx-auto px-6">
             <section class="py-12 md:py-20 max-w-5xl mx-auto">
-                <div class="mb-16">
-                    <h1 class="text-3xl md:text-4xl font-bold leading-tight mb-6">
-                        Learn how to code<br />and kickstart your<br />programming journey<br />with Horizon!
-                    </h1>
-                    <div class="flex flex-col md:flex-row gap-4 mt-8 max-w-md">
-                        <div class="text-sm text-white/70">
-                            <p>New to programming? Horizon provides you with all you need to know, and learn thrilling concepts, built to provide an outstanding learning experience.</p>
-                        </div>
-                        <div class="mt-8">
-                            <button @click="showSignUp" class="bg-white text-black px-6 py-3 rounded-full font-medium hover:bg-white/90 transition">
-                                Let's start coding
-                            </button>
-                        </div>
-                    </div>
+        <div class="mb-16 flex flex-col md:flex-row gap-8 items-start">
+            <!-- Left side: big heading text -->
+            <h1 class="text-3xl md:text-4xl font-bold leading-tight md:w-1/2">
+            Learn how to code<br />
+            and kickstart your<br />
+            programming journey<br />
+            with Horizon!
+            </h1>
+
+            <!-- Right side: smaller paragraph + button below -->
+            <div class="md:w-1/2 flex flex-col">
+            <p class="text-sm text-white/70">
+                New to programming? Horizon provides you with all you need to know, and learn thrilling concepts, built to provide an outstanding learning experience.
+            </p>
+            <button
+                @click="showSignUp"
+                class="mt-4 bg-transparent text-white py-3 rounded-full font-medium border border-white hover:bg-white/10 transition w-48"
+            >
+                Let's start coding
+            </button>
+            </div>
+        </div>
+
+
+              <!-- Decorative Gradient Bars - Fixed px Sizes & Alternating Alignment -->
+                <div class="w-full overflow-hidden px-4">
+
+                <!-- Bar 1: -->
+                <div class="
+                    h-[56px]                           <!-- Bar height -->
+                    w-[full]                          <!-- Bar width-->
+                    bg-gradient-to-r                   <!-- Gradient direction: left ➝ right -->
+                    from-transparent to-purple-600     <!-- Gradient colors -->
+                    my-4                               <!-- Vertical margin -->
+                    ml-[400px]                    <!-- Shorten from left -->  
+                "></div>
+
+                <!-- Bar 2: -->
+                <div class="
+                    h-[56px]
+                    w-[600px]
+                    bg-gradient-to-r                   <!-- Gradient direction-->
+                    from-transparent to-violet-400
+                    rounded-r-full                     <!-- Rounded direction-->
+                    my-4
+                    ml-[10px]                            <!-- Push to the right -->
+                "></div>
+
+                <!-- Bar 3: -->
+                <div class="
+                    h-[56px]
+                    w-[900px]
+                    bg-gradient-to-l
+                    from-transparent to-yellow-500
+                    rounded-l-full
+                    my-4
+                    ml-auto                            <!-- Align to the right -->
+                "></div>
+
+                <!-- Bar 4:  -->
+                <div class="
+                    h-[56px]
+                    w-[900px]
+                    bg-gradient-to-r
+                    from-transparent to-orange-500
+                    rounded-r-full
+                    my-4
+                    ml-[10px]
+                "></div>
+
                 </div>
 
-                <!-- Decorative Bars -->
-                <div class="relative h-4 rounded-full bg-gradient-to-r from-purple-700 via-pink-500 to-purple-900 my-8 w-full"></div>
-                <div class="relative h-4 rounded-full bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-600 my-8 w-full"></div>
-                <div class="relative h-4 rounded-full bg-gradient-to-r from-orange-500 via-red-500 to-orange-400 my-8 w-full"></div>
 
-                <!-- Team Section -->
+
+
+
+
+               <!-- Team Section -->
                 <div class="my-16">
-                    <h2 class="text-2xl md:text-3xl font-bold mb-10">
-                        Meet the team behind<br />
-                        <span class="text-3xl md:text-4xl font-bold">Horizon</span>
+                <!-- Title Container -->
+                <div class="relative inline-block">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-0 z-10 relative">
+                    Meet the team behind
                     </h2>
+                    <div class="h-[64px] w-[700px] bg-gradient-to-l from-transparent to-red-500 rounded-l-full mt-[-30px] mb-[-300px] mx-[350px]"></div>
+                </div>
+
+                <!-- Horizon Title -->
+                <div class="mt-2">
+                    <span class="text-4xl md:text-5xl font-bold block">Horizon</span>
+                </div>
+
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                            <span class="font-medium">Darlyn</span>
-                            <span class="text-sm text-white/70">Developer</span>
+                        <img src="/Photos/Darlyn.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
+                        <span class="font-medium">Darlyn</span>
+                        <span class="text-sm text-white/70">Developer</span>
                         </div>
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                            <span class="font-medium">Zach</span>
-                            <span class="text-sm text-white/70">CTO</span>
+                        <img src="/Photos/Zach.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
+                        <span class="font-medium">Zach</span>
+                        <span class="text-sm text-white/70">CTO</span>
                         </div>
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                            <span class="font-medium">Xythadel</span>
-                            <span class="text-sm text-white/70">Designer</span>
+                        <img src="/Photos/Xytha.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
+                        <span class="font-medium">Xythadel</span>
+                        <span class="text-sm text-white/70">Designer</span>
                         </div>
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                            <span class="font-medium">Wilson</span>
-                            <span class="text-sm text-white/70">Developer</span>
+                        <img src="/Photos/Wilson.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
+                        <span class="font-medium">Wilson</span>
+                        <span class="text-sm text-white/70">Developer</span>
                         </div>
                     </div>
-                </div>
+                    </div>
 
                 <!-- More bars -->
-                <div class="relative h-4 rounded-full bg-gradient-to-r from-blue-500 via-indigo-400 to-blue-300 my-8 w-full"></div>
-                <div class="relative h-4 rounded-full bg-gradient-to-r from-emerald-500 via-green-400 to-teal-400 my-8 w-full"></div>
+                  <div class="
+                    h-[74px]
+                    w-[900px]
+                    bg-gradient-to-r
+                    from-transparent to-blue-500
+                    rounded-r-full
+                    my-4
+                    ml-[10px]
+                "></div>
+                <div class="
+                    h-[74px]
+                    w-[900px]
+                    bg-gradient-to-l
+                    from-transparent to-green-500
+                    rounded-l-full
+                    my-4
+                    ml-auto"></div>
             </section>
             <footer class="py-6 border-t border-white/10 flex justify-between text-sm text-white/50">
                 <div>&lt;horizon/&gt;</div>
