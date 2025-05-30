@@ -68,26 +68,24 @@
           </div>
 
           <div v-if="expandedCourses[course.id]" class="p-4">
-            <form @submit.prevent="createStandaloneTopicForCourse(course.id)" class="mb-4 flex flex-wrap gap-2">
-              <input 
-                v-model="newTopics[course.id].title" 
-                placeholder="Topic Title" 
-                class="border p-2 rounded flex-1 responsive-min-width" 
-                required
-                :disabled="newTopics[course.id].loading"
-              />
-              <input 
-                v-model="newTopics[course.id].content" 
-                placeholder="Topic Content" 
-                class="border p-2 rounded flex-1 responsive-min-width" 
-                required
-                :disabled="newTopics[course.id].loading"
-              />
-              <button 
-                type="submit" 
-                class="bg-green-600 text-white px-4 py-2 rounded"
-                :disabled="newTopics[course.id].loading"
-              >
+            <form @submit.prevent="createStandaloneTopicForCourse(course.id)" class="mb-4 w-full space-y-4">
+              <div class="flex flex-col">
+                <label class="font-medium text-sm mb-1">Title<span class="text-red-500">*</span></label>
+                <input v-model="newTopics[course.id].title" placeholder="Enter topic title" class="border p-2 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" required :disabled="newTopics[course.id].loading" />
+              </div>
+
+              <div class="flex flex-col">
+                <label class="font-medium text-sm mb-1">Module Name<span class="text-red-500">*</span></label>
+                <input v-model="newTopics[course.id].module_name" placeholder="Enter module name" class="border p-2 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" required :disabled="newTopics[course.id].loading" />
+              </div>
+
+              <div class="flex flex-col">
+                <label class="font-medium text-sm mb-1">Content<span class="text-red-500">*</span></label>
+                <textarea v-model="newTopics[course.id].content" placeholder="Describe the topic in detail..." class="border p-2 rounded-md bg-white resize-y focus:outline-none focus:ring-2 focus:ring-blue-500" rows="6" required :disabled="newTopics[course.id].loading"></textarea>
+                <p class="text-sm text-gray-500 mt-1">Please enter a Guide description.</p>
+              </div>
+
+              <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md" :disabled="newTopics[course.id].loading">
                 <span v-if="newTopics[course.id].loading">Adding...</span>
                 <span v-else>Add Topic</span>
               </button>
@@ -98,15 +96,40 @@
             </div>
 
             <ul>
-              <li 
-                v-for="topic in standaloneTopics[course.id] || []" 
-                :key="topic.id" 
-                class="flex flex-wrap items-center gap-2 mb-2"
-              >
-                <input v-model="topic.title" class="border p-1 rounded flex-1 responsive-min-width" />
-                <input v-model="topic.content" class="border p-1 rounded flex-1 responsive-min-width" />
-                <button @click="updateStandaloneTopic(topic)" class="text-blue-600">Update</button>
-                <button @click="deleteStandaloneTopic(topic.id, course.id)" class="text-red-600">Delete</button>
+              <li v-for="topic in standaloneTopics[course.id] || []" :key="topic.id" class="border rounded p-3 mb-3 bg-gray-50">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <h4 class="font-semibold text-lg">{{ topic.title }}</h4>
+                    <p class="text-sm text-gray-600">{{ topic.module_name }}</p>
+                  </div>
+                  <div class="flex gap-2">
+                    <button @click="editingTopicId = editingTopicId === topic.id ? null : topic.id" class="text-blue-600">
+                      {{ editingTopicId === topic.id ? 'Cancel' : 'Edit' }}
+                    </button>
+                    <button @click="deleteStandaloneTopic(topic.id, course.id)" class="text-red-600">Delete</button>
+                  </div>
+                </div>
+
+                <div v-if="editingTopicId === topic.id" class="mt-4 space-y-4">
+                  <div class="flex flex-col">
+                    <label class="text-sm font-medium mb-1">Title</label>
+                    <input v-model="topic.title" class="border p-2 rounded" />
+                  </div>
+                  <div class="flex flex-col">
+                    <label class="text-sm font-medium mb-1">Module Name</label>
+                    <input v-model="topic.module_name" class="border p-2 rounded" />
+                  </div>
+                  <div class="flex flex-col">
+                    <label class="text-sm font-medium mb-1">Content</label>
+                    <textarea v-model="topic.content" rows="4" class="border p-2 rounded resize-y"></textarea>
+                  </div>
+                  <div class="flex gap-2">
+                    <button @click="updateStandaloneTopic(topic)" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                      Save
+                    </button>
+                    <button @click="editingTopicId = null" class="text-gray-600 underline">Cancel</button>
+                  </div>
+                </div>
               </li>
             </ul>
           </div>
@@ -121,12 +144,13 @@ import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 
 const users = ref([])
-const standaloneTopics = ref({}) // courseId -> array of topics
+const standaloneTopics = ref({})
 const courses = ref([])
 const showSection = ref('topics')
 const errorMessages = ref({})
 const newTopics = ref({})
 const expandedCourses = ref({})
+const editingTopicId = ref(null)
 
 const fetchCourses = async () => {
   try {
@@ -135,42 +159,46 @@ const fetchCourses = async () => {
       course.name === 'Laravel Frameworks' || course.name === 'Vue Frameworks'
     )
 
-    courses.value.forEach(course => {
-      newTopics.value[course.id] = { title: '', content: '', loading: false }
+    for (const course of courses.value) {
+      newTopics.value[course.id] = { title: '', content: '', module_name: '', loading: false }
       expandedCourses.value[course.id] = false
-    })
+
+      try {
+        const topicUrl = course.name === 'Laravel Frameworks'
+          ? `/api/courses/${course.id}/laravel-topics`
+          : `/api/courses/${course.id}/topics`
+
+        const topicRes = await axios.get(topicUrl)
+        standaloneTopics.value[course.id] = topicRes.data
+      } catch (topicErr) {
+        console.error(`Failed to fetch topics for course ${course.id}`, topicErr)
+      }
+    }
   } catch (error) {
     console.error('Failed to fetch courses:', error)
   }
 }
 
-const fetchStandaloneTopics = async () => {
-  standaloneTopics.value = {}
-
-  for (const course of courses.value) {
-    try {
-      const res = await axios.get(`/api/courses/${course.id}/topics`)
-      standaloneTopics.value[course.id] = res.data
-    } catch (error) {
-      console.error(`Failed to fetch topics for course ${course.id}`, error)
-    }
-  }
-}
-
-
-
 const createStandaloneTopicForCourse = async (courseId) => {
   try {
+    const course = courses.value.find(c => c.id === courseId)
+    const isLaravel = course.name === 'Laravel Frameworks'
+
     errorMessages.value[courseId] = ''
     newTopics.value[courseId].loading = true
 
-    const response = await axios.post(`/api/courses/${courseId}/topics`, {
+    const postUrl = isLaravel
+      ? `/api/courses/${courseId}/laravel-topics`
+      : `/api/courses/${courseId}/topics`
+
+    const response = await axios.post(postUrl, {
       title: newTopics.value[courseId].title,
-      content: newTopics.value[courseId].content
+      content: newTopics.value[courseId].content,
+      module_name: newTopics.value[courseId].module_name
     })
 
     standaloneTopics.value[courseId].push(response.data)
-    newTopics.value[courseId] = { title: '', content: '', loading: false }
+    newTopics.value[courseId] = { title: '', content: '', module_name: '', loading: false }
   } catch (error) {
     errorMessages.value[courseId] = error.response?.data?.message || 'Failed to add topic'
   } finally {
@@ -180,11 +208,20 @@ const createStandaloneTopicForCourse = async (courseId) => {
 
 const updateStandaloneTopic = async (topic) => {
   try {
-    await axios.put(`/api/topics/${topic.id}`, {
+    const course = courses.value.find(c => c.id === topic.course_id)
+    const isLaravel = course.name === 'Laravel Frameworks'
+
+    const updateUrl = isLaravel
+      ? `/api/laravel-topics/${topic.id}`
+      : `/api/topics/${topic.id}`
+
+    await axios.put(updateUrl, {
       title: topic.title,
-      content: topic.content
+      content: topic.content,
+      module_name: topic.module_name
     })
     alert('Topic updated successfully.')
+    editingTopicId.value = null
   } catch (error) {
     console.error('Update failed:', error)
     alert(error.response?.data?.message || 'Failed to update topic.')
@@ -193,7 +230,14 @@ const updateStandaloneTopic = async (topic) => {
 
 const deleteStandaloneTopic = async (id, courseId) => {
   try {
-    await axios.delete(`/api/topics/${id}`)
+    const course = courses.value.find(c => c.id === courseId)
+    const isLaravel = course.name === 'Laravel Frameworks'
+
+    const deleteUrl = isLaravel
+      ? `/api/laravel-topics/${id}`
+      : `/api/topics/${id}`
+
+    await axios.delete(deleteUrl)
     standaloneTopics.value[courseId] = standaloneTopics.value[courseId].filter(t => t.id !== id)
     alert('Topic deleted successfully.')
   } catch (error) {
@@ -233,12 +277,5 @@ const logout = async () => {
 
 onMounted(async () => {
   await fetchCourses()
-  await fetchStandaloneTopics()
 })
 </script>
-
-<style scoped>
-.responsive-min-width {
-  min-width: 200px;
-}
-</style>

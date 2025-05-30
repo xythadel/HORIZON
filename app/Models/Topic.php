@@ -12,7 +12,8 @@ class Topic extends Model
     protected $fillable = [
         'title',
         'content',
-        'course_id', // make sure this exists in your topics table
+        'course_id',
+         // make sure this exists in your topics table
     ];
 
     public function course()
