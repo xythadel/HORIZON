@@ -63,5 +63,9 @@ class Course extends Model
 {
     return $this->hasMany(UserCourse::class);
 }
+public function laravelTopics()
+{
+    return $this->hasMany(LaravelTopic::class);
+}
 
 }

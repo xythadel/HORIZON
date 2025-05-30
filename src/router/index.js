@@ -17,9 +17,11 @@ import { createRouter, createWebHistory } from 'vue-router';
 import ModuleVue from '@/settings/VueModules/ModuleVue.vue';
 import ModuleLara from '@/settings/LaraModules/ModuleLara.vue';
 import MyLearning from '@/settings/VueModules/MyLearning.vue';
+import QuizVue from '@/pages/settings/VueModules/QuizVue.vue';
 import AdminDashboard from '@/pages/Admin/AdminDashboard.vue';
 import Dashboard from '@/pages/Dashboard.vue';
 import Login from '@/pages/auth/Login.vue';
+import path from 'path';
 
 const routes = [
   { path: '/module-vue', component: ModuleVue },
@@ -28,8 +30,9 @@ const routes = [
   { path: '/admin-dashboard', component: AdminDashboard },
   { path: '/dashboard', component: Dashboard },
   { path: '/login', component: Login },
+  { path: '/quiz-vue', component: QuizVue },
+  { path: '/quiz-vue', component: QuizVue }
 ];
-
 const router = createRouter({
   history: createWebHistory(),
   routes

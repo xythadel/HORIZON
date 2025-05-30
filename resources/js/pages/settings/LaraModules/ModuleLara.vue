@@ -33,7 +33,7 @@
         </div>
 
         <!-- Mark topic as complete -->
-        <button
+        <button 
           v-if="!currentTopic.completed"
           class="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
           @click="completeTopic"
@@ -64,10 +64,9 @@ export default {
   methods: {
     async fetchTopics() {
       try {
-        const response = await fetch('/api/topics');
+        const response = await fetch('/api/courses/2/laravel-topics'); // ✅ corrected
         const data = await response.json();
 
-        // Mark first topic as unlocked by default
         if (data.length > 0) {
           data[0].unlocked = true;
         }
@@ -97,6 +96,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .prose p {
