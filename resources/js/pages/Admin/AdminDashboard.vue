@@ -237,8 +237,13 @@ const createStandaloneTopicForCourse = async (courseId) => {
       ? `/api/courses/${courseId}/laravel-topics`
       : `/api/courses/${courseId}/topics`
     const response = await axios.post(postUrl, newTopics.value[courseId])
+    // Ensure course_id is present in the returned topic
+    if (!response.data.course_id) {
+      response.data.course_id = courseId
+    }
     standaloneTopics.value[courseId].push(response.data)
     newTopics.value[courseId] = { title: '', content: '', module_name: '', loading: false }
+    errorMessages.value[courseId] = ''
   } catch (e) {
     errorMessages.value[courseId] = e.response?.data?.message || 'Failed to add topic'
   } finally {

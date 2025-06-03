@@ -25,4 +25,39 @@ class UserController extends Controller
 
         return back()->with('success', 'Account updated successfully.');
     }
+// ...existing code...
+public function admins()
+{
+    return response()->json(User::where('role', 'admin')->select('id', 'name', 'email', 'role', 'created_at')->get());
+}
+
+public function regularUsers()
+{
+    return response()->json(User::where('role', 'user')->select('id', 'name', 'email', 'role', 'created_at')->get());
+}
+
+public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:users',
+        'role' => 'required|in:admin,user',
+        'password' => 'required|string|min:6',
+    ]);
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'role' => $request->role,
+        'password' => bcrypt($request->password),
+    ]);
+    return response()->json($user, 201);
+}
+
+public function destroy($id)
+{
+    $user = User::findOrFail($id);
+    $user->delete();
+    return response()->json(['message' => 'User deleted']);
+}
+// ...existing code...
 }

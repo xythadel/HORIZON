@@ -109,5 +109,10 @@ class TopicController extends Controller
     $topics = Topic::where('course_id', 1)->get();
     return view('admin.topics.vue', compact('topics'));
     }
-
+    public function getTopicsByCourse($id)
+    {
+    // Return all topics for the given course ID
+    $topics = \App\Models\Topic::where('course_id', $id)->get();
+    return response()->json($topics);
+    }
 }
