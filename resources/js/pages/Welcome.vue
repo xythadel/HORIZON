@@ -271,7 +271,7 @@
                     <input
                         v-model="fullName"
                         type="text"
-                        class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white text-white focus:border-purple-500 focus:outline-none"
+                        class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white/50 text-white focus:border-purple-500 focus:outline-none"
                         placeholder="Your full name"
                     />
                     </div>
@@ -281,7 +281,7 @@
                     <input
                         v-model="birthday"
                         type="date"
-                        class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white text-white focus:border-purple-500 focus:outline-none"
+                        class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white/50 text-white focus:border-purple-500 focus:outline-none"
                     />
                     </div>
 
@@ -290,7 +290,7 @@
                     <input
                         v-model="email"
                         type="email"
-                        class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white text-white focus:border-purple-500 focus:outline-none"
+                        class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white/50 text-white focus:border-purple-500 focus:outline-none"
                         placeholder="youremail@example.com"
                     />
                     </div>
@@ -300,7 +300,7 @@
                     <input
                         v-model="password"
                         :type="showPassword ? 'text' : 'password'"
-                        class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white text-white focus:border-purple-500 focus:outline-none"
+                        class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white/50 text-white focus:border-purple-500 focus:outline-none"
                         placeholder="Enter your password"
                     />
                     <div
@@ -309,6 +309,23 @@
                     >
                         {{ showPassword ? 'Hide Password' : 'Show Password' }}
                     </div>
+
+                    <div>
+                    <label class="text-xs text-white/70 block mb-2">Confirm Password</label>
+                    <input
+                        v-model="confirmPassword"
+                        :type="showPassword ? 'text' : 'password'"
+                        class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white/50 text-white focus:border-purple-500 focus:outline-none"
+                        placeholder="Re-enter your password"
+                    />
+                    <div
+                        class="text-xs text-white/50 text-right cursor-pointer mt-1"
+                        @click="togglePasswordVisibility"
+                    >
+                        {{ showPassword ? 'Hide Password' : 'Show Password' }}
+                    </div>
+                    </div>
+
                     </div>
 
                     <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
@@ -469,6 +486,7 @@ import { Head, router } from '@inertiajs/vue3';
 const currentView = ref('landing');
 const email = ref('');
 const password = ref('');
+const confirmPassword = ref('');
 const showPassword = ref(false);
 const errorMessage = ref('');
 const name = ref('');
@@ -510,16 +528,36 @@ function handleLogin() {
     });
 }
 function handleSignUp() {
-    if (!email.value || !password.value) {
-        errorMessage.value = 'Must input email or password';
+    if (!email.value || !password.value || !confirmPassword.value) {
+        errorMessage.value = 'Please fill in all required fields.';
         return;
     }
+
+    // Simple email format check
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email.value)) {
+        errorMessage.value = 'Please enter a valid email address.';
+        return;
+    }
+
+    if (password.value !== confirmPassword.value) {
+        errorMessage.value = 'Passwords do not match.';
+        return;
+    }
+
     errorMessage.value = '';
-    currentView.value = 'registrationDetails';
+    currentView.value = 'registrationDetails'; // move to name/birthday
 }
+
 function handleProfileSubmit() {
     if (!name.value || !birthday.value) {
         errorMessage.value = 'Please fill in all fields';
+        return;
+    }
+
+    // Optional: Check if passwords match here as well, in case user skips earlier step
+    if (password.value !== confirmPassword.value) {
+        errorMessage.value = 'Passwords do not match.';
         return;
     }
 
@@ -528,7 +566,7 @@ function handleProfileSubmit() {
     router.post('/register', {
         email: email.value,
         password: password.value,
-        password_confirmation: password.value,
+        password_confirmation: confirmPassword.value, // ✅ use the actual confirmPassword
         name: name.value,
         birthday: birthday.value,
     }, {
@@ -540,6 +578,8 @@ function handleProfileSubmit() {
         }
     });
 }
+
+
 function continueWithGoogle() {
     window.location.href = '/auth/redirect/google';
 }
