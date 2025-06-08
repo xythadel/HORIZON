@@ -7,7 +7,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 // Import your Vue components
-import CourseManager from './components/CourseManager.vue';
 import ModuleVue from '@/settings/VueModules/ModuleVue.vue';
 import ModuleLara from '@/settings/LaraModules/ModuleLara.vue';
 import MyLearning from '@/settings/VueModules/MyLearning.vue';
@@ -58,6 +57,5 @@ router.beforeEach((to, from, next) => {
 
 // Create and mount the Vue app
 const adminApp = createAdminApp({});
-adminApp.component('course-manager', CourseManager);
 adminApp.use(router);
 adminApp.mount('#admin-app');
