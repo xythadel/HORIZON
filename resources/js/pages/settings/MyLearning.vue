@@ -16,6 +16,7 @@
             <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
           </svg>
           Dashboard
+          
         </a>
         <a href="/mylearning" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a> 
         <a href="/settings" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Settings</a>
@@ -57,6 +58,7 @@
         </div>
       </div>
       <p v-else class="mt-6 text-gray-400">You haven't started any courses yet.</p>
+      <h1>{{ sampleText }}</h1>
     </div>
 
     <!-- Logout Confirmation Modal -->
@@ -74,6 +76,8 @@
           >
             Yes, Logout
           </button>
+
+          
           <button
             @click="showLogoutModal = false"
             class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
@@ -91,17 +95,21 @@ import { router } from '@inertiajs/vue3'
 import axios from 'axios'
 
 export default {
+
+
   props: {
     auth: Object
   },
   data() {
     return {
       userProgress: [],
-      showLogoutModal: false
+      showLogoutModal: false,
+      sampleText: ''
     }
   },
   mounted() {
     this.fetchProgress()
+    this.sampleText = localStorage.getItem('lastCompletedTopic');
   },
   methods: {
     fetchProgress() {
@@ -112,6 +120,7 @@ export default {
             const lastTopicId = entry.last_topic_id;
             const courseId = course.id;
             const totalTopics = course.topics.length;
+            
 
             let currentIndex = course.topics.findIndex(topic => topic.id === lastTopicId);
             currentIndex = currentIndex === -1 ? 0 : currentIndex + 1;

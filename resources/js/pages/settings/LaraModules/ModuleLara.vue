@@ -134,6 +134,7 @@ export default {
       const current = this.topics[this.currentTopicIndex];
       current.completed = true;
       const nextIndex = this.currentTopicIndex + 1;
+      localStorage.setItem('lastCompletedTopic', 'this is sample text');
       if (this.topics[nextIndex]) {
         this.topics[nextIndex].unlocked = true;
       }

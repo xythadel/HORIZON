@@ -81,7 +81,7 @@ export default {
   methods: {
     async fetchTopics() {
       try {
-        const response = await fetch(`/api/courses/${this.courseId}/topics`);
+        const response = await fetch(`/api/courses/1/topics`);
         const data = await response.json();
 
         if (data.length > 0) {

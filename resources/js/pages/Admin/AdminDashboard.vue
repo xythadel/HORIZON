@@ -200,7 +200,7 @@ const newQuiz = ref({
 
 const fetchCourses = async () => {
   const res = await axios.get('/api/courses')
-  courses.value = res.data.filter(c => ['Laravel Frameworks', 'Vue Frameworks'].includes(c.name))
+courses.value = res.data
   for (const course of courses.value) {
     newTopics.value[course.id] = { title: '', content: '', module_name: '', loading: false }
     expandedCourses.value[course.id] = false
@@ -234,7 +234,7 @@ const createStandaloneTopicForCourse = async (courseId) => {
   newTopics.value[courseId].loading = true
   try {
     const postUrl = isLaravel
-      ? `/api/courses/${courseId}/laravel-topics`
+      ? `/api/courses/${courseId}/laravel-topics`   
       : `/api/courses/${courseId}/topics`
     const response = await axios.post(postUrl, newTopics.value[courseId])
     // Ensure course_id is present in the returned topic
