@@ -1,91 +1,61 @@
 <script setup>
-import { ref } from 'vue'
-import GuestLayout from '@/layouts/GuestLayout.vue'
-import InputLabel from '@/components/InputLabel.vue'
-import TextInput from '@/components/TextInput.vue'
-import InputError from '@/components/InputError.vue'
-import PrimaryButton from '@/components/PrimaryButton.vue'
-import { Head, useForm } from '@inertiajs/vue3'
+import { computed } from 'vue';
+import GuestLayout from '@/layouts/GuestLayout.vue';
+import PrimaryButton from '@/components/PrimaryButton.vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
-  email: String,
-})
+    status: {
+        type: String,
+    },
+});
 
-const form = useForm({
-  code: '',
-  email: props.email,
-})
-
-const resendMessage = ref('')
-const resendProcessing = ref(false)
+const form = useForm({});
 
 const submit = () => {
-  form.post('/verify-code')
-}
+    form.post(route('verification.send'));
+};
 
-const resend = async () => {
-  resendProcessing.value = true
-  resendMessage.value = ''
-  await form.post('/resend-code', {
-    preserveScroll: true,
-    onSuccess: () => {
-      resendMessage.value = 'A new code has been sent to your email.'
-    },
-    onFinish: () => {
-      resendProcessing.value = false
-    },
-  })
-}
+const verificationLinkSent = computed(
+    () => props.status === 'verification-link-sent',
+);
 </script>
 
 <template>
-  <GuestLayout>
-    <Head title="Verify Your Email" />
+    <GuestLayout>
+        <Head title="Email Verification" />
 
-    <div class="mb-6 text-center">
-      <h1 class="text-2xl font-bold mb-2 text-white">Verify Your Email</h1>
-      <p class="text-sm text-gray-300">
-        We sent a 6-digit verification code to your email:
-        <span class="font-semibold">{{ email }}</span>
-      </p>
-    </div>
+        <div class="mb-4 text-sm text-gray-600">
+            Thanks for signing up! Before getting started, could you verify your
+            email address by clicking on the link we just emailed to you? If you
+            didn't receive the email, we will gladly send you another.
+        </div>
 
-    <form @submit.prevent="submit" class="space-y-6">
-      <div>
-        <InputLabel for="code" value="Verification Code" class="text-white" />
-        <TextInput
-          id="code"
-          type="text"
-          v-model="form.code"
-          maxlength="6"
-          required
-          class="mt-1 block w-full"
-          autocomplete="one-time-code"
-        />
-        <InputError class="mt-2" :message="form.errors.code" />
-      </div>
-
-      <div class="flex items-center justify-between">
-        <PrimaryButton
-          :class="{ 'opacity-25': form.processing }"
-          :disabled="form.processing"
+        <div
+            class="mb-4 text-sm font-medium text-green-600"
+            v-if="verificationLinkSent"
         >
-          Verify
-        </PrimaryButton>
+            A new verification link has been sent to the email address you
+            provided during registration.
+        </div>
 
-        <button
-          type="button"
-          class="text-sm text-gray-300 underline hover:text-white"
-          :disabled="resendProcessing"
-          @click="resend"
-        >
-          Resend Code
-        </button>
-      </div>
+        <form @submit.prevent="submit">
+            <div class="mt-4 flex items-center justify-between">
+                <PrimaryButton
+                    :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing"
+                >
+                    Resend Verification Email
+                </PrimaryButton>
 
-      <p v-if="resendMessage" class="text-green-400 text-sm mt-2">
-        {{ resendMessage }}
-      </p>
-    </form>
-  </GuestLayout>
+                <Link
+                    :href="route('logout')"
+                    method="post"
+                    as="button"
+                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >Log Out</Link
+                >
+            </div>
+        </form>
+    </GuestLayout>
 </template>
