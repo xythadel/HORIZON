@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CompilerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\TopicController;
@@ -69,3 +70,20 @@ Route::post('/questions/{question}/options', [OptionController::class, 'store'])
 Route::get('/options/{option}', [OptionController::class, 'show']);
 Route::put('/options/{option}', [OptionController::class, 'update']);
 Route::delete('/options/{option}', [OptionController::class, 'destroy']);
+
+
+Route::post('/compile', [CompilerController::class, 'runCode']);
+Route::post('/simulate-laravel', function (Illuminate\Http\Request $request) {
+    $code = $request->input('code');
+
+    // 🔒 Only allow safe Laravel-like simulations (not real eval)
+    if (str_contains($code, 'return view')) {
+        return response()->json([
+            'output' => 'Simulated: Blade view returned'
+        ]);
+    }
+
+    return response()->json([
+        'output' => 'Unknown Laravel code'
+    ]);
+});

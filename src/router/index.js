@@ -22,7 +22,7 @@ import AdminDashboard from '@/pages/Admin/AdminDashboard.vue';
 import Dashboard from '@/pages/Dashboard.vue';
 import Login from '@/pages/auth/Login.vue';
 import path from 'path';
-
+import Sandpit from '@/pages/sandpit.vue';
 const routes = [
   { path: '/module-vue', component: ModuleVue },
   { path: '/module-lara', component: ModuleLara },
@@ -31,6 +31,7 @@ const routes = [
   { path: '/dashboard', component: Dashboard },
   { path: '/login', component: Login },
   { path: '/quiz-vue', component: QuizVue },
+  { path: '/sandpit', component: Sandpit},
   { path: '/quiz-vue', component: QuizVue }
 ];
 const router = createRouter({

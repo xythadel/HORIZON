@@ -141,6 +141,22 @@
             <textarea v-model="newQuiz.description" class="border p-2 rounded"></textarea>
           </div>
           <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Difficulty</label>
+            <textarea v-model="newQuiz.difficulty" class="border p-2 rounded"></textarea>
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Category</label>
+            <!-- <textarea ></textarea> -->
+            <select v-model="newQuiz.questionCategory" class="border p-2 rounded">
+              <option value="Pre-test">Pre-test</option>
+              <option value="Post-test">Post-test</option>
+            </select>
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Status</label>
+            <textarea v-model="newQuiz.quizStatus" class="border p-2 rounded" value="ACTIVE"></textarea>
+          </div>
+          <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Course</label>
             <select v-model="newQuiz.course_id" class="border p-2 rounded" required>
               <option disabled value="">-- Select Course --</option>
@@ -270,7 +286,7 @@ const deleteStandaloneTopic = async (id, courseId) => {
 const createQuiz = async () => {
   const res = await axios.post('/api/quizzes', newQuiz.value)
   quizzes.value.push(res.data)
-  newQuiz.value = { title: '', description: '', course_id: '', topic_id: '', is_published: false }
+  newQuiz.value = { title: '', description: '', course_id: '', topic_id: '', is_published: false, difficulty: '', questionCategory: '', quizStatus: '' }
 }
 
 const deleteQuiz = async (id) => {

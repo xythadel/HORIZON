@@ -13,8 +13,11 @@ class Quiz extends Model
         'title',
         'description',
         'is_published',
-        'course_id',
-        'topic_id'
+        'topic_id',
+        'difficulty',
+        'questionCategory',
+        'quizStatus'
+
     ];
 
     // Relationships

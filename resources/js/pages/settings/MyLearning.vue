@@ -19,6 +19,7 @@
           
         </a>
         <a href="/mylearning" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a> 
+        <a href="/sandpit" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Sandpit</a> 
         <a href="/settings" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Settings</a>
       </nav>
 
