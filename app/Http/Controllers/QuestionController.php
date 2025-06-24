@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Question;
+use App\Models\Quiz;
 use Illuminate\Http\Request;
 
 class QuestionController extends Controller
@@ -16,6 +17,22 @@ class QuestionController extends Controller
         ]);
 
         return Question::create($validated);
+    }
+
+    public function displayPostQuiz($id){
+        $Quiz = Quiz::where('topic_id', '=', $id)
+                        ->where('questionCategory', '=', 'Post-test') ->get();
+
+
+        return response()->json($Quiz);
+    }
+
+    public function displayPreQuiz($id){
+        $Quiz = Quiz::where('topic_id', '=', $id)
+                        ->where('questionCategory', '=', 'Pre-test') ->get();
+
+
+        return response()->json($Quiz);
     }
 
     public function update(Request $request, Question $question)

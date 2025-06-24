@@ -42,6 +42,10 @@ Route::get('/mylearning', function () {
     return Inertia::render('settings/MyLearning');
 })->name('mylearning');
 
+Route::get('/sandpit', function () {
+    return Inertia::render('sandpit');
+})->name('sandpit');
+
 
 
 Route::get('/quizlara', function () {

@@ -20,6 +20,7 @@
       <nav class="flex flex-col space-y-6 pl-20 pt-14">
         <a href="#" @click.prevent="goTo('dashboard')" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Dashboard</a>
         <a href="#" @click.prevent="goTo('learning')" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a>
+        <a href="#" @click.prevent="goTo('compiler')" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a>
         <a href="#" @click.prevent="goTo('settings')" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Settings</a>
       </nav>
 
