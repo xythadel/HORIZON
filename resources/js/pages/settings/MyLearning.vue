@@ -9,57 +9,84 @@
         {{ auth.user.name }}
       </p>
 
-      <!--Navigation Panel-->
+      <!-- Navigation Panel -->
       <nav class="flex flex-col space-y-6 pl-20 pt-14">
         <a href="/dashboard" class="text-base font-normal text-zinc-800 hover:text-indigo-600">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
-          </svg>
           Dashboard
-          
         </a>
-        <a href="/mylearning" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a> 
-        <a href="/sandpit" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Sandpit</a> 
+        <a href="/mylearning" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a>
+        <a href="/sandpit" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Sandpit</a>
         <a href="/settings" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Settings</a>
       </nav>
 
       <!-- Logout -->
       <nav class="flex flex-col space-y-6 pl-20 pt-60">
-        <a
-          href="#"
-          @click.prevent="showLogoutModal = true"
-          class="text-base font-normal text-zinc-800 hover:text-indigo-600"
-        >
+        <a href="#" @click.prevent="showLogoutModal = true" class="text-base font-normal text-zinc-800 hover:text-indigo-600">
           Logout
         </a>
       </nav>
     </aside>
 
-    <!-- Main Content -->
     <div class="flex-1 p-8 text-white overflow-y-auto">
       <h2 class="text-2xl font-bold">My Learning</h2>
-      <div v-if="userProgress.length" class="mt-6 space-y-4">
-        <div
-          v-for="(course, index) in userProgress"
-          :key="index"
-          v-if="course.progress > 0"
-          class="bg-gray-900 p-4 rounded-lg"
-        >
-          <h3 class="text-lg font-semibold">{{ course.name }}</h3>
-          <div class="mt-2 w-full bg-gray-700 rounded-full h-2">
-            <div class="bg-green-500 h-2 rounded-full" :style="{ width: course.progress + '%' }"></div>
-          </div>
-          <p class="mt-2 text-sm">{{ course.progress }}% completed</p>
-          <button
-            @click="resumeCourse(course.courseId, course.lastTopicId)"
-            class="mt-2 px-4 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm"
+      <div class="mt-10">
+        <h2 class="text-xl font-semibold mb-4">Completed Topics</h2>
+        <div v-if="userProgress.length">
+          <div
+            v-for="(course, cIndex) in userProgress"
+            :key="cIndex"
+            class="mb-6"
           >
-            Resume
-          </button>
+            <div class="flex justify-between items-center">
+              <h3 class="text-lg text-white font-semibold mb-2">{{ course.name }}</h3>
+              <div class="text-right">
+                <div>
+                  {{
+                    course.name === 'Vue'
+                      ? vueProgress
+                      : course.name === 'Laravel'
+                        ? laravelProgress
+                        : course.progress
+                  }}%
+                </div>
+                <div class="w-52 h-6 rounded-md mb-5 bg-gray-300 overflow-hidden">
+                  <div
+                    class="h-6 rounded-md"
+                    :style="{
+                      width: (course.name === 'Vue'
+                        ? vueProgress
+                        : course.name === 'Laravel'
+                          ? laravelProgress
+                          : course.progress
+                      ) + '%',
+                      background: course.name === 'Vue'
+                        ? 'linear-gradient(to right, #288feb, #42b0ff)'
+                        : course.name === 'Laravel'
+                          ? 'linear-gradient(to right, #246242, #4AC887)'
+                          : 'linear-gradient(to right, #6b7280, #9ca3af)'
+                    }"
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <div v-if="course.passedTopics.length" class="flex flex-col gap-3">
+              <div v-for="(topic, index) in course.passedTopics" :key="topic.id" class="bg-gray-50 p-4 rounded-lg shadow hover:bg-green-100 transition flex justify-between items-center">
+                <div>
+                  <h4 class="text-black font-medium text-md mb-1">{{ topic.title }}</h4>
+                  <p class="text-black text-sm">Score: {{ topic.score ?? 'N/A' }}</p>
+                </div>
+                <div>
+                  <p class="text-sm" :class="topic.passed ? 'text-black' : 'text-red-300'" >
+                    Status: {{ topic.passed ? 'Passed' : 'Failed' }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <p v-else class="text-gray-400 text-sm">No completed topics yet.</p>
+          </div>
         </div>
+        <p v-else class="mt-6 text-gray-400">You haven't started any courses yet.</p>
       </div>
-      <p v-else class="mt-6 text-gray-400">You haven't started any courses yet.</p>
-      <h1>{{ sampleText }}</h1>
     </div>
 
     <!-- Logout Confirmation Modal -->
@@ -77,8 +104,6 @@
           >
             Yes, Logout
           </button>
-
-          
           <button
             @click="showLogoutModal = false"
             class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
@@ -93,11 +118,11 @@
 
 <script>
 import { router } from '@inertiajs/vue3'
+import { ref } from 'vue'
 import axios from 'axios'
 
+
 export default {
-
-
   props: {
     auth: Object
   },
@@ -105,49 +130,85 @@ export default {
     return {
       userProgress: [],
       showLogoutModal: false,
-      sampleText: ''
+      vueProgress: 0,
+      laravelProgress: 0
     }
   },
   mounted() {
     this.fetchProgress()
-    this.sampleText = localStorage.getItem('lastCompletedTopic');
+    this.getPercentage()
   },
   methods: {
-    fetchProgress() {
-      axios.get('api/mylearning/progress')
-        .then(response => {
-          this.userProgress = response.data.map(entry => {
-            const course = entry.course;
-            const lastTopicId = entry.last_topic_id;
-            const courseId = course.id;
-            const totalTopics = course.topics.length;
-            
+    async fetchProgress() {
+      try {
+        const userId = this.auth.user.id;
+        const response = await axios.get(`/api/user-attempted-topics/${userId}`);
+        const topics = Object.values(response.data);
 
-            let currentIndex = course.topics.findIndex(topic => topic.id === lastTopicId);
-            currentIndex = currentIndex === -1 ? 0 : currentIndex + 1;
+        const groupedByCourse = {};
 
-            const progress = totalTopics > 0
-              ? Math.round((currentIndex / totalTopics) * 100)
-              : 0;
+        topics.forEach(topic => {
+          const courseName = topic.course_name || 'Untitled Course';
+          const courseId = topic.course_id;
 
-            return {
-              name: course.name,
-              progress: progress,
-              courseId: courseId,
-              lastTopicId: lastTopicId,
+          if (!groupedByCourse[courseId]) {
+            groupedByCourse[courseId] = {
+              name: courseName,
+              courseId,
+              passedTopics: []
             };
+          }
+
+          groupedByCourse[courseId].passedTopics.push({
+            id: topic.topic_id,
+            title: topic.title,
+            score: topic.score,
+            passed: topic.passed
           });
-        })
-        .catch(error => {
-          console.error('Failed to load progress:', error);
         });
+
+        this.userProgress = Object.values(groupedByCourse).map(course => {
+          const total = course.passedTopics.length;
+          const passed = course.passedTopics.filter(t => t.passed).length;
+          return {
+            ...course,
+            progress: total ? Math.round((passed / total) * 100) : 0
+          };
+        });
+      } catch (error) {
+        console.error('Failed to load progress:', error);
+      }
     },
-    confirmLogout() {
-      router.post('/logout');
+
+    async getPercentage() {
+      try {
+        const userId = this.auth.user.id;
+        const res = await fetch(`/api/user-progress/${userId}`)
+        const data = await res.json()
+
+        const vue = data.progress_by_course.find(course => course.course_name === 'Vue')
+        const laravel = data.progress_by_course.find(course => course.course_name === 'Laravel')
+
+        this.vueProgress = vue ? vue.overall_progress : 0
+        this.laravelProgress = laravel ? laravel.overall_progress : 0
+
+      } catch (error) {
+        console.error('Failed to fetch course progress:', error)
+      }
     },
     resumeCourse(courseId, topicId) {
-      router.visit(`/courses/${courseId}/topics/${topicId}`);
+      router.visit(`/courses/${courseId}/topics/${topicId}`)
+    },
+
+    confirmLogout() {
+      router.post('/logout')
     }
   }
 }
+</script>
+
+<script setup>
+import { usePage } from '@inertiajs/vue3'
+const { auth } = usePage().props
+const user = auth.user
 </script>

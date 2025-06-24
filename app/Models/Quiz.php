@@ -16,7 +16,9 @@ class Quiz extends Model
         'topic_id',
         'difficulty',
         'questionCategory',
-        'quizStatus'
+        'quizStatus',
+        'answer',
+        'questionType'
 
     ];
 

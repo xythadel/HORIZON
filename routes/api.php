@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\CompilerController;
+use App\Http\Controllers\LearningProgressController;
+use App\Http\Controllers\QuizAttemptController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\TopicController;
-use App\Http\Controllers\LaravelTopicController; // ✅ Laravel-specific controller
+use App\Http\Controllers\LaravelTopicController; 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\UserProgressTracker;
@@ -69,7 +71,17 @@ Route::get('/questions/{question}/options', [OptionController::class, 'index']);
 Route::post('/questions/{question}/options', [OptionController::class, 'store']);
 Route::get('/options/{option}', [OptionController::class, 'show']);
 Route::put('/options/{option}', [OptionController::class, 'update']);
+Route::post('/options/storeOptions', [OptionController::class, 'store']);
 Route::delete('/options/{option}', [OptionController::class, 'destroy']);
+Route::get('/displayPostQuiz/{id}', [QuestionController::class, 'displayPostQuiz']);
+Route::get('/displayPreQuiz/{id}', [QuestionController::class, 'displayPreQuiz']);
+Route::get('/options/by-question/{questionId}', [OptionController::class, 'getOptionsByQuestionId']);
+
+Route::get('/user-attempted-topics/{userId}', [LearningProgressController::class, 'getTopicsFromAttempts']);
+Route::get('/user-progress/{userId}', [LearningProgressController::class, 'getUserProgress']);
+
+Route::get('/user-attempts/{userId}', [QuizAttemptController::class, 'getAttemptsByUser']);
+Route::post('/recordAttempt', [QuizAttemptController::class, 'store']);
 
 
 Route::post('/compile', [CompilerController::class, 'runCode']);

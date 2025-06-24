@@ -80,7 +80,12 @@
               </div>
               <div class="flex flex-col">
                 <label class="font-medium text-sm mb-1">Content<span class="text-red-500">*</span></label>
-                <textarea v-model="newTopics[course.id].content" placeholder="Describe the topic..." class="border p-2 rounded-md" rows="6" required></textarea>
+                <!-- <textarea v-model="newTopics[course.id].content" placeholder="Describe the topic..." class="border p-2 rounded-md" rows="6" required></textarea> -->
+                 <QuillEditor
+                    v-model:content="newTopics[course.id].content"
+                    contentType="html"
+                    class="bg-white border rounded-md"
+                  />
               </div>
               <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md">
                 <span v-if="newTopics[course.id].loading">Adding...</span>
@@ -141,20 +146,34 @@
             <textarea v-model="newQuiz.description" class="border p-2 rounded"></textarea>
           </div>
           <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Type</label>
+            <select name="type" id="" class="border p-2 rounded" v-model="newQuiz.questionType" @change="displayFields">
+              <option value="">Select Type</option>
+              <option value="Blank">Fill in the Blanks</option>
+              <option value="Choices">Multiple Choice</option>
+            </select>
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Answer</label>
+            <textarea v-model="newQuiz.answer" class="border p-2 rounded"></textarea>
+          </div>
+          <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Difficulty</label>
-            <textarea v-model="newQuiz.difficulty" class="border p-2 rounded"></textarea>
+            <select v-model="newQuiz.difficulty" class="border p-2 rounded">
+              <option value="">SELECT DIFFICULTY</option>
+              <option value="1">Beginner</option>
+              <option value="2">Intermediate</option>
+              <option value="3">Advance</option>
+            </select>
           </div>
           <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Category</label>
             <!-- <textarea ></textarea> -->
             <select v-model="newQuiz.questionCategory" class="border p-2 rounded">
+              <option value="">SELECT CATEGORY</option>
               <option value="Pre-test">Pre-test</option>
               <option value="Post-test">Post-test</option>
             </select>
-          </div>
-          <div class="flex flex-col">
-            <label class="font-medium text-sm mb-1">Status</label>
-            <textarea v-model="newQuiz.quizStatus" class="border p-2 rounded" value="ACTIVE"></textarea>
           </div>
           <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Course</label>
@@ -174,6 +193,35 @@
             <input type="checkbox" v-model="newQuiz.is_published" />
             <label class="text-sm">Publish immediately</label>
           </div>
+          <!-- <div v-if="fieldsVisible" class="flex flex-col gap-y-2">
+            <label for="">Options</label>
+            <div class="flex items-center justify-start border rounded-md">
+              <div class="w-10 p-2 text-center bg-green-300">A.</div>
+              <div><input type="text" name="" class="w-full rounded-r-md border-none" style="--tw-ring-color:none;" id=""></div>
+            </div>
+            <div class="flex items-center justify-start border rounded-md">
+              <div class="w-10 p-2 text-center bg-green-300">B.</div>
+              <div><input type="text" name="" class="w-full rounded-r-md border-none" style="--tw-ring-color:none;" id=""></div>
+            </div>
+            <div class="flex items-center justify-start border rounded-md">
+              <div class="w-10 p-2 text-center bg-green-300">C.</div>
+              <div><input type="text" name="" class="w-full rounded-r-md border-none" style="--tw-ring-color:none;" id=""></div>
+            </div>
+            <div class="flex items-center justify-start border rounded-md">
+              <div class="w-10 p-2 text-center bg-green-300">D.</div>
+              <div><input type="text" name="" class="w-full rounded-r-md border-none" style="--tw-ring-color:none;" id=""></div>
+            </div>
+          </div> -->
+          <div v-if="fieldsVisible" class="flex flex-col gap-y-2">
+            <label>Options</label>
+            <div v-for="(opt, index) in options" :key="index" class="flex items-center border rounded-md">
+              <div class="w-10 p-2 text-center bg-green-300">
+                {{ String.fromCharCode(65 + index) }}.
+              </div>
+              <input v-model="options[index]" type="text" class="w-full rounded-r-md border-none" />
+            </div>
+          </div>
+
           <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Create Quiz</button>
         </form>
 
@@ -188,14 +236,15 @@
           </li>
         </ul>
       </div>
-    </main>
+    </main> 
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
-
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 const users = ref([])
 const courses = ref([])
 const quizzes = ref([])
@@ -206,13 +255,16 @@ const expandedCourses = ref({})
 const errorMessages = ref({})
 const editingTopicId = ref(null)
 const showSection = ref('topics')
+const options = ref(['', '', '', ''])
 const newQuiz = ref({
   title: '',
   description: '',
   course_id: '',
   topic_id: '',
+  type: '',
   is_published: false
 })
+const fieldsVisible = ref(false);
 
 const fetchCourses = async () => {
   const res = await axios.get('/api/courses')
@@ -231,6 +283,17 @@ courses.value = res.data
 const fetchUsers = async () => {
   const res = await axios.get('/api/users')
   users.value = res.data
+}
+
+const displayFields = async () => {
+  const selected = newQuiz.value.questionType;
+
+  if (selected === 'Choices') {
+    fieldsVisible.value = true;
+  } else {
+    fieldsVisible.value = false;
+  }
+  
 }
 
 const fetchQuizzes = async () => {
@@ -284,10 +347,39 @@ const deleteStandaloneTopic = async (id, courseId) => {
 }
 
 const createQuiz = async () => {
-  const res = await axios.post('/api/quizzes', newQuiz.value)
-  quizzes.value.push(res.data)
-  newQuiz.value = { title: '', description: '', course_id: '', topic_id: '', is_published: false, difficulty: '', questionCategory: '', quizStatus: '' }
+  try {
+    newQuiz.value.quizStatus = 'ACTIVE'
+    const res = await axios.post('/api/quizzes', newQuiz.value)
+    const quiz = res.data
+    quizzes.value.push(quiz)
+
+    if (newQuiz.value.questionType === 'Choices') {
+      // Post options to the server
+      const optionPayload = {
+        question_id: quiz.id,
+        options: options.value.map(text => ({ option_text: text }))
+      }
+      await axios.post('/api/options/storeOptions', optionPayload)
+    }
+
+    // Reset form
+    newQuiz.value = {
+      title: '',
+      description: '',
+      course_id: '',
+      topic_id: '',
+      type: '',
+      is_published: false,
+      difficulty: '',
+      questionCategory: '',
+      quizStatus: ''
+    }
+    options.value = ['', '', '', '']
+  } catch (err) {
+    console.error(err)
+  }
 }
+
 
 const deleteQuiz = async (id) => {
   await axios.delete(`/api/quizzes/${id}`)

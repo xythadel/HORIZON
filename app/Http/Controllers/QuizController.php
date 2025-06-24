@@ -41,6 +41,8 @@ class QuizController extends Controller
             'quizStatus' => 'required|string|max:255',
             'topic_id' => 'required|exists:topics,id',
             'is_published' => 'boolean',
+            'answer' => 'required|string|max:255',
+            'questionType' => 'required|string|max:255',
         ]);
 
         // Create the quiz
