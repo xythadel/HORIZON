@@ -7,22 +7,22 @@ import { createRouter, createWebHistory } from 'vue-router';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 // Import your Vue components
-import CourseManager from './components/CourseManager.vue';
-import ModuleVue from '@/settings/VueModules/ModuleVue.vue';
-import ModuleLara from '@/settings/LaraModules/ModuleLara.vue';
-import MyLearning from '@/settings/VueModules/MyLearning.vue';
-import AdminDashboard from '@/pages/Admin/AdminDashboard.vue';
-import Dashboard from '@/pages/Dashboard.vue';
-import Login from '@/pages/auth/Login.vue';
+// import ModuleVue from '@/settings/VueModules/ModuleVue.vue';
+// import ModuleLara from '@/settings/LaraModules/ModuleLara.vue';
+// import AdminDashboard from '@/pages/Admin/AdminDashboard.vue';
+// import Dashboard from '@/pages/Dashboard.vue';
+// import Login from '@/pages/auth/Login.vue';
+
+
 
 // Define routes
 const routes = [
-  { path: '/module-vue', component: ModuleVue },
-  { path: '/module-lara', component: ModuleLara },
-  { path: '/my-learning', component: MyLearning },
-  { path: '/admin-dashboard', component: AdminDashboard },
-  { path: '/dashboard', component: Dashboard },
-  { path: '/login', component: Login }
+  // { path: '/module-vue', component: ModuleVue },
+  // { path: '/module-lara', component: ModuleLara },
+  // { path: '/my-learning', component: MyLearning },
+  // { path: '/admin-dashboard', component: AdminDashboard },
+  // { path: '/dashboard', component: Dashboard },
+  // { path: '/login', component: Login }
 ];
 
 // Create router
@@ -58,6 +58,5 @@ router.beforeEach((to, from, next) => {
 
 // Create and mount the Vue app
 const adminApp = createAdminApp({});
-adminApp.component('course-manager', CourseManager);
 adminApp.use(router);
 adminApp.mount('#admin-app');

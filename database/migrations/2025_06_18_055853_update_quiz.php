@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->date('birthday')->nullable()->after('password');
+        Schema::table('quizzes', function (Blueprint $table) {
+            $table->integer('difficulty');
+            $table->string('questionCategory');
+            $table->string('quizStatus');
         });
     }
 
@@ -21,8 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-             $table->dropColumn('birthday');
+        Schema::table('quizzes', function (Blueprint $table) {
+            //
         });
     }
 };

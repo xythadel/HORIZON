@@ -1,13 +1,18 @@
 <?php
 
+use App\Http\Controllers\CompilerController;
+use App\Http\Controllers\LearningProgressController;
+use App\Http\Controllers\QuizAttemptController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\TopicController;
-use App\Http\Controllers\LaravelTopicController; // ✅ Laravel-specific controller
+use App\Http\Controllers\LaravelTopicController; 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\UserProgressTracker;
 use App\Http\Controllers\MyLearningController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\OptionController;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -18,8 +23,6 @@ Route::middleware('api')->get('/ping', function () {
 
 // ✅ Courses
 Route::apiResource('courses', CourseController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
-Route::get('/courses', [CourseController::class, 'index']);
-Route::post('/courses', [CourseController::class, 'store']);
 
 // ✅ Vue Topics (uses shared `topics` table, expects `module_name`)
 Route::get('/courses/{id}/topics', [TopicController::class, 'getTopicsByCourse']);
@@ -55,3 +58,44 @@ Route::get('/quizzes', [QuizController::class, 'index']);
 Route::post('/quizzes', [QuizController::class, 'store']);
 Route::put('/quizzes/{quiz}', [QuizController::class, 'update']);
 Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy']);
+
+// Nested Questions under a Quiz
+Route::get('/quizzes/{quiz}/questions', [QuestionController::class, 'index']);
+Route::post('/quizzes/{quiz}/questions', [QuestionController::class, 'store']);
+Route::get('/questions/{question}', [QuestionController::class, 'show']);
+Route::put('/questions/{question}', [QuestionController::class, 'update']);
+Route::delete('/questions/{question}', [QuestionController::class, 'destroy']);
+
+// Nested Options under a Question
+Route::get('/questions/{question}/options', [OptionController::class, 'index']);
+Route::post('/questions/{question}/options', [OptionController::class, 'store']);
+Route::get('/options/{option}', [OptionController::class, 'show']);
+Route::put('/options/{option}', [OptionController::class, 'update']);
+Route::post('/options/storeOptions', [OptionController::class, 'store']);
+Route::delete('/options/{option}', [OptionController::class, 'destroy']);
+Route::get('/displayPostQuiz/{id}', [QuestionController::class, 'displayPostQuiz']);
+Route::get('/displayPreQuiz/{id}', [QuestionController::class, 'displayPreQuiz']);
+Route::get('/options/by-question/{questionId}', [OptionController::class, 'getOptionsByQuestionId']);
+
+Route::get('/user-attempted-topics/{userId}', [LearningProgressController::class, 'getTopicsFromAttempts']);
+Route::get('/user-progress/{userId}', [LearningProgressController::class, 'getUserProgress']);
+
+Route::get('/user-attempts/{userId}', [QuizAttemptController::class, 'getAttemptsByUser']);
+Route::post('/recordAttempt', [QuizAttemptController::class, 'store']);
+
+
+Route::post('/compile', [CompilerController::class, 'runCode']);
+Route::post('/simulate-laravel', function (Illuminate\Http\Request $request) {
+    $code = $request->input('code');
+
+    // 🔒 Only allow safe Laravel-like simulations (not real eval)
+    if (str_contains($code, 'return view')) {
+        return response()->json([
+            'output' => 'Simulated: Blade view returned'
+        ]);
+    }
+
+    return response()->json([
+        'output' => 'Unknown Laravel code'
+    ]);
+});

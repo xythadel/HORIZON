@@ -14,11 +14,12 @@ class CourseFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+   public function definition(): array
     {
-        return [
-            'name' => fake()->name(),
-            'description' => fake()->name()
-        ];
+    return [
+        'name' => fake()->words(2, true),
+        'description' => fake()->paragraph(30), // or sentence(25) or paragraphs(3)
+    ];
     }
+
 }

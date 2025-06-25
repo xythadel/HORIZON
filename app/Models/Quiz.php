@@ -1,37 +1,41 @@
 <?php
 
-    namespace App\Models;
+namespace App\Models;
 
-    use Illuminate\Database\Eloquent\Factories\HasFactory;
-    use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-    class Quiz extends Model
+class Quiz extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'title',
+        'description',
+        'is_published',
+        'topic_id',
+        'difficulty',
+        'questionCategory',
+        'quizStatus',
+        'answer',
+        'questionType'
+
+    ];
+
+    // Relationships
+
+    public function questions()
     {
-        use HasFactory;
-        
-        protected $fillable = ['title', 'description', 'is_published','course_id', 'topic_id'];
-        
-        public function questions()
-        {
-            return $this->hasMany(Question::class);
-        }
+        return $this->hasMany(Question::class);
+    }
 
-        public function topic()
-        {
-            return $this->belongsTo(Topic::class);
-        }
-        public function course()
-        {
+    public function topic()
+    {
+        return $this->belongsTo(Topic::class);
+    }
+
+    public function course()
+    {
         return $this->belongsTo(Course::class);
     }
-         function quiz()
-        {
-         $this->belongsTo(Quiz::class);
-        }
-        public function quizzes()
-    {
-        return $this->hasMany(Quiz::class);
-        }
-
-
-    }
+}

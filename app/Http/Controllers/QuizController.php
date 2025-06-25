@@ -35,9 +35,14 @@ class QuizController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'course_id' => 'required|exists:courses,id',
+            // 'course_id' => 'required|exists:courses,id',
+            'difficulty' => 'required|integer|max:255',
+            'questionCategory' => 'required|string|max:255',
+            'quizStatus' => 'required|string|max:255',
             'topic_id' => 'required|exists:topics,id',
             'is_published' => 'boolean',
+            'answer' => 'required|string|max:255',
+            'questionType' => 'required|string|max:255',
         ]);
 
         // Create the quiz

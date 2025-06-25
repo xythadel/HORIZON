@@ -11,7 +11,7 @@ class LaravelTopicController extends Controller
     public function index(Course $course)
     {
         // Return all Laravel topics for a specific course
-        return LaravelTopic::where('course_id', $course->id)->get();
+        return Topic::where('course_id', '=',$course->id)->get();
     }
 
     public function store(Request $request, Course $course)

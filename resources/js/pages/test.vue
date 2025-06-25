@@ -13,10 +13,11 @@
       <nav class="flex flex-col space-y-6 pl-20 pt-14">
         <a href="/test" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Dashboard</a>
         <a href="/mylearning" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a>
+        <a href="/sandpit" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Sandpit</a> 
         <a href="/settings" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Settings</a>
       </nav>
 
-      <!-- Logout -->/
+      <!-- Logout -->
       <nav class="flex flex-col space-y-6 pl-20 pt-60">
         <a
           href="#"
@@ -43,13 +44,15 @@
 
       <!-- Vue Progress Circle -->
       <div class="absolute left-[700px] top-[100px] flex flex-col items-center">
-        <CircleProgress
-          :progress="vueProgress"
-          :size="150"
-          :strokeWidth="12"
-          color="#48C9B0"
-        />
-        <p class="mt-2 text-white">Vue Progress {{ vueProgress }}%</p>
+        <div
+          class="relative h-100 w-[160px] h-[160px] rounded-full"
+          :style="{
+            background: `conic-gradient(#288feb ${vueProgress}%, #e5e7eb ${vueProgress}% 100%)`
+          }"
+        >
+          <div class="absolute top-1/2 left-1/2 h-[130px] w-[130px] bg-zinc-800 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+        </div>
+        <p class="text-white mt-2">Vue.js Progress {{ vueProgress }}%</p>
       </div>
 
       <!-- Laravel Course Card -->
@@ -65,13 +68,15 @@
 
       <!-- Laravel Progress Circle -->
       <div class="absolute left-[700px] top-[420px] flex flex-col items-center">
-        <CircleProgress
-          :progress="laravelProgress"
-          :size="150"
-          :strokeWidth="12"
-          color="#E74C3C"
-        />
-        <p class="mt-2 text-white">Laravel Progress {{ laravelProgress }}%</p>
+        <div
+          class="relative h-100 w-[160px] h-[160px] rounded-full"
+          :style="{
+            background: `conic-gradient(#288feb ${laravelProgress}%, #e5e7eb ${laravelProgress}% 100%)`
+          }"
+        >
+          <div class="absolute top-1/2 left-1/2 h-[130px] w-[130px] bg-zinc-800 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+        </div>
+        <p class="text-white mt-2">Laravel Progress {{ laravelProgress }}%</p>
       </div>
     </main>
 
@@ -128,10 +133,10 @@ function confirmLogout() {
 // Fetch progress
 onMounted(async () => {
   try {
-    const res = await fetch('/api/user-progress')
+    const res = await fetch(`/api/user-progress/${user.id}`)
     const data = await res.json()
 
-    const vue = data.progress_by_course.find(course => course.course_name === 'Vue.js')
+    const vue = data.progress_by_course.find(course => course.course_name === 'Vue')
     const laravel = data.progress_by_course.find(course => course.course_name === 'Laravel')
 
     vueProgress.value = vue ? vue.overall_progress : 0

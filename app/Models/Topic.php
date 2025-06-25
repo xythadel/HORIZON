@@ -13,6 +13,7 @@ class Topic extends Model
         'title',
         'content',
         'course_id',
+        'module_name', // Assuming you want to track the module name
          // make sure this exists in your topics table
     ];
 

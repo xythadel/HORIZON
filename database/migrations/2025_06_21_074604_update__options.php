@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('laravel_topics', function (Blueprint $table) {
-             $table->string('module_name')->nullable();
+        Schema::table('options', function (Blueprint $table) {
+            $table->dropColumn('is_correct');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('laravel_topics', function (Blueprint $table) {
-             $table->dropColumn('module_name');
+        Schema::table('options', function (Blueprint $table) {
+            $table->dropColumn('is_correct');
         });
     }
 };

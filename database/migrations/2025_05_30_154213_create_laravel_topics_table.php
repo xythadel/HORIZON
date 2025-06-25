@@ -14,6 +14,7 @@ class CreateLaravelTopicsTable extends Migration
                   ->constrained('courses')  // References the shared courses table
                   ->onDelete('cascade');
             $table->string('title');
+            $table->string('module_name')->nullable();
             $table->text('content');
             $table->timestamps();
         });

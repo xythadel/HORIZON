@@ -475,6 +475,315 @@
                 </div>
             </div>
             </div>
+       <!-- Sign Up Page (Correct Layout with single form) -->
+        <div v-if="currentView === 'signup'" class="min-h-screen flex items-center justify-center bg-black relative overflow-hidden px-6">
+        <!-- Background Blur/Gradient -->
+        <div class="absolute w-full h-full bg-gradient-to-br from-indigo-600 via-purple-600 to-orange-400 opacity-40 blur-3xl z-0"></div>
+
+        <form @submit.prevent="handleSignUp" class="relative z-10 w-full max-w-6xl flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0 md:space-x-6">
+            
+            <!-- Left: Pill paragraphs in a rectangular container -->
+            <div 
+            class="bg-white/5 p-10 rounded-3xl backdrop-blur-md shadow-2xl text-white flex flex-col gap-6 w-full md:w-full max-w-md min-h-[500px] md:min-h-[510px] justify-center"
+            >
+            <!-- Pill 1: Circle on the right -->
+            <div 
+                class="flex items-center bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-full shadow-lg"
+                style="
+                padding: 16px 40px;           /* Top-bottom: 16px, Left-right: 40px */
+                width: 100%;                  /* Stretch to container width */
+                max-width: 400px;             /* You can adjust this */
+                height: 120px;                 /* Pill height */
+                justify-content: flex-start; /* Align content horizontally */
+                gap: 25px;                    /* Space between circle and text */
+                "
+            >
+                <!-- Text on the left -->
+                <p class="text-3xl font-bold text-black">
+                Are you ready?
+                </p>
+
+                <!-- Circle pushed to the right -->
+                <div 
+                class="bg-yellow-400 rounded-full ml-auto"
+                style="
+                    width: 125px;               /* Circle width */
+                    height: 100px;              /* Circle height */
+                "
+                ></div>
+            </div>
+
+            <!-- Pill 2 -->
+            <div class="flex items-center gap-4 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-full px-6 py-4 shadow-lg"
+                style="
+                padding: 16px 30px;           /* Top-bottom: 16px, Left-right: 40px */
+                width: 100%;                  /* Stretch to container width */
+                max-width: 400px;             /* You can adjust this */
+                height: 120px;                 /* Pill height */
+                justify-content: flex-start; /* Align content horizontally */
+                gap: 9px;                    /* Space between circle and text */
+                "
+            >
+                <div 
+                class="bg-violet-600 rounded-full"
+                style="
+                    width: 125px;               /* Circle width */
+                    height: 100px;              /* Circle height */
+                    order: 0;                   /* Left side */
+                "
+                ></div>
+                <p class="text-2xl font-bold text-black"
+                style="order: 1;"  
+                >To learn how to code?</p>
+            </div>
+
+            <!-- Pill 3 -->
+            <div class="flex items-center gap-4 bg-gradient-to-r from-red-500 to-orange-400 text-white rounded-full px-6 py-4 shadow-lg"
+                style="
+                padding: 16px 20px;           /* Top-bottom: 16px, Left-right: 40px */
+                width: 100%;                  /* Stretch to container width */
+                max-width: 400px;             /* You can adjust this */
+                height: 120px;                 /* Pill height */
+                justify-content: flex-start; /* Align content horizontally */
+                gap: 0px;                    /* Space between circle and text */
+                "
+            >
+                <p class="text-2xl font-bold text-black">
+                Let's get started!
+                </p>
+                <div 
+                class="bg-red-600 rounded-full ml-auto flex items-center justify-center text-black text-5xl font-bold"
+                style="
+                    width: 100px;               /* Circle width */
+                    height: 100px;              /* Circle height */
+                ">
+                &#8594;  <!-- Unicode right arrow → -->
+                </div>
+            </div>
+            </div>
+
+   <!-- Right: Sign Up Form -->
+            <div class="p-8 text-white w-full max-w-md mt-12 md:mt-0">
+            <div class="text-left mb-6">
+                <h2 class="text-3xl font-bold">Sign Up</h2>
+            </div>
+            <form @submit.prevent="handleSignUp" class="space-y-6">
+            <!-- Full Name -->
+            <div>
+                <label class="text-xs text-white/70 block mb-2">Full Name</label>
+                <input
+                v-model="fullName"
+                type="text"
+                class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white/50 text-white focus:border-purple-500 focus:outline-none"
+                placeholder="Your full name"
+                />
+            </div>
+
+            <!-- Birthday -->
+            <div>
+                <label class="text-xs text-white/70 block mb-2">Birthday</label>
+                <input
+                v-model="birthday"
+                type="date"
+                class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white/50 text-white focus:border-purple-500 focus:outline-none"
+                />
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label class="text-xs text-white/70 block mb-2">Email</label>
+                <input
+                v-model="email"
+                type="email"
+                class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white/50 text-white focus:border-purple-500 focus:outline-none"
+                placeholder="youremail@example.com"
+                />
+            </div>
+
+            <!-- Password -->
+            <div>
+                <label class="text-xs text-white/70 block mb-2">Password</label>
+                <input
+                v-model="password"
+                :type="showPassword ? 'text' : 'password'"
+                class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white/50 text-white focus:border-purple-500 focus:outline-none"
+                placeholder="Enter your password"
+                />
+                <div
+                class="text-xs text-white/50 text-right cursor-pointer mt-1 hover:underline"
+                @click="togglePasswordVisibility"
+                >
+                {{ showPassword ? 'Hide Password' : 'Show Password' }}
+                </div>
+            </div>
+
+            <!-- Verify Password -->
+            <div>
+                <label class="text-xs text-white/70 block mb-2">Verify Password</label>
+                <input
+                v-model="verifyPassword"
+                :type="showPassword ? 'text' : 'password'"
+                class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white/50 text-white focus:border-purple-500 focus:outline-none"
+                placeholder="Re-enter your password"
+                />
+                <div
+                class="text-xs text-white/50 text-right cursor-pointer mt-1 hover:underline"
+                @click="togglePasswordVisibility"
+                >
+                {{ showPassword ? 'Hide Password' : 'Show Password' }}
+                </div>
+            </div>
+
+            <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
+
+            <button
+                type="submit"
+                class="w-full bg-white text-black py-3 rounded-full font-semibold hover:bg-white/90 transition"
+            >
+                Sign Up
+            </button>
+
+                <div class="flex items-center my-4">
+                <div class="flex-grow h-px bg-white/20"></div>
+                <span class="px-4 text-white/60 text-sm">or</span>
+                <div class="flex-grow h-px bg-white/20"></div>
+                </div>
+
+                <button
+                @click="continueWithGoogle"
+                type="button"
+                class="w-full py-3 rounded-full bg-blue-400 text-white font-semibold shadow-md hover:opacity-90 transition flex items-center justify-center"
+                >
+                <span class="mr-2">Continue with</span>
+                <span class="font-bold">Google</span>
+                </button>
+            </form>
+            </div>
+
+
+            </form>
+            </div>
+
+
+
+       <!-- Login Page -->
+        <div v-if="currentView === 'login'" class="min-h-screen flex items-center justify-center bg-black relative overflow-hidden px-6">
+        <!-- Background Gradient Blur -->
+        <div class="absolute w-full h-full bg-gradient-to-br from-indigo-600 via-purple-600 to-orange-400 opacity-40 blur-3xl z-0"></div>
+
+        <!-- Main container -->
+        <div class="relative z-10 w-full max-w-6xl flex flex-col md:flex-row items-center justify-between">
+            
+            <!-- Left: Decorative Pill Design -->
+            <div 
+            class="bg-white/5 p-10 rounded-3xl backdrop-blur-md shadow-2xl text-white flex flex-col gap-6 w-full md:w-full max-w-md min-h-[500px] md:min-h-[510px] justify-center"
+            >
+            <!-- Pill 1 -->
+            <div 
+                class="flex items-center bg-gradient-to-r from-blue-600 to-indigo-500 text-white rounded-full shadow-lg"
+                style="padding: 16px 40px; width: 100%; max-width: 400px; height: 120px; justify-content: flex-start; gap: 25px;"
+            >
+                <p class="text-3xl font-bold text-black">
+                Welcome Back!
+                </p>
+                <div class="bg-pink-400 rounded-full ml-auto" style="width: 125px; height: 100px;"></div>
+            </div>
+
+            <!-- Pill 2 -->
+            <div 
+                class="flex items-center gap-4 bg-gradient-to-r from-purple-600 to-blue-400 text-white rounded-full px-6 py-4 shadow-lg"
+                style="padding: 16px 30px; width: 100%; max-width: 400px; height: 120px; justify-content: flex-start; gap: 9px;"
+            >
+                <div class="bg-purple-700 rounded-full" style="width: 125px; height: 100px; order: 0;"></div>
+                <p class="text-2xl font-bold text-black" style="order: 1;">
+                Enter your credentials
+                </p>
+            </div>
+
+            <!-- Pill 3 -->
+            <div 
+                class="flex items-center gap-4 bg-gradient-to-r from-red-500 to-orange-400 text-white rounded-full px-6 py-4 shadow-lg"
+                style="padding: 16px 20px; width: 100%; max-width: 400px; height: 120px; justify-content: flex-start; gap: 0px;"
+            >
+                <p class="text-2xl font-bold text-black">
+                Let’s sign in!
+                </p>
+                <div 
+                class="bg-red-600 rounded-full ml-auto flex items-center justify-center text-black text-5xl font-bold"
+                style="width: 100px; height: 100px;"
+                >
+                &#8594;
+                </div>
+            </div>
+            </div>
+
+            <!-- Right: Login Form (Styled the Same as Sign-Up) -->
+            <div class="p-8 text-white w-full max-w-md mt-12 md:mt-0">
+            <div class="text-center mb-8 text-white">
+                <h2 class="text-3xl font-bold">Log In</h2>
+                <p class="text-white/60 mt-1">Enter your credentials to continue.</p>
+            </div>
+            <form @submit.prevent="handleLogin" class="space-y-6">
+                <!-- Email -->
+                <div>
+                <label class="text-xs text-white/50 block mb-1">Email</label>
+                <input
+                    v-model="email"
+                    type="email"
+                    class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none text-white"
+                    placeholder="youremail@example.com"
+                />
+                </div>
+
+                <!-- Password -->
+                <div>
+                <label class="text-xs text-white/50 block mb-1">Password</label>
+                <input
+                    v-model="password"
+                    :type="showPassword ? 'text' : 'password'"
+                    class="w-full p-3 rounded-full bg-black/30 border border-white/10 focus:border-purple-500 focus:outline-none text-white"
+                />
+                <div
+                    class="text-xs text-white/50 text-right cursor-pointer mt-1"
+                    @click="togglePasswordVisibility"
+                >
+                    {{ showPassword ? 'Hide Password' : 'Show Password' }}
+                </div>
+                </div>
+
+                <!-- Error -->
+                <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
+
+                <!-- Log In Button -->
+                <button
+                class="w-full bg-white text-black py-3 rounded-full font-medium hover:bg-white/90 transition"
+                >
+                Log In
+                </button>
+
+                <!-- Divider -->
+                <div class="text-center text-sm my-4 text-white/50">or</div>
+
+                <!-- Google Sign In -->
+                <button
+                @click="continueWithGoogle"
+                type="button"
+                class="w-full bg-teal-400/20 text-teal-300 border border-teal-400/30 py-3 rounded-full font-medium hover:bg-teal-400/30 transition flex items-center justify-center"
+                >
+                <span class="mr-2">Continue with</span>
+                <span class="font-bold">Google</span>
+                </button>
+
+                <!-- Sign Up Redirect -->
+                <div class="text-center text-xs text-white/50 mt-6">
+                Don't have an account?
+                <button @click="showSignUp" class="text-white underline">Sign up</button>
+                </div>
+            </form>
+            </div>
+        </div>
+        </div>
+
 
     </div>
 </template>
@@ -486,10 +795,10 @@ import { Head, router } from '@inertiajs/vue3';
 const currentView = ref('landing');
 const email = ref('');
 const password = ref('');
-const confirmPassword = ref('');
+const verifyPassword = ref('');
 const showPassword = ref(false);
 const errorMessage = ref('');
-const name = ref('');
+const fullName = ref('');
 const birthday = ref('');
 
 function showSignUp() {
@@ -507,12 +816,12 @@ function showLanding() {
 function togglePasswordVisibility() {
     showPassword.value = !showPassword.value;
 }
+
 function handleLogin() {
     if (!email.value || !password.value) {
         errorMessage.value = 'Must input email or password';
         return;
     }
-
     errorMessage.value = '';
 
     router.post('/login', {
@@ -523,35 +832,21 @@ function handleLogin() {
             errorMessage.value = errors.email || errors.password || 'Invalid credentials';
         },
         onSuccess: () => {
-            // Redirect will happen automatically if Inertia login route does it
+            // Redirect happens automatically if Inertia login route does it
         }
     });
 }
+
+
 function handleSignUp() {
-    if (!email.value || !password.value || !confirmPassword.value) {
-        errorMessage.value = 'Please fill in all required fields.';
-        return;
-    }
-
-    // Simple email format check
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email.value)) {
-        errorMessage.value = 'Please enter a valid email address.';
-        return;
-    }
-
-    if (password.value !== confirmPassword.value) {
-        errorMessage.value = 'Passwords do not match.';
-        return;
-    }
-
-    errorMessage.value = '';
-    currentView.value = 'registrationDetails'; // move to name/birthday
-}
-
-function handleProfileSubmit() {
-    if (!name.value || !birthday.value) {
+    // Validate all signup fields in one go
+    if (!fullName.value || !birthday.value || !email.value || !password.value || !verifyPassword.value) {
         errorMessage.value = 'Please fill in all fields';
+        return;
+    }
+
+    if (password.value !== verifyPassword.value) {
+        errorMessage.value = 'Passwords do not match';
         return;
     }
 
@@ -564,38 +859,32 @@ function handleProfileSubmit() {
     errorMessage.value = '';
 
     router.post('/register', {
+        name: fullName.value,
+        birthday: birthday.value,
         email: email.value,
         password: password.value,
-        password_confirmation: confirmPassword.value, // ✅ use the actual confirmPassword
-        name: name.value,
-        birthday: birthday.value,
+        password_confirmation: verifyPassword.value,
     }, {
         onError: (errors) => {
             errorMessage.value = errors.email || errors.password || errors.name || errors.birthday || 'Something went wrong';
         },
         onSuccess: () => {
-            currentView.value = 'login'; // Move to login page after successful sign-up
+            currentView.value = 'login'; // Redirect to login after successful signup
+            clearFields();
         }
     });
 }
 
-
 function continueWithGoogle() {
     window.location.href = '/auth/redirect/google';
 }
+
 function clearFields() {
     email.value = '';
     password.value = '';
-    name.value = '';
+    verifyPassword.value = ''; // clear new field too
+    fullName.value = '';
     birthday.value = '';
     errorMessage.value = '';
 }
 </script>
-
-
-<style>
-body {
-    background: #000;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-}
-</style>
