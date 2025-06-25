@@ -131,7 +131,7 @@
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
                         <img src="/Photos/Zach.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
                         <span class="font-medium">Zach</span>
-                        <span class="text-sm text-white/70">CTO</span>
+                        <span class="text-sm text-white/70">Developer</span>
                         </div>
                         <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
                         <img src="/Photos/Xytha.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
