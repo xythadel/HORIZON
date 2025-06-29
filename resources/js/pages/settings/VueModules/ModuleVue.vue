@@ -167,7 +167,6 @@ export default {
       currentTopicIndex: 0,
       topics: [],
       PostTest: [],
-      PreTest: [],
       lessons: [],
       preTestCompleted: false,
       postTestDisplay: false,
