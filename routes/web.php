@@ -46,7 +46,9 @@ Route::get('/sandpit', function () {
     return Inertia::render('sandpit');
 })->name('sandpit');
 
-
+Route::get('/badges', function () {
+    return Inertia::render('badges');
+})->name('badges');
 
 Route::get('/quizlara', function () {
     return Inertia::render('settings/LaraModules/QuizLara');
@@ -54,10 +56,13 @@ Route::get('/quizlara', function () {
 
 
 Route::post('/logout', function () {
-    \Illuminate\Support\Facades\Auth::logout();
-    return redirect('/'); // Or '/signup' if you prefer
-});
+    Auth::logout();
 
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+
+    return redirect('/'); 
+});
 
 //Route::middleware(['auth'])->group(function () {
     //Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');

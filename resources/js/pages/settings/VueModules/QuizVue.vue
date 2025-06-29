@@ -73,7 +73,6 @@ export default {
     submitAnswers() {
       console.log("Submitted answers:", this.userAnswers);
       alert("Quiz completed!");
-      // You can use axios.post to send this to your Laravel backend
     }
   }
 };
