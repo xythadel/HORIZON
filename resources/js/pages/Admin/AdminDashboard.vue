@@ -413,14 +413,14 @@ const reportResults = ref(null)
 const fieldsVisible = ref(false);
 const newBadge = ref({ title: '', description: '', image: '' })
 const badges = ref([])
-const fetchReport = async (type) => {
-  try {
-    const res = await axios.get(`/api/reports/${type}`)
-    reportResults.value = res.data
-  } catch (err) {
-    reportResults.value = { error: 'Failed to load report.' }
-  }
-}
+// const fetchReport = async (type) => {
+//   try {
+//     const res = await axios.get(`/api/reports/${type}`)
+//     reportResults.value = res.data
+//   } catch (err) {
+//     reportResults.value = { error: 'Failed to load report.' }
+//   }
+// }
 
 const downloadPdf = async (type) => {
   try {
@@ -469,27 +469,27 @@ const fetchAllTopics = async () => {
   allTopics.value = res.data
 }
 
-const uploadImage = async (file) => {
-  const formData = new FormData();
-  formData.append('image', file);
+// const uploadImage = async (file) => {
+//   const formData = new FormData();
+//   formData.append('image', file);
 
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+//   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-  const response = await fetch('/upload-image', {
-    method: 'POST',
-    headers: {
-      'X-CSRF-TOKEN': csrfToken
-    },
-    body: formData
-  });
+//   const response = await fetch('/upload-image', {
+//     method: 'POST',
+//     headers: {
+//       'X-CSRF-TOKEN': csrfToken
+//     },
+//     body: formData
+//   });
 
-  if (!response.ok) {
-    throw new Error('Upload failed');
-  }
+//   if (!response.ok) {
+//     throw new Error('Upload failed');
+//   }
 
-  const data = await response.json();
-  return data.url;
-};
+//   const data = await response.json();
+//   return data.url;
+// };
 const createStandaloneTopicForCourse = async (courseId) => {
   const course = courses.value.find(c => c.id === courseId)
   const isLaravel = course.name === 'Laravel Frameworks'
