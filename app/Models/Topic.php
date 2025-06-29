@@ -31,4 +31,8 @@ class Topic extends Model
     {
     return $this->hasMany(Quiz::class);
     }
+    public function lessons()
+    {
+        return $this->hasMany(Lesson::class);
+    }
 }

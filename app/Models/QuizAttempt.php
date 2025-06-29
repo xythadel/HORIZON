@@ -13,10 +13,12 @@ class QuizAttempt extends Model
         'user_id',
         'topic_id',
         'type',
+        'quiz_id',
         'score',
         'total',
         'passed',
         'attempted_at',
+        'time_taken'
     ];
 
     public function user()
@@ -27,5 +29,10 @@ class QuizAttempt extends Model
     public function topic()
     {
         return $this->belongsTo(Topic::class);
+    }
+
+    public function quiz()
+    {
+        return $this->belongsTo(Quiz::class);
     }
 }

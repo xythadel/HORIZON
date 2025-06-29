@@ -10,8 +10,10 @@
         </p>
         <nav class="flex flex-col space-y-6 pl-20 pt-14">
             <a href="/dashboard" class="hover:text-indigo-600">Dashboard</a>
+            <a href="/test" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Course</a> 
             <a href="/mylearning" class="hover:text-indigo-600">My Learning</a>
             <a href="/sandpit" class="hover:text-indigo-600 text-indigo-600 font-bold">Sandpit</a>
+            <a href="/badges" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Badge</a> 
             <a href="/settings" class="hover:text-indigo-600">Settings</a>
         </nav>
         <nav class="flex flex-col space-y-6 pl-20 pt-60">

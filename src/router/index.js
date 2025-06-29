@@ -21,18 +21,23 @@ import QuizVue from '@/pages/settings/VueModules/QuizVue.vue';
 import AdminDashboard from '@/pages/Admin/AdminDashboard.vue';
 import Dashboard from '@/pages/Dashboard.vue';
 import Login from '@/pages/auth/Login.vue';
+import Test from '@/pages/test';
 import path from 'path';
 import Sandpit from '@/pages/sandpit.vue';
+import Badgesasd from '@/pages/badges.vue'
+
 const routes = [
   { path: '/module-vue', component: ModuleVue },
   { path: '/module-lara', component: ModuleLara },
   { path: '/my-learning', component: MyLearning },
   { path: '/admin-dashboard', component: AdminDashboard },
   { path: '/dashboard', component: Dashboard },
+  { path: '/test', component: Test},
   { path: '/login', component: Login },
   { path: '/quiz-vue', component: QuizVue },
-  { path: '/sandpit', component: Sandpit},
-  { path: '/quiz-vue', component: QuizVue }
+  { path: '/sandpit', component: Badgesasd},
+  { path: '/quiz-vue', component: QuizVue },
+  { path: '/badges', component: Badgesasd },
 ];
 const router = createRouter({
   history: createWebHistory(),
