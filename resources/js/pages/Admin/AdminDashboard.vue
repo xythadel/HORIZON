@@ -12,8 +12,17 @@
           <button @click="showSection = 'topics'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Manage Topics
           </button>
+          <button @click="showSection = 'lessons'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+            Lessons
+          </button>
           <button @click="showSection = 'quizzes'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Manage Quizzes
+          </button>
+          <button @click="showSection = 'badges'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+            Badge
+          </button>
+          <button @click="showSection = 'reports'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+            Reports
           </button>
         </nav>
       </div>
@@ -80,12 +89,7 @@
               </div>
               <div class="flex flex-col">
                 <label class="font-medium text-sm mb-1">Content<span class="text-red-500">*</span></label>
-                <!-- <textarea v-model="newTopics[course.id].content" placeholder="Describe the topic..." class="border p-2 rounded-md" rows="6" required></textarea> -->
-                 <QuillEditor
-                    v-model:content="newTopics[course.id].content"
-                    contentType="html"
-                    class="bg-white border rounded-md"
-                  />
+                
               </div>
               <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md">
                 <span v-if="newTopics[course.id].loading">Adding...</span>
@@ -176,13 +180,6 @@
             </select>
           </div>
           <div class="flex flex-col">
-            <label class="font-medium text-sm mb-1">Course</label>
-            <select v-model="newQuiz.course_id" class="border p-2 rounded" required>
-              <option disabled value="">-- Select Course --</option>
-              <option v-for="course in courses" :key="course.id" :value="course.id">{{ course.name }}</option>
-            </select>
-          </div>
-          <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Topic</label>
             <select v-model="newQuiz.topic_id" class="border p-2 rounded" required>
               <option disabled value="">-- Select Topic --</option>
@@ -193,25 +190,6 @@
             <input type="checkbox" v-model="newQuiz.is_published" />
             <label class="text-sm">Publish immediately</label>
           </div>
-          <!-- <div v-if="fieldsVisible" class="flex flex-col gap-y-2">
-            <label for="">Options</label>
-            <div class="flex items-center justify-start border rounded-md">
-              <div class="w-10 p-2 text-center bg-green-300">A.</div>
-              <div><input type="text" name="" class="w-full rounded-r-md border-none" style="--tw-ring-color:none;" id=""></div>
-            </div>
-            <div class="flex items-center justify-start border rounded-md">
-              <div class="w-10 p-2 text-center bg-green-300">B.</div>
-              <div><input type="text" name="" class="w-full rounded-r-md border-none" style="--tw-ring-color:none;" id=""></div>
-            </div>
-            <div class="flex items-center justify-start border rounded-md">
-              <div class="w-10 p-2 text-center bg-green-300">C.</div>
-              <div><input type="text" name="" class="w-full rounded-r-md border-none" style="--tw-ring-color:none;" id=""></div>
-            </div>
-            <div class="flex items-center justify-start border rounded-md">
-              <div class="w-10 p-2 text-center bg-green-300">D.</div>
-              <div><input type="text" name="" class="w-full rounded-r-md border-none" style="--tw-ring-color:none;" id=""></div>
-            </div>
-          </div> -->
           <div v-if="fieldsVisible" class="flex flex-col gap-y-2">
             <label>Options</label>
             <div v-for="(opt, index) in options" :key="index" class="flex items-center border rounded-md">
@@ -230,21 +208,138 @@
             <div>
               <h4 class="font-semibold">{{ quiz.title }}</h4>
               <p class="text-sm text-gray-600">{{ quiz.description }}</p>
-              <p class="text-xs text-gray-500">Course ID: {{ quiz.course_id }} | Topic ID: {{ quiz.topic_id }} | Published: {{ quiz.is_published }}</p>
+              <p class="text-xs text-gray-500">Type: {{ quiz.questionCategory }} | Topic ID: {{ quiz.topic_id }} | Published: {{ quiz.is_published }}</p>
             </div>
             <button @click="deleteQuiz(quiz.id)" class="text-red-600 hover:underline">Delete</button>
           </li>
         </ul>
       </div>
+
+      <div v-if="showSection === 'badges'" class="p-4 bg-white rounded shadow">
+        <h2 class="text-2xl font-bold mb-4">Add Badge</h2>
+        <form @submit.prevent="createBadge" class="space-y-4">
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Title</label>
+            <input v-model="newBadge.title" class="border p-2 rounded" required />
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Description</label>
+            <textarea v-model="newBadge.description" class="border p-2 rounded" required></textarea>
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Image URL</label>
+            <input v-model="newBadge.image" class="border p-2 rounded" required />
+          </div>
+          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Create Badge</button>
+        </form>
+        <div class="mt-6">
+          <h3 class="text-xl font-semibold mb-2">All Badges</h3>
+          <ul>
+            <li v-for="badge in badges" :key="badge.id" class="border p-3 mb-2 rounded bg-gray-50">
+              <img :src="badge.image" class="w-12 h-12" />
+              <div>
+                <h4 class="font-semibold">{{ badge.title }}</h4>
+                <p class="text-sm">{{ badge.description }}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div v-if="showSection === 'reports'" class="p-4 bg-white rounded shadow">
+        <h2 class="text-2xl font-bold mb-4">Reports</h2>
+        <div class="space-y-4">
+          <div v-for="type in reportTypes" :key="type" class="flex justify-between items-center border p-4 rounded">
+            <span class="capitalize">{{ type.replace('-', ' ') }} Report</span>
+            <div class="space-x-2">
+              <!-- <button @click="fetchReport(type)" class="bg-blue-600 text-white px-4 py-1 rounded">View</button> -->
+              <button @click="downloadPdf(type)" class="bg-green-600 text-white px-4 py-1 rounded">Download PDF</button>
+            </div>
+          </div>
+
+          <div v-if="reportResults" class="mt-6">
+            <pre class="bg-gray-100 p-4 rounded max-h-[600px] overflow-auto text-sm">{{ JSON.stringify(reportResults, null, 2) }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="showSection === 'lessons'" class="p-4 bg-white rounded shadow">
+        <h2 class="text-2xl font-bold mb-4">Manage Lessons</h2>
+        <div class="flex gap-4 mb-4">
+          <button
+            :class="lessonTab === 'vue' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'"
+            class="px-4 py-2 rounded"
+            @click="lessonTab = 'vue'"
+          >
+            Vue Lessons
+          </button>
+          <button
+            :class="lessonTab === 'laravel' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'"
+            class="px-4 py-2 rounded"
+            @click="lessonTab = 'laravel'"
+          >
+            Laravel Lessons
+          </button>
+        </div>
+
+        <div v-for="topic in filteredTopics" :key="topic.id" class="mb-6 border rounded shadow" >
+          <div class="p-4 bg-gray-100 flex justify-between items-center">
+            <div>
+              <h3 class="text-xl font-semibold">{{ topic.title }}</h3>
+            </div>
+            <button @click="toggleLesson(topic.id)" class="text-blue-600 font-medium">
+              {{ lessonToggles[topic.id] ? 'Hide' : 'Add/View Lessons' }}
+            </button>
+          </div>
+
+          <div v-if="lessonToggles[topic.id]" class="p-4 space-y-6">
+            <form @submit.prevent="createLesson(topic.id)" class="space-y-4">
+              <label class="block font-medium">Difficulty</label>
+              <select v-model="newLesson[topic.id].difficulty" class="border rounded p-2 w-full" required>
+                <option disabled value="">-- Select Difficulty --</option>
+                <option value="1">Beginner</option>
+                <option value="2">Intermediate</option>
+                <option value="3">Advanced</option>
+              </select>
+
+              <label class="block font-medium">Content</label>
+                <QuillEditor
+                  v-model:content="newLesson[topic.id].content"
+                  contentType="html"
+                  class="bg-white border rounded"
+                  toolbar="full"
+                />
+
+              <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                Add Lesson
+              </button>
+            </form>
+
+            <!-- Existing lessons list -->
+            <ul class="mt-4">
+              <li
+                v-for="lesson in lessonsByTopic[topic.id] || []"
+                :key="lesson.id"
+                class="border rounded p-4 mb-2 bg-gray-50"
+              >
+                <p class="text-sm text-gray-600">Difficulty: {{ difficultyLabel(lesson.difficulty) }}</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
     </main> 
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import axios from 'axios'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
+const lessonsByTopic = ref({})
+const newLesson = ref({})
+const lessonToggles = ref({})
 const users = ref([])
 const courses = ref([])
 const quizzes = ref([])
@@ -255,6 +350,7 @@ const expandedCourses = ref({})
 const errorMessages = ref({})
 const editingTopicId = ref(null)
 const showSection = ref('topics')
+const lessonTab = ref('vue')
 const options = ref(['', '', '', ''])
 const newQuiz = ref({
   title: '',
@@ -264,8 +360,75 @@ const newQuiz = ref({
   type: '',
   is_published: false
 })
-const fieldsVisible = ref(false);
+const filteredTopics = computed(() => {
+  return allTopics.value.filter(topic => {
+    if (lessonTab.value === 'vue') return topic.course_id === 2
+    if (lessonTab.value === 'laravel') return topic.course_id === 1
+    return true
+  })
+})
+const difficultyLabel = (val) => {
+  if (val === 1) return 'Beginner'
+  if (val === 2) return 'Intermediate'
+  if (val === 3) return 'Advanced'
+  return 'Unknown'
+}
+const toggleLesson = (topicId) => {
+  lessonToggles.value[topicId] = !lessonToggles.value[topicId]
+  if (lessonToggles.value[topicId]) fetchLessons(topicId)
+}
 
+const fetchLessons = async (topicId) => {
+  const res = await axios.get(`/api/lessons?topic_id=${topicId}`)
+  lessonsByTopic.value[topicId] = res.data
+  if (!newLesson.value[topicId]) {
+    newLesson.value[topicId] = { difficulty: '', content: '' }
+  }
+}
+
+const createLesson = async (topicId) => {
+  const data = {
+    topic_id: topicId,
+    difficulty: newLesson.value[topicId].difficulty,
+    content: newLesson.value[topicId].content,
+  }
+
+  try {
+    await axios.post('/api/lessons', data)
+    newLesson.value[topicId] = { difficulty: '', content: '' }
+    await fetchLessons(topicId)
+  } catch (e) {
+    alert('Failed to create lesson')
+    console.error(e)
+  }
+}
+const reportTypes = [
+  'course-completion',
+  'framework-scorecard',
+  'gamification',
+  'assessment',
+  'framework-comparison'
+]
+const reportResults = ref(null)
+const fieldsVisible = ref(false);
+const newBadge = ref({ title: '', description: '', image: '' })
+const badges = ref([])
+const fetchReport = async (type) => {
+  try {
+    const res = await axios.get(`/api/reports/${type}`)
+    reportResults.value = res.data
+  } catch (err) {
+    reportResults.value = { error: 'Failed to load report.' }
+  }
+}
+
+const downloadPdf = async (type) => {
+  try {
+    window.open(`/api/reports/export-pdf?type=${type}`, '_blank')
+  } catch (err) {
+    console.error('Failed to download PDF', err)
+  }
+}
 const fetchCourses = async () => {
   const res = await axios.get('/api/courses')
 courses.value = res.data
@@ -306,6 +469,27 @@ const fetchAllTopics = async () => {
   allTopics.value = res.data
 }
 
+const uploadImage = async (file) => {
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+  const response = await fetch('/upload-image', {
+    method: 'POST',
+    headers: {
+      'X-CSRF-TOKEN': csrfToken
+    },
+    body: formData
+  });
+
+  if (!response.ok) {
+    throw new Error('Upload failed');
+  }
+
+  const data = await response.json();
+  return data.url;
+};
 const createStandaloneTopicForCourse = async (courseId) => {
   const course = courses.value.find(c => c.id === courseId)
   const isLaravel = course.name === 'Laravel Frameworks'
@@ -316,7 +500,6 @@ const createStandaloneTopicForCourse = async (courseId) => {
       ? `/api/courses/${courseId}/laravel-topics`   
       : `/api/courses/${courseId}/topics`
     const response = await axios.post(postUrl, newTopics.value[courseId])
-    // Ensure course_id is present in the returned topic
     if (!response.data.course_id) {
       response.data.course_id = courseId
     }
@@ -397,11 +580,24 @@ watch(showSection, async (val) => {
 const toggleCourse = (courseId) => {
   expandedCourses.value[courseId] = !expandedCourses.value[courseId]
 }
+const fetchBadges = async () => {
+  const res = await axios.get('/api/badges')
+  badges.value = res.data
+}
+
+const createBadge = async () => {
+  await axios.post('/api/badges', newBadge.value)
+  await fetchBadges()
+  newBadge.value = { title: '', description: '', image: '' }
+}
 
 const logout = async () => {
   await axios.post('/logout')
   window.location.href = '/'
 }
-
-onMounted(fetchCourses)
+onMounted(() => {
+  fetchBadges();
+  fetchCourses();
+  fetchAllTopics();
+})
 </script>

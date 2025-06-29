@@ -73,28 +73,28 @@ class User extends Authenticatable
      * Calculate the user's topic completion percentage.
      */
     public function calculateTopicProgress()
-{
-    $totalTopics = Topic::count();
-    if ($totalTopics === 0) return 0;
+    {
+        $totalTopics = Topic::count();
+        if ($totalTopics === 0) return 0;
 
-    $completedTopics = $this->topicInteractions()
-        ->where('completed', true)
-        ->count();
+        $completedTopics = $this->topicInteractions()
+            ->where('completed', true)
+            ->count();
 
-    return round(($completedTopics / $totalTopics) * 100);
-}
+        return round(($completedTopics / $totalTopics) * 100);
+    }
 
-public function calculateQuizProgress()
-{
-    $totalQuizzes = Quiz::count();
-    if ($totalQuizzes === 0) return 0;
+    public function calculateQuizProgress()
+    {
+        $totalQuizzes = Quiz::count();
+        if ($totalQuizzes === 0) return 0;
 
-    $completedQuizzes = $this->quizInteractions()
-        ->where('completed', true)
-        ->count();
+        $completedQuizzes = $this->quizInteractions()
+            ->where('completed', true)
+            ->count();
 
-    return round(($completedQuizzes / $totalQuizzes) * 100);
-}
+        return round(($completedQuizzes / $totalQuizzes) * 100);
+    }
 
     /**
      * Calculate the user's overall progress
@@ -108,8 +108,18 @@ public function calculateQuizProgress()
         return round(($topicProgress + $quizProgress) / 2);
     }
     public function userCourses()
-{
-    return $this->hasMany(UserCourse::class);
-}
+    {
+        return $this->hasMany(UserCourse::class);
+    }
+
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class)->withPivot('claimed_at')->withTimestamps();
+    }
+
+    public function quizAttempts()
+    {
+        return $this->hasMany(\App\Models\QuizAttempt::class, 'user_id');
+    }
 
 }

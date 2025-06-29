@@ -16,67 +16,71 @@
           <span v-if="topics[index].unlocked && index < topics.length && topics[index + 1]?.unlocked" class="text-green-600">✓</span>
         </div>
       </nav>
-      <a href="test" class="absolute bottom-10 left-10 text-base font-normal text-zinc-800 hover:text-indigo-600">
+      <a href="dashboard" class="absolute bottom-10 left-10 text-base font-normal text-zinc-800 hover:text-indigo-600">
         <button class="mt-6 text-sm text-gray-600 hover:underline">&larr; Back</button>
       </a>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-10 overflow-y-auto">
+    <main class="flex-1 p-10">
       <div v-if="currentTopic">
         <!-- Pre Test -->
         <div v-if="!preTestCompleted">
-          <h1 class="text-4xl text-white">This is Pre Test</h1>
-          <h2 class="text-xl font-semibold text-white mb-4">Pre Quiz for: {{ currentTopic.title }}</h2>
+          <h1 class="text-4xl text-white">QUIZ</h1>
 
-          <ul class="mb-4 space-y-4">
-            <li v-for="(question, index) in PreTest" :key="index" class="bg-white text-black p-4 rounded shadow">
-              <p class="font-medium mb-2">{{ index + 1 }}. {{ question.description }}</p>
+          <div class="items-center flex justify-center gap-4 mb-4 w-full mt-[200px]">
+            <div v-if="PreTest.length && currentPreQuestionIndex < PreTest.length" class=" text-white p-10 rounded-xl w-full max-w-xl mx-auto border">
+              <p class="font-medium text-2xl mb-2">
+                Question {{ currentPreQuestionIndex + 1 }}:<br>
+                {{ PreTest[currentPreQuestionIndex].description }} ?
+              </p>
 
-              <div v-if="question.questionType === 'Choices'" v-for="(choice, i) in question.choices" :key="i" class="ml-4">
-                <label class="block">
+              <!-- Choices -->
+              <div v-if="PreTest[currentPreQuestionIndex].questionType === 'Choices'" class="bg-[#5A5A5A] p-8 rounded-2xl">
+                <label v-for="(choice, i) in PreTest[currentPreQuestionIndex].choices" :key="i" class="flex items-center gap-4">
                   <input
                     type="radio"
-                    :name="'pre-q' + index"
+                    :name="'pre-question'"
                     :value="choice"
-                    v-model="question.userAnswer"
-                    @change="checkAnswer(question)"
+                    v-model="PreTest[currentPreQuestionIndex].userAnswer"
+                    @change="onAnswerPre"
                   />
                   {{ choice }}
                 </label>
               </div>
 
-              <div v-else-if="question.questionType === 'Blank'" class="ml-4">
+              <!-- Fill in the blank -->
+              <div v-else-if="PreTest[currentPreQuestionIndex].questionType === 'Blank'" class="flex flex-col justify-end items-end">
                 <input
                   type="text"
-                  v-model="question.userAnswer"
-                  class="border p-1 rounded w-1/2"
+                  class="border p-1 rounded w-full text-black"
+                  v-model="PreTest[currentPreQuestionIndex].userAnswer"
                   placeholder="Type your answer..."
-                  @input="checkAnswer(question)"
+                  @keydown.enter="onAnswerPre"
                 />
+                <button @click="onAnswerPre" class="mt-2 bg-[#4AC887] text-black px-4 py-2 rounded-full w-32">Next</button>
               </div>
+            </div>
 
-              <div v-if="question.userAnswer">
-                <span v-if="question.isCorrect" class="text-green-600 font-semibold">Correct!</span>
-                <span v-else class="text-red-600 font-semibold">Incorrect</span>
-              </div>
-            </li>
-          </ul>
+            <!-- When All Questions Are Done -->
+            <div v-else-if="PreTest.length && currentPreQuestionIndex >= PreTest.length" class="border text-center p-10 w-1/3 rounded-2xl">
+              <p class="text-white text-xl mb-4">You completed all Pre-Test questions.</p>
+              <button @click="submitQuiz('pre')" class="bg-green-600 text-white px-4 py-2 rounded mt-4">Submit Pre-Test</button>
+            </div>
 
-          <button @click="submitQuiz('pre')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
-            Submit Pre-Test
-          </button>
+          </div>
         </div>
-
-        <!-- Topic Content -->
         <div v-if="ModuleTopic">
           <h1 class="text-2xl font-bold mb-1 text-white">{{ currentTopic.title }}</h1>
           <p class="text-sm text-gray-300 mb-6">{{ currentTopic.module_name }}</p>
-          <div class="text-sm text-gray-300 mb-6" v-html="currentTopic.content"></div>
-          <button @click="startPostTest" class="py-3 bg-green-600 rounded w-72 text-white">Start Post Test</button>
-
-          <div v-html="formattedContent" class="topic-content text-white leading-relaxed max-h-64 overflow-y-auto pr-2"></div>
-
+          <div v-if="lessons.length" class="h-[700px] overflow-auto scrollbar-w-1">
+            <div v-for="(lesson, i) in lessons" :key="lesson.id" class="bg-zinc-700 text-white p-6 rounded-xl mb-4">
+              <div v-html="lesson.content" class="leading-relaxed text-white"></div>
+            </div>
+          </div>
+          <div class="mt-5 flex justify-end">
+            <button @click="startPostTest" class="py-3 bg-green-600 rounded-full w-72 text-white">Start Post Test</button>
+          </div>
           <div v-if="currentTopic.code" class="bg-gray-900 text-green-300 p-4 rounded my-4 font-mono">
             <pre>{{ currentTopic.code }}</pre>
           </div>
@@ -84,45 +88,66 @@
 
         <!-- Post Test -->
         <div v-if="postTestDisplay">
-          <h1 class="text-4xl text-white">This is Post Test</h1>
-          <h2 class="text-xl font-semibold text-white mb-4">Post Quiz for: {{ currentTopic.title }}</h2>
+          <h1 class="text-4xl text-white">QUIZ</h1>
 
-          <ul class="mb-4 space-y-4">
-            <li v-for="(question, index) in PostTest" :key="index" class="bg-white text-black p-4 rounded shadow">
-              <p class="font-medium mb-2">{{ index + 1 }}. {{ question.description }}</p>
+          <div class="items-center flex justify-center gap-4 mb-4 w-full mt-[200px]">
+            <div v-if="PostTest.length && currentPostQuestionIndex < PostTest.length" class=" text-white p-10 rounded-xl w-full max-w-xl mx-auto border">
+              <p class="font-medium text-2xl mb-2">
+                Question {{ currentPostQuestionIndex + 1 }}:<br>
+                {{ PostTest[currentPostQuestionIndex].description }} ?
+              </p>
 
-              <div v-if="question.questionType === 'Choices'" v-for="(choice, i) in question.choices" :key="i" class="ml-4">
-                <label class="block">
+              <!-- Choices -->
+              <div v-if="PostTest[currentPostQuestionIndex].questionType === 'Choices'" class="bg-[#5A5A5A] p-8 rounded-2xl">
+                <label v-for="(choice, i) in PostTest[currentPostQuestionIndex].choices" :key="i" class="flex items-center gap-4">
                   <input
                     type="radio"
-                    :name="'post-q' + index"
+                    :name="'Post-question'"
                     :value="choice"
-                    v-model="question.userAnswer"
-                    @change="checkAnswer(question)"
+                    v-model="PostTest[currentPostQuestionIndex].userAnswer"
+                    @change="onAnswerPost"
                   />
                   {{ choice }}
                 </label>
               </div>
 
-              <div v-else-if="question.questionType === 'Blank'" class="ml-4">
+              <!-- Fill in the blank -->
+              <div v-else-if="PostTest[currentPostQuestionIndex].questionType === 'Blank'" class="flex flex-col justify-end items-end">
                 <input
                   type="text"
-                  v-model="question.userAnswer"
-                  class="border p-1 rounded w-1/2"
+                  class="border p-1 rounded w-full text-black"
+                  v-model="PostTest[currentPostQuestionIndex].userAnswer"
                   placeholder="Type your answer..."
-                  @input="checkAnswer(question)"
+                  @keydown.enter="onAnswerPost"
                 />
+                <button @click="onAnswerPost" class="mt-2 bg-[#4AC887] text-black px-4 py-2 rounded-full w-32">Next</button>
               </div>
+            </div>
 
-              <div v-if="question.userAnswer">
-                <span v-if="question.isCorrect" class="text-green-600 font-semibold">Correct!</span>
-                <span v-else class="text-red-600 font-semibold">Incorrect</span>
-              </div>
-            </li>
-          </ul>
-
-          <button @click="submitQuiz('post')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
-            Submit Post-Test
+            <!-- When All Questions Are Done -->
+            <div v-else-if="PostTest.length && currentPostQuestionIndex >= PostTest.length" class="border text-center p-10 w-1/3 rounded-2xl">
+              <p class="text-white text-xl mb-4">You completed all Post-Test questions.</p>
+              <button @click="submitQuiz('post')" class="bg-green-600 text-white px-4 py-2 rounded mt-4">Submit Post-Test</button>
+            </div>
+          </div>
+        </div>
+        <div v-if="quizCompleted && postTestResult" class="text-center mt-10 text-white">
+          <p class="text-2xl mb-6">
+            You {{ postTestResult === 'pass' ? 'passed' : 'did not pass' }} the post-test.
+          </p>
+          <button
+            v-if="postTestResult === 'pass'"
+            @click="goToNextTopic"
+            class="bg-green-600 px-6 py-3 rounded-full text-white text-lg"
+          >
+            Continue to Next Topic
+          </button>
+          <button
+            v-else
+            @click="retryLessons"
+            class="bg-red-600 px-6 py-3 rounded-full text-white text-lg"
+          >
+            Retry from First Lesson
           </button>
         </div>
       </div>
@@ -143,9 +168,19 @@ export default {
       topics: [],
       PostTest: [],
       PreTest: [],
+      lessons: [],
       preTestCompleted: false,
       postTestDisplay: false,
+      postTestResult: null,
+      quizCompleted: false,
       ModuleTopic: false,
+      timer: null,
+      startTime: null,
+      elapsedTime: 0, 
+      PreTest: [],
+      currentPreQuestionIndex: 0,
+      currentPostQuestionIndex: 0,
+      selectedDifficulty: 1,
     };
   },
   computed: {
@@ -160,9 +195,73 @@ export default {
     },
   },
   mounted() {
-    this.fetchTopics().then(() => this.fetchPreTest());
+    this.fetchTopics().then(() => {
+      this.fetchPreTest().then(() => {
+        this.startTimer();
+      });
+    });
   },
   methods: {
+    onAnswerPre() {
+      const question = this.PreTest[this.currentPreQuestionIndex];
+      if (!question.userAnswer) return;
+
+      question.isCorrect =
+        question.questionType === 'Blank'
+          ? question.userAnswer.trim().toLowerCase() === question.answer.trim().toLowerCase()
+          : question.userAnswer === question.answer;
+
+      setTimeout(() => {
+        this.currentPreQuestionIndex++;
+      }, 300);
+    },
+
+    onAnswerPost() {
+      const question = this.PostTest[this.currentPostQuestionIndex];
+      if (!question.userAnswer) return;
+
+      question.isCorrect =
+        question.questionType === 'Blank'
+          ? question.userAnswer.trim().toLowerCase() === question.answer.trim().toLowerCase()
+          : question.userAnswer === question.answer;
+
+      setTimeout(() => {
+        this.currentPostQuestionIndex++;
+      }, 300);
+    },
+    async fetchLessons() {
+      const topicId = this.currentTopic?.id;
+      if (!topicId) return;
+
+      const res = await fetch(`/api/topics/${topicId}/lessons`);
+      const allLessons = await res.json();
+
+      // Filter based on selectedDifficulty
+      this.lessons = allLessons.filter(lesson => lesson.difficulty === this.selectedDifficulty);
+    },
+    async goToNextTopic() {
+      const nextIndex = this.currentTopicIndex + 1;
+      if (nextIndex >= this.topics.length) return;
+
+      this.currentTopicIndex = nextIndex;
+      this.preTestCompleted = true;
+      this.ModuleTopic = true;
+      this.postTestDisplay = false;
+      this.quizCompleted = false;
+      this.postTestResult = null;
+
+      await this.fetchLessons();
+    },
+
+    async retryLessons() {
+      this.selectedDifficulty = 1;
+      this.ModuleTopic = true;
+      this.postTestDisplay = false;
+      this.quizCompleted = false;
+      this.postTestResult = null;
+
+      await this.fetchLessons();
+    },
     async fetchTopics() {
       const res = await fetch(`/api/courses/2/topics`);
       const topics = await res.json();
@@ -188,8 +287,10 @@ export default {
     async fetchPreTest() {
       const topicId = this.currentTopic?.id;
       if (!topicId) return;
+
       const res = await fetch(`/api/displayPreQuiz/${topicId}`);
       const questions = await res.json();
+
       const enriched = await Promise.all(
         questions.map(async q => {
           if (q.questionType === 'Choices') {
@@ -200,15 +301,20 @@ export default {
           return { ...q, userAnswer: '', isCorrect: false };
         })
       );
+
       this.PreTest = enriched;
     },
+
     async fetchPostTest() {
       const topicId = this.currentTopic?.id;
       if (!topicId) return;
+
       const res = await fetch(`/api/displayPostQuiz/${topicId}`);
       const questions = await res.json();
+      const filtered = questions.filter(q => q.difficulty === this.selectedDifficulty);
+
       const enriched = await Promise.all(
-        questions.map(async q => {
+        filtered.map(async q => {
           if (q.questionType === 'Choices') {
             const optRes = await fetch(`/api/options/by-question/${q.id}`);
             const options = await optRes.json();
@@ -217,42 +323,64 @@ export default {
           return { ...q, userAnswer: '', isCorrect: false };
         })
       );
+
       this.PostTest = enriched;
     },
+
     checkAnswer(q) {
       if (!q || !q.answer) return;
       q.isCorrect = q.questionType === 'Blank'
         ? q.userAnswer.trim().toLowerCase() === q.answer.trim().toLowerCase()
         : q.userAnswer === q.answer;
     },
+
     async submitQuiz(type) {
+      this.stopTimer();
+
       const testData = type === 'pre' ? this.PreTest : this.PostTest;
       const score = testData.filter(q => q.isCorrect).length;
       const total = testData.length;
       const passed = score >= Math.ceil(total * 0.6);
 
-      const payload = {
-        user_id: this.user.id,
-        topic_id: this.currentTopic.id,
-        type,
-        score,
-        total,
-        passed,
-        timestamp: new Date().toISOString(),
-      };
+      let difficulty = 1;
+      const percentage = score / total;
 
-      await fetch('/api/recordAttempt', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+      if (percentage === 1) {
+        difficulty = 3;
+      } else if (percentage >= 0.5) {
+        difficulty = 2;
+      }
+      const attempts = testData.map((q, index) => {
+        return {
+          user_id: this.user.id,
+          topic_id: this.currentTopic.id,
+          quiz_id: q.id,
+          type,
+          score: q.isCorrect ? 1 : 0,
+          total: 1,
+          passed: q.isCorrect ? true : false,
+          difficulty: q.difficulty || this.selectedDifficulty,
+          time_taken: this.elapsedTime,
+          timestamp: new Date().toISOString(),
+        };
       });
+      for (const attempt of attempts) {
+        await fetch('/api/recordAttempt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(attempt),
+        });
+      }
 
       if (type === 'pre') {
         this.preTestCompleted = true;
         this.ModuleTopic = true;
+        this.selectedDifficulty = difficulty;
+        await this.fetchLessons();
       } else {
         this.postTestDisplay = false;
         this.quizCompleted = true;
+        this.postTestResult = passed ? 'pass' : 'fail';
 
         if (passed && this.currentTopicIndex + 1 < this.topics.length) {
           this.topics[this.currentTopicIndex + 1].unlocked = true;
@@ -260,25 +388,61 @@ export default {
       }
     },
 
+    startTimer() {
+      this.stopTimer(); // Make sure no previous timer is running
+      this.startTime = Date.now();
+      this.elapsedTime = 0;
+
+      this.timer = setInterval(() => {
+        this.elapsedTime = Math.floor((Date.now() - this.startTime) / 1000);
+      }, 1000);
+    },
+
+    stopTimer() {
+      clearInterval(this.timer);
+      this.timer = null;
+    },
+
+    resetTimer() {
+      this.elapsedTime = 0;
+      this.startTime = null;
+    },
+
     goToTopic(index) {
       const topic = this.topics[index];
       if (!topic.unlocked) return;
+      this.currentPreQuestionIndex = 0;
+      this.currentPostQuestionIndex = 0;
+      this.stopTimer();
+      this.resetTimer();
 
       this.currentTopicIndex = index;
       this.preTestCompleted = false;
       this.ModuleTopic = false;
       this.postTestDisplay = false;
-      this.fetchPreTest();
+
+      this.fetchPreTest().then(() => {
+        this.startTimer();
+      });
+
+      this.fetchLessons();
     },
+
     startPostTest() {
       this.ModuleTopic = false;
+
+      this.stopTimer();
+      this.resetTimer();
+
       this.fetchPostTest().then(() => {
         this.postTestDisplay = true;
+        this.startTimer();
       });
     },
   },
 };
 </script>
+
 
 <style scoped>
 .topic-content {
