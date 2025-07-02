@@ -17,7 +17,7 @@
       </nav>
 
       <nav class="flex flex-col space-y-6 pl-20 pt-60">
-        <a href="#" @click.prevent="showLogoutModal = true" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Logout</a>
+        <a href="/logout" @click.prevent="showLogoutModal = true" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Logout</a>
       </nav>
     </aside>
 
