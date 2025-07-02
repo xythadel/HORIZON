@@ -33,7 +33,6 @@ class TopicController extends Controller
 {
     $validated = $request->validate([
         'title' => 'required|string|max:255',
-        'content' => 'required|string',
         'module_name' => 'required|string|max:255',
 
     ]);
@@ -42,7 +41,6 @@ class TopicController extends Controller
 
     $topic = new Topic();
     $topic->title = $validated['title'];
-    $topic->content = $validated['content'];
     $topic->module_name = $validated['module_name'];
     $topic->course_id = $course_id;;
     $topic->save();
@@ -72,47 +70,41 @@ class TopicController extends Controller
      */
     public function update(Request $request, Topic $topic)
     {
-       $request->validate([
+        $request->validate([
         'title' => 'required|string|max:255',
-        'content' => 'required|string',
         'module_name' => 'required|string|max:255',
     ]);
 
     $topic->update([
         'title' => $request->title,
-        'content' => $request->content,
         'module_name' => $request->module_name,
     ]);
 
     return response()->json(['message' => 'Topic updated successfully.', 'topic' => $topic]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Topic $topic)
     {
-          Log::info('Deleting topic:', ['id' => $topic->id]);
+        Log::info('Deleting topic:', ['id' => $topic->id]);
 
-    // Reset last_topic_id in user_courses for any user pointing to this topic
-    DB::table('user_courses')
-        ->where('last_topic_id', $topic->id)
-        ->update(['last_topic_id' => null]);
 
-    $topic->delete();
+        DB::table('user_courses')
+            ->where('last_topic_id', $topic->id)
+            ->update(['last_topic_id' => null]);
 
-    return response()->json(['message' => 'Topic deleted successfully.']);
+        $topic->delete();
+
+        return response()->json(['message' => 'Topic deleted successfully.']);
     }
 
     public function vueTopics()
     {   
-    $topics = Topic::where('course_id', 1)->get();
-    return view('admin.topics.vue', compact('topics'));
+        $topics = Topic::where('course_id', 1)->get();
+        return view('admin.topics.vue', compact('topics'));
     }
     public function getTopicsByCourse($id)
     {
-    // Return all topics for the given course ID
-    $topics = \App\Models\Topic::where('course_id', $id)->get();
-    return response()->json($topics);
+        $topics = \App\Models\Topic::where('course_id', $id)->get();
+        return response()->json($topics);
     }
 }

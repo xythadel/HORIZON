@@ -39,6 +39,7 @@ class LessonController extends Controller
 
         return response()->json($lesson, 201);
     }
+    
 
     public function show($id)
     {
