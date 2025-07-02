@@ -11,10 +11,8 @@ class Topic extends Model
 
     protected $fillable = [
         'title',
-        'content',
         'course_id',
-        'module_name', // Assuming you want to track the module name
-         // make sure this exists in your topics table
+        'module_name',
     ];
 
     public function course()
