@@ -170,7 +170,7 @@
             <input v-model="newQuiz.title" class="border p-2 rounded" required />
           </div>
           <div class="flex flex-col">
-            <label class="font-medium text-sm mb-1">Description</label>
+            <label class="font-medium text-sm mb-1">Question</label>
             <textarea v-model="newQuiz.description" class="border p-2 rounded"></textarea>
           </div>
           <div class="flex flex-col">
@@ -362,14 +362,14 @@
             class="px-4 py-2 rounded"
             @click="lessonTab = 'vue'"
           >
-            Vue Lessons
+            Laravel Lessons
           </button>
           <button
             :class="lessonTab === 'laravel' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'"
             class="px-4 py-2 rounded"
             @click="lessonTab = 'laravel'"
           >
-            Laravel Lessons
+            Vue Lessons
           </button>
         </div>
 
