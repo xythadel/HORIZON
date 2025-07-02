@@ -22,6 +22,21 @@ class BadgeController extends Controller
 
         return Badge::create($request->all());
     }
+    
+    public function update(Request $request, $id)
+    {
+        $badge = Badge::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'required|string',
+        ]);
+
+        $badge->update($validated);
+
+        return response()->json(['message' => 'Badge updated successfully.', 'badge' => $badge]);
+    }
     public function check($id)
     {
         $user = User::with('badges')->findOrFail($id);

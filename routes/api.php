@@ -109,7 +109,7 @@ Route::get('/reports/framework-scorecard', [BadgeController::class, 'generateFra
 
 //Working
 Route::get('/reports/gamification', [BadgeController::class, 'generateGamificationReport']);
-
+Route::put('/badges/{id}', [BadgeController::class, 'update']);
 //Working
 Route::get('/reports/assessment', [BadgeController::class, 'generateAssessmentReport']);
 
@@ -121,7 +121,7 @@ Route::get('/reports/export-pdf', [BadgeController::class, 'exportReportToPdf'])
 
 Route::apiResource('lessons', LessonController::class);
 Route::get('/topics/{id}/lessons', [LessonController::class, 'byTopic']);
-
+Route::put('/lessons/{id}', [LessonController::class, 'update']);
 Route::post('/compile', [CompilerController::class, 'runCode']);
 Route::post('/simulate-laravel', function (Illuminate\Http\Request $request) {
     $code = $request->input('code');

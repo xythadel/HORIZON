@@ -80,16 +80,12 @@
           <div v-if="expandedCourses[course.id]" class="p-4">
             <form @submit.prevent="createStandaloneTopicForCourse(course.id)" class="mb-4 w-full space-y-4">
               <div class="flex flex-col">
-                <label class="font-medium text-sm mb-1">Title<span class="text-red-500">*</span></label>
+                <label class="font-medium text-sm mb-1">Module Name <span class="text-red-500">*</span></label>
                 <input v-model="newTopics[course.id].title" placeholder="Enter topic title" class="border p-2 rounded-md" required />
               </div>
               <div class="flex flex-col">
-                <label class="font-medium text-sm mb-1">Module Name<span class="text-red-500">*</span></label>
+                <label class="font-medium text-sm mb-1">Topic Name <span class="text-red-500">*</span></label>
                 <input v-model="newTopics[course.id].module_name" placeholder="Enter module name" class="border p-2 rounded-md" required />
-              </div>
-              <div class="flex flex-col">
-                <label class="font-medium text-sm mb-1">Content<span class="text-red-500">*</span></label>
-                
               </div>
               <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md">
                 <span v-if="newTopics[course.id].loading">Adding...</span>
@@ -122,10 +118,6 @@
                     <label class="text-sm font-medium mb-1">Module Name</label>
                     <input v-model="topic.module_name" class="border p-2 rounded" />
                   </div>
-                  <div class="flex flex-col">
-                    <label class="text-sm font-medium mb-1">Content</label>
-                    <textarea v-model="topic.content" rows="4" class="border p-2 rounded resize-y"></textarea>
-                  </div>
                   <div class="flex gap-2">
                     <button @click="updateStandaloneTopic(topic)" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save</button>
                     <button @click="editingTopicId = null" class="text-gray-600 underline">Cancel</button>
@@ -142,24 +134,19 @@
         <h2 class="text-2xl font-bold mb-4">Quiz Management</h2>
         <form @submit.prevent="createQuiz" class="mb-6 space-y-4">
           <div class="flex flex-col">
-            <label class="font-medium text-sm mb-1">Title</label>
-            <input v-model="newQuiz.title" class="border p-2 rounded" required />
+            <label class="font-medium text-sm mb-1">Topic</label>
+            <select v-model="newQuiz.topic_id" class="border p-2 rounded" required>
+              <option disabled value="">-- Select Topic --</option>
+              <option v-for="topic in allTopics" :key="topic.id" :value="topic.id">{{ topic.title }}</option>
+            </select>
           </div>
           <div class="flex flex-col">
-            <label class="font-medium text-sm mb-1">Description</label>
-            <textarea v-model="newQuiz.description" class="border p-2 rounded"></textarea>
-          </div>
-          <div class="flex flex-col">
-            <label class="font-medium text-sm mb-1">Type</label>
+            <label class="font-medium text-sm mb-1">Quiz Type</label>
             <select name="type" id="" class="border p-2 rounded" v-model="newQuiz.questionType" @change="displayFields">
               <option value="">Select Type</option>
               <option value="Blank">Fill in the Blanks</option>
               <option value="Choices">Multiple Choice</option>
             </select>
-          </div>
-          <div class="flex flex-col">
-            <label class="font-medium text-sm mb-1">Answer</label>
-            <textarea v-model="newQuiz.answer" class="border p-2 rounded"></textarea>
           </div>
           <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Difficulty</label>
@@ -172,7 +159,6 @@
           </div>
           <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Category</label>
-            <!-- <textarea ></textarea> -->
             <select v-model="newQuiz.questionCategory" class="border p-2 rounded">
               <option value="">SELECT CATEGORY</option>
               <option value="Pre-test">Pre-test</option>
@@ -180,12 +166,19 @@
             </select>
           </div>
           <div class="flex flex-col">
-            <label class="font-medium text-sm mb-1">Topic</label>
-            <select v-model="newQuiz.topic_id" class="border p-2 rounded" required>
-              <option disabled value="">-- Select Topic --</option>
-              <option v-for="topic in allTopics" :key="topic.id" :value="topic.id">{{ topic.title }}</option>
-            </select>
+            <label class="font-medium text-sm mb-1">Title</label>
+            <input v-model="newQuiz.title" class="border p-2 rounded" required />
           </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Description</label>
+            <textarea v-model="newQuiz.description" class="border p-2 rounded"></textarea>
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Answer</label>
+            <textarea v-model="newQuiz.answer" class="border p-2 rounded"></textarea>
+          </div>
+          
+          
           <div class="flex items-center gap-2">
             <input type="checkbox" v-model="newQuiz.is_published" />
             <label class="text-sm">Publish immediately</label>
@@ -236,10 +229,24 @@
           <h3 class="text-xl font-semibold mb-2">All Badges</h3>
           <ul>
             <li v-for="badge in badges" :key="badge.id" class="border p-3 mb-2 rounded bg-gray-50">
-              <img :src="badge.image" class="w-12 h-12" />
-              <div>
-                <h4 class="font-semibold">{{ badge.title }}</h4>
-                <p class="text-sm">{{ badge.description }}</p>
+              <div class="flex flex-row gap-3 items-center">
+                <img :src="badge.image" class="w-12 h-12" />
+                <div>
+                  <h4 class="font-semibold">{{ badge.title }}</h4>
+                  <p class="text-sm">{{ badge.description }}</p>
+                </div>
+              </div>
+              <div v-if="editingBadgeId !== badge.id">
+                <div class="text-sm text-blue-600 underline cursor-pointer mt-1" @click="startEditingBadge(badge)">Edit</div>
+              </div>
+              <div v-else class="space-y-2 mt-5">
+                <input v-model="editBadge.title" class="border p-1 rounded w-full" />
+                <textarea v-model="editBadge.description" class="border p-1 rounded w-full"></textarea>
+                <input v-model="editBadge.image" class="border p-1 rounded w-full" />
+                <div class="flex gap-2">
+                  <button @click="updateBadge" class="bg-blue-600 text-white px-3 py-1 rounded">Save</button>
+                  <button @click="cancelEditingBadge" class="text-gray-600 underline">Cancel</button>
+                </div>
               </div>
             </li>
           </ul>
@@ -251,7 +258,7 @@
           <div v-for="type in reportTypes" :key="type" class="flex justify-between items-center border p-4 rounded">
             <span class="capitalize">{{ type.replace('-', ' ') }} Report</span>
             <div class="space-x-2">
-              <!-- <button @click="fetchReport(type)" class="bg-blue-600 text-white px-4 py-1 rounded">View</button> -->
+              <button @click="fetchReport(type)" class="bg-blue-600 text-white px-4 py-1 rounded">View</button>
               <button @click="downloadPdf(type)" class="bg-green-600 text-white px-4 py-1 rounded">Download PDF</button>
             </div>
           </div>
@@ -261,7 +268,92 @@
           </div>
         </div>
       </div>
-
+      <div v-if="modalVisible" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white w-full max-w-3xl p-6 rounded shadow-lg relative">
+          <button @click="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-black text-xl">&times;</button>
+          <h3 class="text-xl font-bold mb-4">{{ selectedReport.title }}</h3>
+          <div class="space-y-6 max-h-[600px] overflow-auto text-sm">
+            <div v-if="Array.isArray(selectedReport.data)">
+              <div v-for="(entry, index) in selectedReport.data" :key="index" class="space-y-4 border-b pb-4">
+                <div v-if="entry.user">
+                  <h4 class="font-semibold text-base">User: {{ entry.user }}</h4>
+                  <table v-if="entry.progress" class="w-full border border-collapse">
+                    <thead>
+                      <tr class="bg-gray-200">
+                        <th class="border p-2">Course</th>
+                        <th class="border p-2">Topics Complete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(p, i) in entry.progress" :key="i">
+                        <td class="border p-2">{{ p.course }}</td>
+                        <td class="border p-2">{{ p.progress ?? 'N/A' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <table v-else-if="entry.topics" class="w-full border border-collapse">
+                    <thead>
+                      <tr class="bg-gray-200">
+                        <th class="border p-2">Title</th>
+                        <th class="border p-2">Pre Avg</th>
+                        <th class="border p-2">Post Avg</th>
+                        <th class="border p-2">Gain</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(topic, i) in entry.topics" :key="i">
+                        <td class="border p-2">{{ topic.title }}</td>
+                        <td class="border p-2">{{ topic.pre_avg }}</td>
+                        <td class="border p-2">{{ topic.post_avg }}</td>
+                        <td class="border p-2">{{ topic.gain }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div v-else-if="entry.framework">
+                  <table class="w-full border border-collapse">
+                    <thead>
+                      <tr class="bg-gray-200">
+                        <th v-for="(val, key) in entry" :key="key" class="border p-2">
+                          {{ key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) }}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td v-for="(val, key) in entry" :key="key" class="border p-2">
+                          {{ val }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div v-else-if="entry.name && entry.email && entry.badges_earned_count !== undefined">
+                  <table class="w-full border border-collapse">
+                    <thead>
+                      <tr class="bg-gray-200">
+                        <th class="border p-2">Name</th>
+                        <th class="border p-2">Badges Earned</th>
+                        <th class="border p-2">Total Attempt</th>
+                        <th class="border p-2">Average Score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="border p-2">{{ entry.name }}</td>
+                        <td class="border p-2">{{ entry.badges_earned_count }}</td>
+                        <td class="border p-2">{{ entry.total_quizzes_taken }}</td>
+                        <td class="border p-2">{{ entry.average_score }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <p v-else class="text-gray-600">No data available for this report.</p>
+          </div>
+        </div>
+      </div>
       <div v-if="showSection === 'lessons'" class="p-4 bg-white rounded shadow">
         <h2 class="text-2xl font-bold mb-4">Manage Lessons</h2>
         <div class="flex gap-4 mb-4">
@@ -310,18 +402,30 @@
                 />
 
               <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
-                Add Lesson
+                Update Lesson
               </button>
             </form>
 
-            <!-- Existing lessons list -->
             <ul class="mt-4">
-              <li
-                v-for="lesson in lessonsByTopic[topic.id] || []"
-                :key="lesson.id"
-                class="border rounded p-4 mb-2 bg-gray-50"
-              >
+              <li v-for="lesson in lessonsByTopic[topic.id] || []" :key="lesson.id" class="border rounded p-4 mb-2 bg-gray-50 flex justify-between items-center">
                 <p class="text-sm text-gray-600">Difficulty: {{ difficultyLabel(lesson.difficulty) }}</p>
+                <div v-if="editingLessonId !== lesson.id">
+                  <!-- <div v-html="lesson.content" class="prose text-sm"></div> -->
+                  <button @click="startEditingLesson(lesson)" class="text-blue-600 text-sm mt-2">Edit</button>
+                </div>
+                <div v-else>
+                  <label class="text-sm font-medium mb-1">Content</label>
+                  <QuillEditor
+                    v-model:content="editLesson.content"
+                    contentType="html"
+                    class="bg-white border rounded"
+                    toolbar="full"
+                  />
+                  <div class="flex gap-2 mt-2">
+                    <button @click="updateLesson(topic.id)" class="bg-blue-600 text-white px-3 py-1 rounded">Save</button>
+                    <button @click="cancelEditingLesson" class="text-gray-600 underline">Cancel</button>
+                  </div>
+                </div>
               </li>
             </ul>
           </div>
@@ -344,6 +448,8 @@ const users = ref([])
 const courses = ref([])
 const quizzes = ref([])
 const allTopics = ref([])
+const modalVisible = ref(false)
+const selectedReport = ref({ title: '', data: {} })
 const standaloneTopics = ref({})
 const newTopics = ref({})
 const expandedCourses = ref({})
@@ -352,6 +458,10 @@ const editingTopicId = ref(null)
 const showSection = ref('topics')
 const lessonTab = ref('vue')
 const options = ref(['', '', '', ''])
+const editingBadgeId = ref(null)
+const editingLessonId = ref(null)
+const editLesson = ref({})
+const editBadge = ref({})
 const newQuiz = ref({
   title: '',
   description: '',
@@ -367,6 +477,65 @@ const filteredTopics = computed(() => {
     return true
   })
 })
+const fetchReport = async (type) => {
+  try {
+    const res = await axios.get(`/api/reports/${type}`)
+    selectedReport.value = {
+      title: `${type.replace('-', ' ')} Report`,
+      data: res.data
+    }
+    modalVisible.value = true
+  } catch (err) {
+    selectedReport.value = {
+      title: 'Error',
+      data: { message: 'Failed to load report.' }
+    }
+    modalVisible.value = true
+  }
+}
+const startEditingBadge = (badge) => {
+  editingBadgeId.value = badge.id
+  editBadge.value = { ...badge }
+}
+
+const cancelEditingBadge = () => {
+  editingBadgeId.value = null
+  editBadge.value = {}
+}
+const startEditingLesson = (lesson) => {
+  editingLessonId.value = lesson.id
+  editLesson.value = { ...lesson }
+}
+
+const cancelEditingLesson = () => {
+  editingLessonId.value = null
+  editLesson.value = {}
+}
+
+const updateLesson = async (topicId) => {
+  try {
+    await axios.put(`/api/lessons/${editingLessonId.value}`, editLesson.value)
+    await fetchLessons(topicId)
+    cancelEditingLesson()
+  } catch (e) {
+    alert('Failed to update lesson')
+    console.error(e)
+  }
+}
+const updateBadge = async () => {
+  try {
+    await axios.put(`/api/badges/${editingBadgeId.value}`, editBadge.value)
+    await fetchBadges()
+    cancelEditingBadge()
+  } catch (e) {
+    alert('Failed to update badge')
+    console.error(e)
+  }
+}
+const closeModal = () => {
+  modalVisible.value = false
+  selectedReport.value = { title: '', data: {} }
+}
 const difficultyLabel = (val) => {
   if (val === 1) return 'Beginner'
   if (val === 2) return 'Intermediate'
@@ -468,28 +637,6 @@ const fetchAllTopics = async () => {
   const res = await axios.get('/api/topics')
   allTopics.value = res.data
 }
-
-// const uploadImage = async (file) => {
-//   const formData = new FormData();
-//   formData.append('image', file);
-
-//   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-//   const response = await fetch('/upload-image', {
-//     method: 'POST',
-//     headers: {
-//       'X-CSRF-TOKEN': csrfToken
-//     },
-//     body: formData
-//   });
-
-//   if (!response.ok) {
-//     throw new Error('Upload failed');
-//   }
-
-//   const data = await response.json();
-//   return data.url;
-// };
 const createStandaloneTopicForCourse = async (courseId) => {
   const course = courses.value.find(c => c.id === courseId)
   const isLaravel = course.name === 'Laravel Frameworks'
