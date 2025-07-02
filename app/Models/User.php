@@ -11,9 +11,9 @@ use App\Models\QuizUserInteraction;
 use App\Models\Topic;
 use App\Models\Quiz;
 use App\Models\UserCourse;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-
-class User extends Authenticatable
+class User extends Authenticatable // implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
