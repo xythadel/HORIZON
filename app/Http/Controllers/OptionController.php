@@ -37,7 +37,7 @@ class OptionController extends Controller
 
     public function getOptionsByQuestionId($questionId)
     {
-        $options = Option::where('question_id', $questionId)->get();
+        $options = Option::where('question_id', $questionId)->get(['option_text']);
         return response()->json($options);
     }
 

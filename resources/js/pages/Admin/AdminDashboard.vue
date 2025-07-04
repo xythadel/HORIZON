@@ -12,9 +12,9 @@
           <button @click="showSection = 'topics'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Manage Topics
           </button>
-          <button @click="showSection = 'lessons'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+          <!-- <button @click="showSection = 'lessons'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Lessons
-          </button>
+          </button> -->
           <button @click="showSection = 'quizzes'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Manage Quizzes
           </button>
@@ -87,6 +87,21 @@
                 <label class="font-medium text-sm mb-1">Topic Name <span class="text-red-500">*</span></label>
                 <input v-model="newTopics[course.id].module_name" placeholder="Enter module name" class="border p-2 rounded-md" required />
               </div>
+              <label class="block font-medium">Difficulty</label>
+              <select v-model="newTopics[course.id].difficulty" class="border rounded p-2 w-full" required>
+                <option disabled value="">-- Select Difficulty --</option>
+                <option value="1">Beginner</option>
+                <option value="2">Intermediate</option>
+                <option value="3">Advanced</option>
+              </select>
+
+              <label class="block font-medium">Content</label>
+                <QuillEditor  
+                  v-model:content="newTopics[course.id].content"       
+                  contentType="html"
+                  class="bg-white border rounded"
+                  toolbar="full"
+                />
               <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md">
                 <span v-if="newTopics[course.id].loading">Adding...</span>
                 <span v-else>Add Topic</span>
@@ -118,6 +133,21 @@
                     <label class="text-sm font-medium mb-1">Module Name</label>
                     <input v-model="topic.module_name" class="border p-2 rounded" />
                   </div>
+                  <label class="block font-medium">Difficulty</label>
+                  <select v-model="topic.difficulty" class="border rounded p-2 w-full" required>
+                    <option disabled value="">-- Select Difficulty --</option>
+                    <option value="1">Beginner</option>
+                    <option value="2">Intermediate</option>
+                    <option value="3">Advanced</option>
+                  </select>
+
+                  <label class="block font-medium">Content</label>
+                    <QuillEditor  
+                      v-model:content="topic.content"       
+                      contentType="html"
+                      class="bg-white border rounded"
+                      toolbar="full"
+                    />
                   <div class="flex gap-2">
                     <button @click="updateStandaloneTopic(topic)" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save</button>
                     <button @click="editingTopicId = null" class="text-gray-600 underline">Cancel</button>
@@ -132,6 +162,22 @@
       <!-- Quizzes CRUD -->
       <div v-if="showSection === 'quizzes'" class="p-4 bg-white rounded shadow">
         <h2 class="text-2xl font-bold mb-4">Quiz Management</h2>
+        <div class="flex gap-4 mb-4">
+          <button
+            :class="quizTab === 'pretest' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'"
+            class="px-4 py-2 rounded"
+            @click="quizTab = 'pretest'"
+          >
+            Pre-test
+          </button>
+          <button
+            :class="quizTab === 'posttest' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'"
+            class="px-4 py-2 rounded"
+            @click="quizTab = 'posttest'"
+          >
+            Post-test
+          </button>
+        </div>
         <form @submit.prevent="createQuiz" class="mb-6 space-y-4">
           <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Topic</label>
@@ -149,23 +195,6 @@
             </select>
           </div>
           <div class="flex flex-col">
-            <label class="font-medium text-sm mb-1">Difficulty</label>
-            <select v-model="newQuiz.difficulty" class="border p-2 rounded">
-              <option value="">SELECT DIFFICULTY</option>
-              <option value="1">Beginner</option>
-              <option value="2">Intermediate</option>
-              <option value="3">Advance</option>
-            </select>
-          </div>
-          <div class="flex flex-col">
-            <label class="font-medium text-sm mb-1">Category</label>
-            <select v-model="newQuiz.questionCategory" class="border p-2 rounded">
-              <option value="">SELECT CATEGORY</option>
-              <option value="Pre-test">Pre-test</option>
-              <option value="Post-test">Post-test</option>
-            </select>
-          </div>
-          <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Title</label>
             <input v-model="newQuiz.title" class="border p-2 rounded" required />
           </div>
@@ -176,14 +205,7 @@
           <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Answer</label>
             <textarea v-model="newQuiz.answer" class="border p-2 rounded"></textarea>
-          </div>
-          
-          
-          <div class="flex items-center gap-2">
-            <input type="checkbox" v-model="newQuiz.is_published" />
-            <label class="text-sm">Publish immediately</label>
-          </div>
-          <div v-if="fieldsVisible" class="flex flex-col gap-y-2">
+            <div v-if="fieldsVisible" class="flex flex-col gap-y-2">
             <label>Options</label>
             <div v-for="(opt, index) in options" :key="index" class="flex items-center border rounded-md">
               <div class="w-10 p-2 text-center bg-green-300">
@@ -192,16 +214,44 @@
               <input v-model="options[index]" type="text" class="w-full rounded-r-md border-none" />
             </div>
           </div>
+            <button type="submit" class="bg-gray-100 text-black px-4 py-2 rounded mt-4">+</button>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="checkbox" v-model="newQuiz.is_published" />
+            <label class="text-sm">Publish immediately</label>
+          </div>
+          
 
-          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Create Quiz</button>
+          
         </form>
-
+        <div v-if="pendingQuizzes.length" class="mt-6">
+          <h4 class="text-lg font-bold mb-2">Quiz List</h4>
+          <ul class="mb-4">
+            <li v-for="(quiz, index) in pendingQuizzes.filter(q => q.questionCategory === (quizTab === 'pretest' ? 'Pre-test' : 'Post-test'))"
+              :key="index"
+              class="bg-gray-100 border p-3 rounded mb-2"
+            >
+              <strong>{{ quiz.title }}</strong> — {{ quiz.questionCategory }}
+            </li>
+          </ul>
+          <button @click="saveAllQuizzes" class="bg-blue-600 text-white px-4 py-2 rounded">
+            Save All Quizzes
+          </button>
+        </div>
         <ul>
-          <li v-for="quiz in quizzes" :key="quiz.id" class="border p-3 mb-2 rounded bg-gray-50 flex justify-between">
+          <li
+            v-for="quiz in quizzes.filter(q => q.questionCategory === (quizTab === 'pretest' ? 'Pre-test' : 'Post-test'))"
+            :key="quiz.id"
+            class="border p-3 mb-2 rounded bg-gray-50 flex justify-between"
+          >
             <div>
               <h4 class="font-semibold">{{ quiz.title }}</h4>
               <p class="text-sm text-gray-600">{{ quiz.description }}</p>
-              <p class="text-xs text-gray-500">Type: {{ quiz.questionCategory }} | Topic ID: {{ quiz.topic_id }} | Published: {{ quiz.is_published }}</p>
+              <p class="text-xs text-gray-500">
+                Type: {{ quiz.questionCategory }} |
+                Topic ID: {{ quiz.topic_id }} |
+                Published: {{ quiz.is_published }}
+              </p>
             </div>
             <button @click="deleteQuiz(quiz.id)" class="text-red-600 hover:underline">Delete</button>
           </li>
@@ -441,6 +491,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import axios from 'axios'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
+const quizTab = ref('pretest')
 const lessonsByTopic = ref({})
 const newLesson = ref({})
 const lessonToggles = ref({})
@@ -462,13 +513,14 @@ const editingBadgeId = ref(null)
 const editingLessonId = ref(null)
 const editLesson = ref({})
 const editBadge = ref({})
+const pendingQuizzes = ref([]);
 const newQuiz = ref({
   title: '',
   description: '',
-  course_id: '',
+  questionType: '',
   topic_id: '',
-  type: '',
-  is_published: false
+  is_published: false,
+  answer: '',
 })
 const filteredTopics = computed(() => {
   return allTopics.value.filter(topic => {
@@ -676,41 +728,47 @@ const deleteStandaloneTopic = async (id, courseId) => {
   standaloneTopics.value[courseId] = standaloneTopics.value[courseId].filter(t => t.id !== id)
 }
 
-const createQuiz = async () => {
-  try {
-    newQuiz.value.quizStatus = 'ACTIVE'
-    const res = await axios.post('/api/quizzes', newQuiz.value)
-    const quiz = res.data
-    quizzes.value.push(quiz)
+const createQuiz = () => {
+  const category = quizTab.value === 'pretest' ? 'Pre-test' : 'Post-test';
+  pendingQuizzes.value.push({
+    ...newQuiz.value,
+    questionCategory: category,
+    options: newQuiz.value.questionType === 'Choices' ? [...options.value] : [],
+    quizStatus: 'ACTIVE'
+  });
 
-    if (newQuiz.value.questionType === 'Choices') {
-      // Post options to the server
-      const optionPayload = {
-        question_id: quiz.id,
-        options: options.value.map(text => ({ option_text: text }))
-      }
-      await axios.post('/api/options/storeOptions', optionPayload)
-    }
-
-    // Reset form
-    newQuiz.value = {
-      title: '',
-      description: '',
-      course_id: '',
-      topic_id: '',
-      type: '',
-      is_published: false,
-      difficulty: '',
-      questionCategory: '',
-      quizStatus: ''
-    }
-    options.value = ['', '', '', '']
-  } catch (err) {
-    console.error(err)
+  newQuiz.value.title = '';
+  newQuiz.value.description = '';
+  newQuiz.value.answer = '';
+  if (newQuiz.value.questionType === 'Choices') {
+    options.value = ['', '', '', ''];
   }
-}
+};
 
+const saveAllQuizzes = async () => {
+  try {
+    for (const quiz of pendingQuizzes.value) {
+      const { options: quizOptions, ...quizData } = quiz;
+      const res = await axios.post('/api/quizzes', quizData);
+      const savedQuiz = res.data;
 
+      if (quiz.questionType === 'Choices' && quizOptions?.length) {
+        await axios.post('/api/options/storeOptions', {
+          question_id: savedQuiz.id,
+          options: quizOptions.map(text => ({ option_text: text }))
+        });
+      }
+
+      quizzes.value.push(savedQuiz);
+    }
+
+    pendingQuizzes.value = []; 
+    alert('All quizzes saved successfully!');
+  } catch (err) {
+    console.error(err);
+    alert('Failed to save some quizzes.');
+  }
+};
 const deleteQuiz = async (id) => {
   await axios.delete(`/api/quizzes/${id}`)
   quizzes.value = quizzes.value.filter(q => q.id !== id)

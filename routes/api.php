@@ -7,6 +7,7 @@ use App\Http\Controllers\LeaderboardsController;
 use App\Http\Controllers\LearningProgressController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\QuizAttemptController;
+use App\Http\Controllers\UserDifficultyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\TopicController;
@@ -62,6 +63,7 @@ Route::get('/quizzes', [QuizController::class, 'index']);
 Route::post('/quizzes', [QuizController::class, 'store']);
 Route::put('/quizzes/{quiz}', [QuizController::class, 'update']);
 Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy']);
+Route::get('/displayPretest', [QuizController::class, 'displayPretest']);
 
 // Nested Questions under a Quiz
 Route::get('/quizzes/{quiz}/questions', [QuestionController::class, 'index']);
@@ -92,7 +94,7 @@ Route::get('/leaderboard', [LeaderboardsController::class, 'index']);
 Route::get('/rating/{id}', [LeaderboardsController::class, 'displayRatings']);
 
 Route::post('/upload-image', [ImageUploadController::class, 'store'])->name('upload.image');
-
+Route::get('/user-topic-progress/{userId}/{courseId}', [QuizAttemptController::class, 'getCompletedTopics']);
 Route::get('/badges/check/{id}', [BadgeController::class, 'check']);
 Route::get('/badges/claimed/{id}', [BadgeController::class, 'claimed']);
 Route::post('/badges/claim/{id}', [BadgeController::class, 'claim']);
@@ -118,6 +120,12 @@ Route::get('/reports/framework-comparison', [BadgeController::class, 'generateFr
 
 // PDF Export Endpoint
 Route::get('/reports/export-pdf', [BadgeController::class, 'exportReportToPdf']);
+
+Route::post('/user-difficulty', [UserDifficultyController::class, 'store']);
+Route::get('/user-difficulty/{user_id}/{course_name}', [UserDifficultyController::class, 'show']);
+Route::get('/user-difficulty/{user_id}', [UserDifficultyController::class, 'index']);
+
+
 
 Route::apiResource('lessons', LessonController::class);
 Route::get('/topics/{id}/lessons', [LessonController::class, 'byTopic']);

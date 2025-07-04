@@ -13,6 +13,8 @@ class Topic extends Model
         'title',
         'course_id',
         'module_name',
+        'difficulty',
+        'content',
     ];
 
     public function course()

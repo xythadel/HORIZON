@@ -24,7 +24,7 @@ class QuizController extends Controller
             $query->where('topic_id', $request->topic_id);
         }
 
-        return $query->get(); // Return filtered quizzes
+        return $query->get();
     }
 
     /**
@@ -35,8 +35,6 @@ class QuizController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            // 'course_id' => 'required|exists:courses,id',
-            'difficulty' => 'required|integer|max:255',
             'questionCategory' => 'required|string|max:255',
             'quizStatus' => 'required|string|max:255',
             'topic_id' => 'required|exists:topics,id',
@@ -48,7 +46,7 @@ class QuizController extends Controller
         // Create the quiz
         $quiz = Quiz::create($validated);
 
-        return response()->json($quiz, 201); // Return the newly created quiz
+        return response()->json($quiz, 201);
     }
 
     /**
@@ -64,10 +62,27 @@ class QuizController extends Controller
             'is_published' => 'boolean',
         ]);
 
-        // Update the quiz
         $quiz->update($validated);
 
-        return response()->json($quiz); // Return the updated quiz
+        return response()->json($quiz);
+    }
+
+    public function displayPretest(Request $request)
+    {
+        $quizzes = Quiz::where('questionCategory', 'Pre-test')
+            ->with('topic', 'course')
+            ->get()
+            ->map(function ($quiz) {
+                return [
+                    'id' => $quiz->id,
+                    'description' => $quiz->description,
+                    'questionType' => $quiz->questionType,
+                    'choices' => json_decode($quiz->choices, true),
+                    'answer' => $quiz->answer,
+                ];
+            });
+
+        return response()->json($quizzes);
     }
 
     /**

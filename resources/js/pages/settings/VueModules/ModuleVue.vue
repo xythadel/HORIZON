@@ -4,7 +4,7 @@
     <aside class="relative flex h-screen w-60 flex-col bg-white">
       <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Horizon</h1>
       <nav class="space-y-2 mt-6">
-        <div v-for="(topic, index) in topics" :key="index">
+        <div v-for="(topic, index) in topics" :key="index" class="flex justify-between items-center pr-4">
           <button
             class="block w-full text-left px-6 py-3 text-base text-black font-normal hover:bg-gray-100 transition duration-200"
             :class="{ 'font-bold': currentTopicIndex === index }"
@@ -13,7 +13,7 @@
           >
             {{ topic.title }}
           </button>
-          <span v-if="topics[index].unlocked && index < topics.length && topics[index + 1]?.unlocked" class="text-green-600">✓</span>
+          <span v-if="topic.unlocked" class="ml-2 text-green-500">✓</span>
         </div>
       </nav>
       <a href="dashboard" class="absolute bottom-10 left-10 text-base font-normal text-zinc-800 hover:text-indigo-600">
@@ -24,52 +24,6 @@
     <!-- Main Content -->
     <main class="flex-1 p-10">
       <div v-if="currentTopic">
-        <!-- Pre Test -->
-        <div v-if="!preTestCompleted">
-          <h1 class="text-4xl text-white">QUIZ</h1>
-
-          <div class="items-center flex justify-center gap-4 mb-4 w-full mt-[200px]">
-            <div v-if="PreTest.length && currentPreQuestionIndex < PreTest.length" class=" text-white p-10 rounded-xl w-full max-w-xl mx-auto border">
-              <p class="font-medium text-2xl mb-2">
-                Question {{ currentPreQuestionIndex + 1 }}:<br>
-                {{ PreTest[currentPreQuestionIndex].description }} ?
-              </p>
-
-              <!-- Choices -->
-              <div v-if="PreTest[currentPreQuestionIndex].questionType === 'Choices'" class="bg-[#5A5A5A] p-8 rounded-2xl">
-                <label v-for="(choice, i) in PreTest[currentPreQuestionIndex].choices" :key="i" class="flex items-center gap-4">
-                  <input
-                    type="radio"
-                    :name="'pre-question'"
-                    :value="choice"
-                    v-model="PreTest[currentPreQuestionIndex].userAnswer"
-                    @change="onAnswerPre"
-                  />
-                  {{ choice }}
-                </label>
-              </div>
-
-              <!-- Fill in the blank -->
-              <div v-else-if="PreTest[currentPreQuestionIndex].questionType === 'Blank'" class="flex flex-col justify-end items-end">
-                <input
-                  type="text"
-                  class="border p-1 rounded w-full text-black"
-                  v-model="PreTest[currentPreQuestionIndex].userAnswer"
-                  placeholder="Type your answer..."
-                  @keydown.enter="onAnswerPre"
-                />
-                <button @click="onAnswerPre" class="mt-2 bg-[#4AC887] text-black px-4 py-2 rounded-full w-32">Next</button>
-              </div>
-            </div>
-
-            <!-- When All Questions Are Done -->
-            <div v-else-if="PreTest.length && currentPreQuestionIndex >= PreTest.length" class="border text-center p-10 w-1/3 rounded-2xl">
-              <p class="text-white text-xl mb-4">You completed all Pre-Test questions.</p>
-              <button @click="submitQuiz('pre')" class="bg-green-600 text-white px-4 py-2 rounded mt-4">Submit Pre-Test</button>
-            </div>
-
-          </div>
-        </div>
         <div v-if="ModuleTopic">
           <h1 class="text-2xl font-bold mb-1 text-white">{{ currentTopic.title }}</h1>
           <p class="text-sm text-gray-300 mb-6">{{ currentTopic.module_name }}</p>
@@ -161,6 +115,7 @@ import { usePage } from '@inertiajs/vue3';
 export default {
   props: {
     courseId: Number,
+    difficulty: Number,
   },
   data() {
     return {
@@ -168,53 +123,144 @@ export default {
       topics: [],
       PostTest: [],
       lessons: [],
-      preTestCompleted: false,
       postTestDisplay: false,
       postTestResult: null,
       quizCompleted: false,
-      ModuleTopic: false,
+      ModuleTopic: true,
       timer: null,
       startTime: null,
-      elapsedTime: 0, 
-      PreTest: [],
-      currentPreQuestionIndex: 0,
+      elapsedTime: 0,
       currentPostQuestionIndex: 0,
-      selectedDifficulty: 1,
+      selectedDifficulty: null,
     };
   },
   computed: {
     currentTopic() {
       return this.topics[this.currentTopicIndex];
     },
-    formattedContent() {
-      return this.currentTopic?.content || '';
-    },
     user() {
       return usePage().props.auth.user;
     },
   },
   mounted() {
-    this.fetchTopics().then(() => {
-      this.fetchPreTest().then(() => {
+    this.fetchUserDifficulty().then(() => {
+      this.fetchTopics().then(() => {
+        this.checkCompletedTopics();
         this.startTimer();
       });
     });
   },
   methods: {
-    onAnswerPre() {
-      const question = this.PreTest[this.currentPreQuestionIndex];
-      if (!question.userAnswer) return;
-
-      question.isCorrect =
-        question.questionType === 'Blank'
-          ? question.userAnswer.trim().toLowerCase() === question.answer.trim().toLowerCase()
-          : question.userAnswer === question.answer;
-
-      setTimeout(() => {
-        this.currentPreQuestionIndex++;
-      }, 300);
+    async fetchUserDifficulty() {
+      const res = await fetch(`/api/user-difficulty/${this.user.id}`);
+      const result = await res.json();
+      const difficultyRecord = result.find(d => d.course_id === this.courseId);
+      this.selectedDifficulty = difficultyRecord?.difficulty_level || 1;
     },
+    async fetchLessons() {
+      const topicId = this.currentTopic?.id;
+      if (!topicId) return;
 
+      const res = await fetch(`/api/topics/${topicId}/lessons`);
+      const allLessons = await res.json();
+
+      this.lessons = allLessons.filter(lesson => lesson.difficulty === this.selectedDifficulty);
+    },
+    async fetchTopics() {
+      const res = await fetch(`/api/courses/1/topics`);
+      const topics = await res.json();
+
+      const allowedDifficulties = [1];
+      if (this.selectedDifficulty >= 2) allowedDifficulties.push(2);
+      if (this.selectedDifficulty === 3) allowedDifficulties.push(3);
+
+      let filteredTopics = topics.filter(topic => allowedDifficulties.includes(topic.difficulty));
+      this.topics = filteredTopics.map(topic => ({ ...topic, unlocked: false }));
+
+      await this.unlockTopicsBasedOnProgress();
+    },
+    goToTopic(index) {
+      if (!this.topics[index].unlocked) return;
+      this.currentTopicIndex = index;
+      this.ModuleTopic = true;
+      this.postTestDisplay = false;
+      this.quizCompleted = false;
+      this.postTestResult = null;
+      this.currentPostQuestionIndex = 0;
+      this.stopTimer();
+      this.resetTimer();
+      this.fetchLessons();
+      this.startTimer();
+    },
+    async fetchPostTest() {
+      const topicId = this.currentTopic?.id;
+      if (!topicId) return;
+
+      try {
+        const res = await fetch(`/api/displayPostQuiz/${topicId}`);
+        const questions = await res.json();
+
+        const enriched = await Promise.all(
+          questions.map(async q => {
+            if (q.questionType === 'Choices') {
+              try {
+                const optRes = await fetch(`/api/options/by-question/${q.id}`);
+                const options = await optRes.json();
+                const shuffled = options.map(o => o.option_text).sort(() => Math.random() - 0.5);
+                q.choices = shuffled;
+              } catch (err) {
+                console.error(`Error fetching options for question ${q.id}:`, err);
+                q.choices = [];
+              }
+            }
+
+            return { ...q, userAnswer: '', isCorrect: false };
+          })
+        );
+
+        this.PostTest = enriched;
+      } catch (error) {
+        console.error('Error loading post-test:', error);
+        this.PostTest = [];
+      }
+    },
+    async checkCompletedTopics() {
+      try {
+        const res = await fetch(`/api/user-topic-progress/${this.user.id}/1`);
+        const completedTopics = await res.json();
+        const completedIds = completedTopics.map(t => t.topic_id);
+
+        this.topics = this.topics.map((topic, index) => {
+          if (completedIds.includes(topic.id)) {
+            topic.unlocked = true;
+          } else if (index === 0) {
+            topic.unlocked = true;
+          }
+          return topic;
+        });
+      } catch (error) {
+        console.error("Failed to fetch completed topics", error);
+      }
+    },
+    async unlockTopicsBasedOnProgress() {
+      try {
+        const res = await fetch(`/api/user-topic-progress/${this.user.id}/1`);
+        const completed = await res.json();
+        const completedIds = completed.map(item => item.topic_id);
+
+        this.topics = this.topics.map((topic, index, arr) => {
+          const isFirst = index === 0;
+          const isPassed = completedIds.includes(topic.id);
+          const prevPassed = index > 0 && completedIds.includes(arr[index - 1].id);
+
+          topic.unlocked = isFirst || isPassed || prevPassed;
+          return topic;
+        });
+
+      } catch (error) {
+        console.error('Failed to unlock topics:', error);
+      }
+    },
     onAnswerPost() {
       const question = this.PostTest[this.currentPostQuestionIndex];
       if (!question.userAnswer) return;
@@ -228,141 +274,27 @@ export default {
         this.currentPostQuestionIndex++;
       }, 300);
     },
-    async fetchLessons() {
-      const topicId = this.currentTopic?.id;
-      if (!topicId) return;
-
-      const res = await fetch(`/api/topics/${topicId}/lessons`);
-      const allLessons = await res.json();
-
-      // Filter based on selectedDifficulty
-      this.lessons = allLessons.filter(lesson => lesson.difficulty === this.selectedDifficulty);
-    },
-    async goToNextTopic() {
-      const nextIndex = this.currentTopicIndex + 1;
-      if (nextIndex >= this.topics.length) return;
-
-      this.currentTopicIndex = nextIndex;
-      this.preTestCompleted = true;
-      this.ModuleTopic = true;
-      this.postTestDisplay = false;
-      this.quizCompleted = false;
-      this.postTestResult = null;
-
-      await this.fetchLessons();
-    },
-
-    async retryLessons() {
-      this.selectedDifficulty = 1;
-      this.ModuleTopic = true;
-      this.postTestDisplay = false;
-      this.quizCompleted = false;
-      this.postTestResult = null;
-
-      await this.fetchLessons();
-    },
-    async fetchTopics() {
-      const res = await fetch(`/api/courses/1/topics`);
-      const topics = await res.json();
-
-      const userRes = await fetch(`/api/user-attempts/${this.user.id}`);
-      const attempts = await userRes.json();
-      const unlockedTopics = [];
-
-      this.topics = topics.map((topic, index) => {
-        const attempt = attempts.find(a => a.topic_id === topic.id);
-        const passed = attempt?.passed === 1;
-
-        const isUnlocked = index === 0 || unlockedTopics[index - 1] === true;
-
-        unlockedTopics.push(passed);
-        return {
-          ...topic,
-          unlocked: isUnlocked || passed,
-        };
-      });
-    },
-
-    async fetchPreTest() {
-      const topicId = this.currentTopic?.id;
-      if (!topicId) return;
-
-      const res = await fetch(`/api/displayPreQuiz/${topicId}`);
-      const questions = await res.json();
-
-      const enriched = await Promise.all(
-        questions.map(async q => {
-          if (q.questionType === 'Choices') {
-            const optRes = await fetch(`/api/options/by-question/${q.id}`);
-            const options = await optRes.json();
-            q.choices = options.map(o => o.option_text);
-          }
-          return { ...q, userAnswer: '', isCorrect: false };
-        })
-      );
-
-      this.PreTest = enriched;
-    },
-
-    async fetchPostTest() {
-      const topicId = this.currentTopic?.id;
-      if (!topicId) return;
-
-      const res = await fetch(`/api/displayPostQuiz/${topicId}`);
-      const questions = await res.json();
-      const filtered = questions.filter(q => q.difficulty === this.selectedDifficulty);
-
-      const enriched = await Promise.all(
-        filtered.map(async q => {
-          if (q.questionType === 'Choices') {
-            const optRes = await fetch(`/api/options/by-question/${q.id}`);
-            const options = await optRes.json();
-            q.choices = options.map(o => o.option_text);
-          }
-          return { ...q, userAnswer: '', isCorrect: false };
-        })
-      );
-
-      this.PostTest = enriched;
-    },
-
-    checkAnswer(q) {
-      if (!q || !q.answer) return;
-      q.isCorrect = q.questionType === 'Blank'
-        ? q.userAnswer.trim().toLowerCase() === q.answer.trim().toLowerCase()
-        : q.userAnswer === q.answer;
-    },
-
     async submitQuiz(type) {
       this.stopTimer();
 
-      const testData = type === 'pre' ? this.PreTest : this.PostTest;
+      const testData = this.PostTest;
       const score = testData.filter(q => q.isCorrect).length;
       const total = testData.length;
       const passed = score >= Math.ceil(total * 0.6);
 
-      let difficulty = 1;
-      const percentage = score / total;
+      const attempts = testData.map(q => ({
+        user_id: this.user.id,
+        topic_id: this.currentTopic.id,
+        quiz_id: q.id,
+        type,
+        score: q.isCorrect ? 1 : 0,
+        total: 1,
+        passed: q.isCorrect ? true : false,
+        difficulty: q.difficulty || this.selectedDifficulty,
+        time_taken: this.elapsedTime,
+        timestamp: new Date().toISOString(),
+      }));
 
-      if (percentage === 1) {
-        difficulty = 3;
-      } else if (percentage >= 0.5) {
-        difficulty = 2;
-      }
-      const attempts = testData.map((q, index) => {
-        return {
-          user_id: this.user.id,
-          topic_id: this.currentTopic.id,
-          quiz_id: q.id,
-          type,
-          score: q.isCorrect ? 1 : 0,
-          total: 1,
-          passed: q.isCorrect ? true : false,
-          difficulty: q.difficulty || this.selectedDifficulty,
-          time_taken: this.elapsedTime,
-          timestamp: new Date().toISOString(),
-        };
-      });
       for (const attempt of attempts) {
         await fetch('/api/recordAttempt', {
           method: 'POST',
@@ -371,24 +303,37 @@ export default {
         });
       }
 
-      if (type === 'pre') {
-        this.preTestCompleted = true;
-        this.ModuleTopic = true;
-        this.selectedDifficulty = difficulty;
-        await this.fetchLessons();
-      } else {
-        this.postTestDisplay = false;
-        this.quizCompleted = true;
-        this.postTestResult = passed ? 'pass' : 'fail';
+      this.postTestDisplay = false;
+      this.quizCompleted = true;
+      this.postTestResult = passed ? 'pass' : 'fail';
 
-        if (passed && this.currentTopicIndex + 1 < this.topics.length) {
-          this.topics[this.currentTopicIndex + 1].unlocked = true;
-        }
+      if (passed && this.currentTopicIndex + 1 < this.topics.length) {
+        this.topics[this.currentTopicIndex + 1].unlocked = true;
       }
     },
-
+    startPostTest() {
+      this.ModuleTopic = false;
+      this.stopTimer();
+      this.resetTimer();
+      this.fetchPostTest().then(() => {
+        this.postTestDisplay = true;
+        this.startTimer();
+      });
+    },
+    goToNextTopic() {
+      const nextIndex = this.currentTopicIndex + 1;
+      if (nextIndex >= this.topics.length) return;
+      this.goToTopic(nextIndex);
+    },
+    retryLessons() {
+      this.ModuleTopic = true;
+      this.postTestDisplay = false;
+      this.quizCompleted = false;
+      this.postTestResult = null;
+      this.fetchLessons();
+    },
     startTimer() {
-      this.stopTimer(); // Make sure no previous timer is running
+      this.stopTimer();
       this.startTime = Date.now();
       this.elapsedTime = 0;
 
@@ -396,79 +341,14 @@ export default {
         this.elapsedTime = Math.floor((Date.now() - this.startTime) / 1000);
       }, 1000);
     },
-
     stopTimer() {
       clearInterval(this.timer);
       this.timer = null;
     },
-
     resetTimer() {
       this.elapsedTime = 0;
       this.startTime = null;
     },
-
-    goToTopic(index) {
-      const topic = this.topics[index];
-      if (!topic.unlocked) return;
-      this.currentPreQuestionIndex = 0;
-      this.currentPostQuestionIndex = 0;
-      this.stopTimer();
-      this.resetTimer();
-
-      this.currentTopicIndex = index;
-      this.preTestCompleted = false;
-      this.ModuleTopic = false;
-      this.postTestDisplay = false;
-
-      this.fetchPreTest().then(() => {
-        this.startTimer();
-      });
-
-      this.fetchLessons();
-    },
-
-    startPostTest() {
-      this.ModuleTopic = false;
-
-      this.stopTimer();
-      this.resetTimer();
-
-      this.fetchPostTest().then(() => {
-        this.postTestDisplay = true;
-        this.startTimer();
-      });
-    },
   },
 };
 </script>
-
-
-<style scoped>
-.topic-content {
-  color: white;
-  font-size: 1.1rem;
-  scrollbar-width: thin;
-  scrollbar-color: #888 transparent;
-}
-.topic-content::-webkit-scrollbar {
-  width: 8px;
-}
-.topic-content::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 4px;
-}
-.topic-content::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-.topic-content p {
-  margin-bottom: 1rem;
-}
-.topic-content ul {
-  list-style: disc;
-  padding-left: 1.5rem;
-  margin: 1rem 0;
-}
-.topic-content li {
-  margin-bottom: 0.5rem;
-}
-</style>

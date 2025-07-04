@@ -27,8 +27,8 @@ import Sandpit from '@/pages/sandpit.vue';
 import Badgesasd from '@/pages/badges.vue'
 
 const routes = [
-  { path: '/module-vue', component: ModuleVue },
-  { path: '/module-lara', component: ModuleLara },
+  { path: '/modulevue', component: ModuleVue },
+  { path: '/modulelaravel', component: ModuleLara },
   { path: '/my-learning', component: MyLearning },
   { path: '/admin-dashboard', component: AdminDashboard },
   { path: '/dashboard', component: Dashboard },
