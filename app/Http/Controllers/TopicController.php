@@ -34,6 +34,8 @@ class TopicController extends Controller
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'module_name' => 'required|string|max:255',
+        'difficulty' => 'required|in:1,2,3',
+        'content' => 'required|string',
 
     ]);
 
@@ -43,6 +45,8 @@ class TopicController extends Controller
     $topic->title = $validated['title'];
     $topic->module_name = $validated['module_name'];
     $topic->course_id = $course_id;;
+    $topic->difficulty = $validated['difficulty'];
+    $topic->content = $validated['content'];
     $topic->save();
 
     return response()->json($topic, 201);
@@ -73,11 +77,15 @@ class TopicController extends Controller
         $request->validate([
         'title' => 'required|string|max:255',
         'module_name' => 'required|string|max:255',
+        'difficulty' => 'required|in:1,2,3',
+        'content' => 'required|string',
     ]);
 
     $topic->update([
         'title' => $request->title,
         'module_name' => $request->module_name,
+        'difficulty' => $request->difficulty,
+        'content' => $request->content,
     ]);
 
     return response()->json(['message' => 'Topic updated successfully.', 'topic' => $topic]);

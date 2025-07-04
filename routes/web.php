@@ -34,7 +34,7 @@ Route::get('/modulevue', function () {
     return Inertia::render('settings/VueModules/ModuleVue');
 });
 
-Route::get('/modulelara', function () {
+Route::get('/modulelaravel', function () {
     return Inertia::render('settings/LaraModules/ModuleLara');
 });
 

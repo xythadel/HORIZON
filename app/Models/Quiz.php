@@ -14,7 +14,6 @@ class Quiz extends Model
         'description',
         'is_published',
         'topic_id',
-        'difficulty',
         'questionCategory',
         'quizStatus',
         'answer',
