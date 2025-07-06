@@ -21,6 +21,9 @@
           <button @click="showSection = 'badges'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Badge
           </button>
+          <button @click="showSection = 'sandpit'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+            Sandpit
+          </button>
           <button @click="showSection = 'reports'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Reports
           </button>
@@ -41,6 +44,48 @@
     <main class="flex-1 p-4 md:p-8">
       <!-- User Table -->
       <div v-if="showSection === 'users'" class="mb-6 p-4 bg-white rounded shadow overflow-auto">
+        <div class="flex flex-row justify-between items-center gap-2">
+          <div class="w-full">
+            <h1 class="text-2xl font-semibold pb-3">Registered Users</h1>
+            <table class="w-full text-left border border-gray-300 text-sm">
+              <thead class="bg-gray-100">
+                <tr>
+                  <th class="p-2 border">ID</th>
+                  <th class="p-2 border">Name</th>
+                  <th class="p-2 border">Email</th>
+                  <th class="p-2 border">Role</th>
+                  <th class="p-2 border">Created At</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50">
+                  <td class="p-2 border">{{ user.id }}</td>
+                  <td class="p-2 border">{{ user.name }}</td>
+                  <td class="p-2 border">{{ user.email }}</td>
+                  <td class="p-2 border">{{ user.role }}</td>
+                  <td class="p-2 border">{{ new Date(user.created_at).toLocaleString() }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bg-white p-5 rounded-md mb-6 text-zinc-800 w-1/3">
+            <h2 class="text-xl font-semibold mb-4">Leaderboards</h2>
+            <div v-if="leaderboard?.length">
+              <div
+                v-for="(entry, index) in leaderboard"
+                :key="entry.id"
+                class="bg-gray-100 mb-3 px-4 py-2 rounded-2xl shadow"
+              >
+                <div class="flex justify-between items-center">
+                  <h3 class="text-lg font-semibold">{{ entry.name }}</h3>
+                  <span class="text-sm text-gray-500">#{{ index + 1 }}</span>
+                </div>
+                <p class="text-sm mt-1">Topics Completed: <strong>{{ entry.topics_completed }}</strong></p>
+              </div>
+            </div>
+            <div v-else class="text-sm text-gray-400">No data yet.</div>
+          </div>
+        </div>
         <h3 class="text-2xl font-bold mb-4">Registered Users</h3>
         <table class="w-full text-left border border-gray-300 text-sm">
           <thead class="bg-gray-100">
@@ -544,16 +589,23 @@
           </div>
         </div>
       </div>
-
+      <div v-if="showSection === 'sandpit'" class="p-4 bg-white rounded shadow">
+        <Sandpit></Sandpit>
+      </div>
     </main> 
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue'
+import Sandpit from '../sandpitComponent.vue'
 import axios from 'axios'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
+
+
+
+const leaderboard = ref([])
 const quizTab = ref('pretest')
 const lessonsByTopic = ref({})
 const newLesson = ref({})
@@ -577,6 +629,7 @@ const editingLessonId = ref(null)
 const editLesson = ref({})
 const editBadge = ref({})
 const pendingQuizzes = ref([]);
+const showSandpit = ref(false)
 const newQuiz = ref({
   title: '',
   description: '',
@@ -863,7 +916,9 @@ const logout = async () => {
   await axios.post('/logout')
   window.location.href = '/'
 }
-onMounted(() => {
+onMounted(async () => {
+  const lbRes = await fetch('/api/leaderboard')
+  leaderboard.value = await lbRes.json()
   fetchBadges();
   fetchCourses();
   fetchAllTopics();
