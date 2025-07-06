@@ -81,7 +81,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 
-    const user = ref({ name: 'John' })
+    const user = ref({name:''})
     const selectedLanguage = ref('vue')
     const activeTab = ref('template')
 

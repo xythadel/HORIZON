@@ -27,6 +27,9 @@
           <button @click="showSection = 'reports'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Reports
           </button>
+          <button @click="showSection = 'sandpit'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+            Sandpit
+          </button>
         </nav>
       </div>
       <button
@@ -41,7 +44,6 @@
     <main class="flex-1 p-4 md:p-8">
       <!-- User Table -->
       <div v-if="showSection === 'users'" class="mb-6 p-4 bg-white rounded shadow overflow-auto">
-        
         <div class="flex flex-row justify-between items-center gap-2">
           <div class="w-full">
             <h1 class="text-2xl font-semibold pb-3">Registered Users</h1>
@@ -84,6 +86,27 @@
             <div v-else class="text-sm text-gray-400">No data yet.</div>
           </div>
         </div>
+        <h3 class="text-2xl font-bold mb-4">Registered Users</h3>
+        <table class="w-full text-left border border-gray-300 text-sm">
+          <thead class="bg-gray-100">
+            <tr>
+              
+              <th class="p-2 border">Name</th>
+              <th class="p-2 border">Email</th>
+              
+              <th class="p-2 border">Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50">
+              
+              <td class="p-2 border">{{ user.name }}</td>
+              <td class="p-2 border">{{ user.email }}</td>
+              
+              <td class="p-2 border">{{ new Date(user.created_at).toLocaleString() }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- Topics CRUD -->
@@ -224,7 +247,7 @@
             <input v-model="newQuiz.title" class="border p-2 rounded" required />
           </div>
           <div class="flex flex-col">
-            <label class="font-medium text-sm mb-1">Description</label>
+            <label class="font-medium text-sm mb-1">Question</label>
             <textarea v-model="newQuiz.description" class="border p-2 rounded"></textarea>
           </div>
           <div class="flex flex-col">
@@ -282,7 +305,67 @@
           </li>
         </ul>
       </div>
+      
+      <!--Sandpit-->
+      <div v-if="showSection === 'Sandpit'" class = "p-4 bg-white rounded shadow">
+        <h2 class="text-2xl font-bold mb-4">Sandpit</h2>
+      <!-- Main Area -->
+        <main class="flex-1 p-6 overflow-y-auto">
+        <h2 class="text-2xl font-bold mb-4">Sandpit</h2>
 
+        <!-- Language Select -->
+        <div class="mb-4">
+            <label class="mr-2 font-medium">Language:</label>
+            <select v-model="selectedLanguage" class="border p-1 rounded">
+            <option value="vue">Vue.js</option>
+            <option value="laravel">Laravel Blade</option>
+            </select>
+        </div>
+
+        <!-- Tabs -->
+        <div class="mb-2 flex space-x-4 border-b">
+            <button
+            v-for="tab in visibleTabs"
+            :key="tab"
+            @click="activeTab = tab"
+            :class="[
+                'py-1 px-4 border-b-2',
+                activeTab === tab ? 'border-indigo-500 font-semibold' : 'border-transparent',
+            ]"
+            >
+            {{ tab }}
+            </button>
+        </div>
+
+        <!-- Code Area -->
+        <textarea
+            v-model="codeSections[activeTab]"
+            rows="12"
+            class="w-full border rounded-md p-2 font-mono bg-slate-800 text-white"
+            style="scrollbar-width: thin;"
+        ></textarea>
+
+        <!-- Run -->
+        <div class="mt-3">
+            <button @click="runCode" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Run
+            </button>
+        </div>
+
+        <!-- Error -->
+        <div v-if="error" class="mt-4 text-red-500 font-mono bg-red-100 p-2 rounded">
+            {{ error }}
+        </div>
+
+        <!-- Result -->
+        <div class="mt-6">
+            <h3 class="text-lg font-semibold mb-2">Result:</h3>
+            <iframe :srcdoc="compiledHtml" class="w-full h-[400px] border rounded-md"></iframe>
+        </div>
+        </main>
+    </div>
+
+      <!-- Badges CRUD -->
       <div v-if="showSection === 'badges'" class="p-4 bg-white rounded shadow">
         <h2 class="text-2xl font-bold mb-4">Add Badge</h2>
         <form @submit.prevent="createBadge" class="space-y-4">
@@ -437,14 +520,14 @@
             class="px-4 py-2 rounded"
             @click="lessonTab = 'vue'"
           >
-            Vue Lessons
+            Laravel Lessons
           </button>
           <button
             :class="lessonTab === 'laravel' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'"
             class="px-4 py-2 rounded"
             @click="lessonTab = 'laravel'"
           >
-            Laravel Lessons
+            Vue Lessons
           </button>
         </div>
 
@@ -840,4 +923,139 @@ onMounted(async () => {
   fetchCourses();
   fetchAllTopics();
 })
+
+/*sandpit script still editing
+const selectedLanguage = ref('vue')
+  const activeTab = ref('template')
+
+    const tabs = {
+    vue: ['template', 'script', 'style'],
+    laravel: ['template', 'web.php', 'style']
+    }
+
+    const visibleTabs = computed(() => tabs[selectedLanguage.value])
+
+    const codeSections = ref({
+    template: '',
+    script: '',
+    style: '',
+    'web.php': ''
+    })
+
+    const compiledHtml = ref('')
+    const error = ref('')
+    watch(selectedLanguage, (lang) => {
+    if (lang === 'laravel') {
+        activeTab.value = 'template'
+        codeSections.value.template = `<div>
+    <h1>Hello, {{ name }}</h1>
+
+    @if(isAdmin)
+        <p>Welcome back, administrator!</p>
+    @else
+        <p>You are logged in as a regular user.</p>
+    @endif
+
+    <ul>
+        @foreach($tasks as $task)
+        <li>{{ task }}</li>
+        @endforeach
+    </ul>
+    </div>`
+        codeSections.value['web.php'] = `$name = "Jane";
+    $isAdmin = true;
+    $tasks = ["Write docs", "Fix bug", "Deploy"];`
+        codeSections.value.style = `body { font-family: sans-serif; padding: 20px; }`
+    } else {
+        activeTab.value = 'template'
+        codeSections.value.template = `<header>\n  <h1>WELCOME TO SANDPIT</h1>\n</header>`
+        codeSections.value.script = `// JS logic here`
+        codeSections.value.style = `header { text-align: center; }`
+    }
+    })
+
+    function parseWebPhp(phpCode) {
+    const lines = phpCode.split('\n')
+    const data = {}
+    for (let line of lines) {
+        line = line.trim()
+        if (line.startsWith('$')) {
+        let [key, value] = line.split('=')
+        key = key.replace('$', '').trim()
+        value = value.trim().replace(/;$/, '')
+
+        try {
+
+            if (value.startsWith('"') || value.startsWith("'")) {
+            data[key] = value.replace(/^["']|["']$/g, '')
+            } else if (value.startsWith('[')) {
+            data[key] = eval(value)
+            } else {
+            data[key] = eval(value)
+            }
+        } catch (e) {
+            console.warn('Failed parsing:', line)
+        }
+        }
+    }
+    return data
+    }
+    function runCode() {
+    error.value = ''
+
+    try {
+        if (selectedLanguage.value === 'vue') {
+            compiledHtml.value = `
+                <html>
+                <head>
+                <style>${codeSections.value.style}</style>
+                </head>
+                <body>
+                <div id="app">
+                    ${codeSections.value.template}
+                </div>
+                <script>
+                    ${codeSections.value.script}
+                <\/script>
+                </body>
+                </html>
+            `
+            } else if (selectedLanguage.value === 'laravel') {
+            const data = parseWebPhp(codeSections.value['web.php'])
+            let rendered = codeSections.value.template
+            rendered = rendered.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, key) => data[key] ?? '')
+
+            rendered = rendered.replace(/@if\s*\((.*?)\)([\s\S]*?)@else([\s\S]*?)@endif/g, (_, condition, ifTrue, elseBlock) => {
+                if (condition.includes('=') && !condition.includes('==') && !condition.includes('>=') && !condition.includes('<=') && !condition.includes('!=')) {
+                throw new Error('Use "==", ">=", "<=" etc. for comparison in @if. Avoid single "=" (assignment).')
+                }
+
+                const expr = condition.replace(/(\w+)/g, 'data.$1')
+                return eval(expr) ? ifTrue : elseBlock
+            })
+
+
+            rendered = rendered.replace(/@foreach\s*\(\s*\$(\w+)\s+as\s+\$(\w+)\s*\)([\s\S]*?)@endforeach/g, (_, list, item, content) => {
+                const arr = data[list]
+                if (!Array.isArray(arr)) return ''
+                return arr.map(val => content.replace(new RegExp(`\\{\\{\\s*${item}\\s*\\}\\}`, 'g'), val)).join('')
+            })
+
+
+            compiledHtml.value = `
+                <html>
+                <head>
+                <style>${codeSections.value.style}</style>
+                </head>
+                <body>
+                ${rendered}
+                </body>
+                </html>
+            `
+            }
+        } catch (err) {
+            error.value = 'Error: ' + err.message
+        }
+      }*/
+
 </script>
