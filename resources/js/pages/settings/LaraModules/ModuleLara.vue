@@ -27,9 +27,9 @@
         <div v-if="ModuleTopic">
           <h1 class="text-2xl font-bold mb-1 text-white">{{ currentTopic.title }}</h1>
           <p class="text-sm text-gray-300 mb-6">{{ currentTopic.module_name }}</p>
-          <div v-if="lessons.length" class="h-[700px] overflow-auto scrollbar-w-1">
-            <div v-for="(lesson, i) in lessons" :key="lesson.id" class="bg-zinc-700 text-white p-6 rounded-xl mb-4">
-              <div v-html="lesson.content" class="leading-relaxed text-white"></div>
+          <div v-if="topics.length" class="h-[700px] overflow-auto scrollbar-w-1">
+            <div v-for="(topics, i) in topics" :key="topics.id" class="bg-zinc-700 text-white p-6 rounded-xl mb-4">
+              <div v-html="topics.content" class="leading-relaxed text-white"></div>
             </div>
           </div>
           <div class="mt-5 flex justify-end">

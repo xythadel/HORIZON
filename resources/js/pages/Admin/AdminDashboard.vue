@@ -27,9 +27,9 @@
           <button @click="showSection = 'reports'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Reports
           </button>
-          <button @click="showSection = 'sandpit'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+          <!-- <button @click="showSection = 'sandpit'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Sandpit
-          </button>
+          </button> -->
         </nav>
       </div>
       <button
