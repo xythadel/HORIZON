@@ -18,7 +18,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Login', [
+        return Inertia::render('Welcome', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
         ]);
@@ -29,19 +29,29 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-         $request->authenticate();
-    $request->session()->regenerate();
+        $request->authenticate();
+        $request->session()->regenerate();
 
-    $role = Auth::user()->role;
+        $user = Auth::user();
 
-    if ($role === 'admin') {
-        return redirect()->route('admin'); // Make sure this route is named!
-    } elseif ($role === 'user') {
-        return redirect()->route('dashboard'); // Make sure this route is named!
+        if (!$user->hasVerifiedEmail()) {
+            Auth::logout();
+            return back()->withErrors([
+                'email' => 'You must verify your email address before logging in.',
+            ]);
+        }
+
+        $role = $user->role;
+
+        if ($role === 'admin') {
+            return redirect()->route('admin');
+        } elseif ($role === 'user') {
+            return redirect()->route('dashboard');
+        }
+
+        return redirect()->route('dashboard');
     }
 
-    return redirect()->route('dashboard');
-    }
     /**
      * Destroy an authenticated session.
      */

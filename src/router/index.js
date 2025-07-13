@@ -20,7 +20,7 @@ import MyLearning from '@/settings/VueModules/MyLearning.vue';
 import QuizVue from '@/pages/settings/VueModules/QuizVue.vue';
 import AdminDashboard from '@/pages/Admin/AdminDashboard.vue';
 import Dashboard from '@/pages/Dashboard.vue';
-import Login from '@/pages/auth/Login.vue';
+import Login from '@/pages/Welcome.vue';
 import Test from '@/pages/test';
 import path from 'path';
 import Sandpit from '@/pages/sandpit.vue';

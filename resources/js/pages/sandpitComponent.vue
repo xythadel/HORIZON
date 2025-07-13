@@ -65,7 +65,7 @@ import { ref, computed, watch } from 'vue'
     const activeTab = ref('template')
 
     const tabs = {
-    vue: ['template', 'script', 'style'],
+    vue: ['template'],
     laravel: ['template', 'web.php', 'style']
     }
 
@@ -104,10 +104,18 @@ import { ref, computed, watch } from 'vue'
         codeSections.value.style = `body { font-family: sans-serif; padding: 20px; }`
     } else {
         activeTab.value = 'template'
-        codeSections.value.template = `<header>\n  <h1>WELCOME TO SANDPIT</h1>\n</header>`
-        codeSections.value.script = `// JS logic here`
-        codeSections.value.style = `header { text-align: center; }`
-    }
+        codeSections.value.template = `<header>
+<h1>WELCOME TO SANDPIT</h1> 
+</header>
+
+
+<scr` + `ipt>
+</scr` + `ipt>
+
+
+<sty` + `le>
+</sty` + `le>`;
+        }
     })
 
     function parseWebPhp(phpCode) {
