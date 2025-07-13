@@ -20,8 +20,7 @@ class QuestionController extends Controller
     }
 
     public function displayPostQuiz($id){
-        $Quiz = Quiz::where('topic_id', '=', $id)
-                        ->where('questionCategory', '=', 'Post-test') ->get();
+        $Quiz = Quiz::where('topic_id', '=', $id)->get();
 
 
         return response()->json($Quiz);

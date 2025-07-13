@@ -210,7 +210,7 @@
       <!-- Quizzes CRUD -->
       <div v-if="showSection === 'quizzes'" class="p-4 bg-white rounded shadow">
         <h2 class="text-2xl font-bold mb-4">Quiz Management</h2>
-        <div class="flex gap-4 mb-4">
+        <!-- <div class="flex gap-4 mb-4">
           <button
             :class="quizTab === 'pretest' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'"
             class="px-4 py-2 rounded"
@@ -225,7 +225,7 @@
           >
             Post-test
           </button>
-        </div>
+        </div> -->
         <form @submit.prevent="createQuiz" class="mb-6 space-y-4">
           <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Topic</label>
@@ -275,7 +275,7 @@
         <div v-if="pendingQuizzes.length" class="mt-6">
           <h4 class="text-lg font-bold mb-2">Quiz List</h4>
           <ul class="mb-4">
-            <li v-for="(quiz, index) in pendingQuizzes.filter(q => q.questionCategory === (quizTab === 'pretest' ? 'Pre-test' : 'Post-test'))"
+            <li v-for="(quiz, index) in pendingQuizzes"
               :key="index"
               class="bg-gray-100 border p-3 rounded mb-2"
             >
@@ -288,7 +288,7 @@
         </div>
         <ul>
           <li
-            v-for="quiz in quizzes.filter(q => q.questionCategory === (quizTab === 'pretest' ? 'Pre-test' : 'Post-test'))"
+            v-for="quiz in quizzes"
             :key="quiz.id"
             class="border p-3 mb-2 rounded bg-gray-50 flex justify-between"
           >
@@ -845,10 +845,9 @@ const deleteStandaloneTopic = async (id, courseId) => {
 }
 
 const createQuiz = () => {
-  const category = quizTab.value === 'pretest' ? 'Pre-test' : 'Post-test';
   pendingQuizzes.value.push({
     ...newQuiz.value,
-    questionCategory: category,
+    questionCategory: 'quiz',
     options: newQuiz.value.questionType === 'Choices' ? [...options.value] : [],
     quizStatus: 'ACTIVE'
   });

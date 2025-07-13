@@ -14,11 +14,7 @@
 
       <!-- Logout -->
       <nav class="flex flex-col space-y-6 pl-20 pt-60">
-        <a
-          href="#"
-          @click.prevent="showLogoutModal = true"
-          class="text-base font-normal text-zinc-800 hover:text-indigo-600"
-        >Logout</a>
+        <a href="#" @click.prevent="showLogoutModal = true" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Logout</a>
       </nav>
     </aside>
 
@@ -31,19 +27,22 @@
         <h3 class="absolute left-[50px] top-[40px] text-xl font-normal text-stone-900">Course</h3>
         <h4 class="absolute left-[50px] top-[70px] text-2xl font-semibold text-stone-900">{{ course }}</h4>
         <p class="absolute left-[50px] top-[120px] w-80 text-xs font-normal text-stone-900">
-          {{ course === 'Vue' ? 'An open-source MVVM front-end framework for building user interfaces.' : 'A PHP-based web framework for building web applications.' }}
+          {{ course === 'Vue'
+            ? 'An open-source MVVM front-end framework for building user interfaces.'
+            : 'A PHP-based web framework for building web applications.' }}
         </p>
-        <p v-if="difficultyMap['global']" class="absolute left-[50px] top-[180px] text-sm text-green-700">
-          Difficulty: {{ ['Beginner', 'Intermediate', 'Advanced'][difficultyMap['global'] - 1] }}
+        <p v-if="difficultyMap[course]" class="absolute left-[50px] top-[180px] text-sm text-green-700">
+          Difficulty: {{ ['Beginner', 'Intermediate', 'Advanced'][difficultyMap[course] - 1] }}
         </p>
-        <button class="absolute left-[270px] top-[175px] text-xl font-medium text-stone-900 hover:text-green-500" @click.prevent="startCourse(course)">Start</button>
         <button
-          v-if="difficultyMap['global']"
+          class="absolute left-[270px] top-[175px] text-xl font-medium text-stone-900 hover:text-green-500"
+          @click.prevent="startCourse(course)"
+        >Start</button>
+        <button
+          v-if="difficultyMap[course]"
           class="absolute left-[270px] top-[210px] text-sm text-blue-600 hover:underline"
           @click.prevent="retestPretest(course)"
-        >
-          Retake Pretest
-        </button>
+        >Retake Pretest</button>
 
         <!-- Progress Circle -->
         <div class="absolute left-[500px] top-[30px] flex flex-col items-center">
@@ -61,12 +60,9 @@
     </main>
 
     <!-- Pretest Modal -->
-    <div
-      v-if="showPretestModal"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-    >
+    <div v-if="showPretestModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div class="w-full max-w-3xl rounded-lg bg-white p-6 text-gray-800 shadow-lg">
-        <h2 class="mb-4 text-xl font-semibold text-center">Pretest</h2>
+        <h2 class="mb-4 text-xl font-semibold text-center">{{ selectedCourse }} Pretest</h2>
 
         <div v-if="pretestQuestions.length && currentQuestionIndex < pretestQuestions.length">
           <p class="text-lg font-semibold mb-4">Question {{ currentQuestionIndex + 1 }}:</p>
@@ -74,48 +70,31 @@
 
           <div v-if="pretestQuestions[currentQuestionIndex].questionType === 'Choices'">
             <label v-for="(choice, i) in pretestQuestions[currentQuestionIndex].choices" :key="i" class="block mb-2">
-              <input
-                type="radio"
-                :value="choice"
-                v-model="pretestQuestions[currentQuestionIndex].userAnswer"
-                class="mr-2"
-              />
+              <input type="radio" :value="choice" v-model="pretestQuestions[currentQuestionIndex].userAnswer" class="mr-2" />
               {{ choice }}
             </label>
           </div>
 
           <div v-else-if="pretestQuestions[currentQuestionIndex].questionType === 'Blank'">
-            <input
-              type="text"
-              v-model="pretestQuestions[currentQuestionIndex].userAnswer"
-              class="w-full rounded border p-2"
-              placeholder="Type your answer..."
-            />
+            <input type="text" v-model="pretestQuestions[currentQuestionIndex].userAnswer" class="w-full rounded border p-2" placeholder="Type your answer..." />
           </div>
 
           <div class="mt-4 flex justify-end">
-            <button @click="nextPretestQuestion" class="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700">
-              Next
-            </button>
+            <button @click="nextPretestQuestion" class="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700">Next</button>
           </div>
         </div>
 
         <div v-else>
           <p class="text-center text-lg mb-4">You've completed the pretest.</p>
           <div class="flex justify-center">
-            <button @click="submitPretest" class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-              Submit
-            </button>
+            <button @click="submitPretest" class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">Submit</button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Logout Modal -->
-    <div
-      v-if="showLogoutModal"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-    >
+    <div v-if="showLogoutModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div class="w-full max-w-sm rounded-lg bg-white p-6 text-center text-gray-800 shadow-lg">
         <h2 class="mb-4 text-xl font-semibold">Are you sure?</h2>
         <p class="mb-6">Do you really want to logout from your account?</p>
@@ -138,11 +117,10 @@ const user = auth?.user;
 const showLogoutModal = ref(false);
 const showPretestModal = ref(false);
 const selectedCourse = ref('');
-const difficultyMap = ref({});
-const courseProgress = ref({ Vue: 0, Laravel: 0 });
-
 const pretestQuestions = ref([]);
 const currentQuestionIndex = ref(0);
+const difficultyMap = ref({});
+const courseProgress = ref({ Vue: 0, Laravel: 0 });
 
 function confirmLogout() {
   router.post('/logout', {}, {
@@ -151,57 +129,44 @@ function confirmLogout() {
     }
   });
 }
-function retestPretest(course) {
-  selectedCourse.value = course;
-  fetchPretestQuestions();
-}
+
 function startCourse(course) {
-  if (!difficultyMap.value['global']) {
+  if (!difficultyMap.value[course]) {
     selectedCourse.value = course;
-    fetchPretestQuestions();
+    fetchPretestQuestions(course);
   } else {
     router.visit(`/module${course.toLowerCase()}`);
   }
 }
 
-async function fetchPretestQuestions() {
+function retestPretest(course) {
+  selectedCourse.value = course;
+  fetchPretestQuestions(course);
+}
+
+async function fetchPretestQuestions(course) {
   try {
-    const res = await fetch(`/api/displayPretest`);
+    const res = await fetch(`/api/pretest/${course}`);
     const data = await res.json();
 
     pretestQuestions.value = await Promise.all(
       data.map(async (q) => {
         let choices = [];
-
         if (q.questionType === 'Choices') {
-          try {
-            const optRes = await fetch(`/api/options/by-question/${q.id}`);
-            const optData = await optRes.json();
-            choices = optData.map(opt => opt.option_text);
-
-            // Shuffle the choices
-            choices = choices.sort(() => Math.random() - 0.5);
-          } catch (err) {
-            console.error(`Failed to fetch options for question ${q.id}`, err);
-          }
+          const optRes = await fetch(`/api/options/by-question/${q.id}`);
+          const optData = await optRes.json();
+          choices = optData.map(opt => opt.option_text).sort(() => Math.random() - 0.5);
         }
-
-        return {
-          ...q,
-          choices,
-          userAnswer: ''
-        };
+        return { ...q, choices, userAnswer: '' };
       })
     );
 
     currentQuestionIndex.value = 0;
     showPretestModal.value = true;
   } catch (error) {
-    console.error('Failed to load pretest questions', error);
+    console.error('Failed to load pretest questions:', error);
   }
 }
-
-
 
 function nextPretestQuestion() {
   if (pretestQuestions.value[currentQuestionIndex.value].userAnswer !== '') {
@@ -211,9 +176,9 @@ function nextPretestQuestion() {
 
 async function submitPretest() {
   const answered = pretestQuestions.value;
-  const correctCount = answered.filter(q => {
-    return q.userAnswer?.toLowerCase().trim() === q.answer?.toLowerCase().trim();
-  }).length;
+  const correctCount = answered.filter(q =>
+    q.userAnswer?.toLowerCase().trim() === q.answer?.toLowerCase().trim()
+  ).length;
 
   const total = answered.length;
   const percentage = correctCount / total;
@@ -228,13 +193,13 @@ async function submitPretest() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         user_id: user.id,
-        course_name: 'global',
+        course_name: selectedCourse.value,
         difficulty_level,
         score: correctCount
       })
     });
 
-    difficultyMap.value['global'] = difficulty_level;
+    difficultyMap.value[selectedCourse.value] = difficulty_level;
     showPretestModal.value = false;
     router.visit(`/module${selectedCourse.value.toLowerCase()}`);
   } catch (err) {

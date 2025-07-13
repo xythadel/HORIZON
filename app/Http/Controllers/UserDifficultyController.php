@@ -37,9 +37,7 @@ class UserDifficultyController extends Controller
             ->where('course_name', $course_name)
             ->first();
 
-        return response()->json([
-            'difficulty' => $userDifficulty?->difficulty_level ?? null,
-        ]);
+        return response()->json($userDifficulty);
     }
 
     public function index($user_id)

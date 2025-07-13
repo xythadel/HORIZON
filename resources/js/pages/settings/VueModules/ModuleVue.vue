@@ -154,7 +154,7 @@ export default {
     async fetchUserDifficulty() {
       const res = await fetch(`/api/user-difficulty/${this.user.id}`);
       const result = await res.json();
-      const difficultyRecord = result.find(d => d.course_id === this.courseId);
+      const difficultyRecord = result.find(d => d.course_id === 1);
       this.selectedDifficulty = difficultyRecord?.difficulty_level || 1;
     },
     async fetchLessons() {

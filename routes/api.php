@@ -63,7 +63,9 @@ Route::get('/quizzes', [QuizController::class, 'index']);
 Route::post('/quizzes', [QuizController::class, 'store']);
 Route::put('/quizzes/{quiz}', [QuizController::class, 'update']);
 Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy']);
-Route::get('/displayPretest', [QuizController::class, 'displayPretest']);
+Route::get('/displayQuiz', [QuizController::class, 'displayQuiz']);
+
+Route::get('/pretest/{courseName}', [QuizController::class, 'getPretestByCourse']);
 
 // Nested Questions under a Quiz
 Route::get('/quizzes/{quiz}/questions', [QuestionController::class, 'index']);

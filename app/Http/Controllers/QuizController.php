@@ -67,7 +67,7 @@ class QuizController extends Controller
         return response()->json($quiz);
     }
 
-    public function displayPretest(Request $request)
+    public function displayQuiz(Request $request)
     {
         $quizzes = Quiz::where('questionCategory', 'Pre-test')
             ->with('topic', 'course')
@@ -85,6 +85,35 @@ class QuizController extends Controller
         return response()->json($quizzes);
     }
 
+    public function getPretestByCourse($courseName)
+    {
+        $course = Course::where('name', $courseName)->first();
+
+        if (!$course) {
+            return response()->json(['message' => 'Course not found'], 404);
+        }
+
+        $quizzes = Quiz::whereHas('topic', function ($query) use ($course) {
+                $query->where('course_id', $course->id);
+            })
+            ->with('topic', 'topic.course') // eager load to avoid N+1
+            ->get()
+            ->map(function ($quiz) {
+                return [
+                    'id' => $quiz->id,
+                    'description' => $quiz->description,
+                    'questionType' => $quiz->questionType,
+                    'choices' => json_decode($quiz->choices, true),
+                    'answer' => $quiz->answer,
+                    'topic' => $quiz->topic->title ?? null,
+                    'course' => $quiz->topic->course->course_name ?? null,
+                ];
+            });
+
+        return response()->json($quizzes);
+    }
+
+
     /**
      * Remove the specified quiz.
      */
@@ -94,4 +123,5 @@ class QuizController extends Controller
         
         return response()->json(['message' => 'Quiz deleted successfully']);
     }
+    
 }
