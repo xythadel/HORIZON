@@ -9,8 +9,14 @@
           <button @click="showSection = 'users'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Show Users
           </button>
-          <button @click="showSection = 'topics'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+          <!-- <button @click="showSection = 'topics'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Manage Topics
+          </button> -->
+          <button @click="showSection = 'vuetopics'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+            Vue Topics
+          </button>
+          <button @click="showSection = 'laraveltopics'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+            Laravel Topics
           </button>
           <!-- <button @click="showSection = 'lessons'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Lessons
@@ -27,9 +33,9 @@
           <button @click="showSection = 'reports'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Reports
           </button>
-          <button @click="showSection = 'sandpit'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+          <!-- <button @click="showSection = 'sandpit'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Sandpit
-          </button>
+          </button> -->
         </nav>
       </div>
       <button
@@ -108,18 +114,20 @@
           </tbody>
         </table>
       </div>
-
-      <!-- Topics CRUD -->
-      <div v-if="showSection === 'topics'" class="p-4 bg-white rounded shadow">
-        <h2 class="text-2xl font-bold mb-4">Topic Management</h2>
-        <div v-for="course in courses" :key="course.id" class="mb-6 border rounded shadow">
+      <div v-if="showSection === 'vuetopics'" class="p-4 bg-white rounded shadow">
+        <h2 class="text-2xl font-bold mb-4 text-blue-700">Vue Topic Management</h2>
+        <div
+          v-for="course in courses.filter(c => c && c.id === 1)"
+          :key="'vue-' + course.id"
+          class="mb-6 border rounded shadow"
+        >
           <div
-            class="flex justify-between items-center bg-gray-100 px-4 py-2 cursor-pointer"
+            class="flex justify-between items-center bg-blue-100 px-4 py-2 cursor-pointer"
             @click="toggleCourse(course.id)"
           >
             <div>
               <h3 class="text-xl font-semibold">{{ course.name }}</h3>
-              <p class="text-gray-600 text-sm">{{ course.description }}</p>
+              <p class="text-blue-700 text-sm">{{ course.description }}</p>
             </div>
             <span class="text-blue-600 font-medium">
               {{ expandedCourses[course.id] ? '▲ Hide' : '▼ Add/View Topics' }}
@@ -157,7 +165,6 @@
             </form>
 
             <div v-if="errorMessages[course.id]" class="text-red-500 mb-2">{{ errorMessages[course.id] }}</div>
-
             <ul>
               <li v-for="topic in standaloneTopics[course.id] || []" :key="topic.id" class="border rounded p-3 mb-3 bg-gray-50">
                 <div class="flex justify-between items-center">
@@ -206,26 +213,107 @@
           </div>
         </div>
       </div>
+      <div v-if="showSection === 'laraveltopics'" class="p-4 bg-white rounded shadow">
+        <h2 class="text-2xl font-bold mb-4 text-blue-700">Vue Topic Management</h2>
+        <div
+          v-for="course in courses.filter(c => c && c.id === 2)"
+          :key="'vue-' + course.id"
+          class="mb-6 border rounded shadow"
+        >
+          <div
+            class="flex justify-between items-center bg-green-100 px-4 py-2 cursor-pointer"
+            @click="toggleCourse(course.id)"
+          >
+            <div>
+              <h3 class="text-xl font-semibold">{{ course.name }}</h3>
+              <p class="text-green-700 text-sm">{{ course.description }}</p>
+            </div>
+            <span class="text-green-600 font-medium">
+              {{ expandedCourses[course.id] ? '▲ Hide' : '▼ Add/View Topics' }}
+            </span>
+          </div>
+          <div v-if="expandedCourses[course.id]" class="p-4">
+            <form @submit.prevent="createStandaloneTopicForCourse(course.id)" class="mb-4 w-full space-y-4">
+              <div class="flex flex-col">
+                <label class="font-medium text-sm mb-1">Module Name <span class="text-red-500">*</span></label>
+                <input v-model="newTopics[course.id].title" placeholder="Enter topic title" class="border p-2 rounded-md" required />
+              </div>
+              <div class="flex flex-col">
+                <label class="font-medium text-sm mb-1">Topic Name <span class="text-red-500">*</span></label>
+                <input v-model="newTopics[course.id].module_name" placeholder="Enter module name" class="border p-2 rounded-md" required />
+              </div>
+              <label class="block font-medium">Difficulty</label>
+              <select v-model="newTopics[course.id].difficulty" class="border rounded p-2 w-full" required>
+                <option disabled value="">-- Select Difficulty --</option>
+                <option value="1">Beginner</option>
+                <option value="2">Intermediate</option>
+                <option value="3">Advanced</option>
+              </select>
 
-      <!-- Quizzes CRUD -->
+              <label class="block font-medium">Content</label>
+                <QuillEditor  
+                  v-model:content="newTopics[course.id].content"       
+                  contentType="html"
+                  class="bg-white border rounded"
+                  toolbar="full"
+                />
+              <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md">
+                <span v-if="newTopics[course.id].loading">Adding...</span>
+                <span v-else>Add Topic</span>
+              </button>
+            </form>
+
+            <div v-if="errorMessages[course.id]" class="text-red-500 mb-2">{{ errorMessages[course.id] }}</div>
+            <ul>
+              <li v-for="topic in standaloneTopics[course.id] || []" :key="topic.id" class="border rounded p-3 mb-3 bg-gray-50">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <h4 class="font-semibold text-lg">{{ topic.title }}</h4>
+                    <p class="text-sm text-gray-600">{{ topic.module_name }}</p>
+                  </div>
+                  <div class="flex gap-2">
+                    <button @click="editingTopicId = editingTopicId === topic.id ? null : topic.id" class="text-blue-600">
+                      {{ editingTopicId === topic.id ? 'Cancel' : 'Edit' }}
+                    </button>
+                    <button @click="deleteStandaloneTopic(topic.id, course.id)" class="text-red-600">Delete</button>
+                  </div>
+                </div>
+                <div v-if="editingTopicId === topic.id" class="mt-4 space-y-4">
+                  <div class="flex flex-col">
+                    <label class="text-sm font-medium mb-1">Title</label>
+                    <input v-model="topic.title" class="border p-2 rounded" />
+                  </div>
+                  <div class="flex flex-col">
+                    <label class="text-sm font-medium mb-1">Module Name</label>
+                    <input v-model="topic.module_name" class="border p-2 rounded" />
+                  </div>
+                  <label class="block font-medium">Difficulty</label>
+                  <select v-model="topic.difficulty" class="border rounded p-2 w-full" required>
+                    <option disabled value="">-- Select Difficulty --</option>
+                    <option value="1">Beginner</option>
+                    <option value="2">Intermediate</option>
+                    <option value="3">Advanced</option>
+                  </select>
+
+                  <label class="block font-medium">Content</label>
+                    <QuillEditor  
+                      v-model:content="topic.content"       
+                      contentType="html"
+                      class="bg-white border rounded"
+                      toolbar="full"
+                    />
+                  <div class="flex gap-2">
+                    <button @click="updateStandaloneTopic(topic)" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save</button>
+                    <button @click="editingTopicId = null" class="text-gray-600 underline">Cancel</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
       <div v-if="showSection === 'quizzes'" class="p-4 bg-white rounded shadow">
         <h2 class="text-2xl font-bold mb-4">Quiz Management</h2>
-        <!-- <div class="flex gap-4 mb-4">
-          <button
-            :class="quizTab === 'pretest' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'"
-            class="px-4 py-2 rounded"
-            @click="quizTab = 'pretest'"
-          >
-            Pre-test
-          </button>
-          <button
-            :class="quizTab === 'posttest' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'"
-            class="px-4 py-2 rounded"
-            @click="quizTab = 'posttest'"
-          >
-            Post-test
-          </button>
-        </div> -->
         <form @submit.prevent="createQuiz" class="mb-6 space-y-4">
           <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Topic</label>
@@ -249,6 +337,10 @@
           <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Question</label>
             <textarea v-model="newQuiz.description" class="border p-2 rounded"></textarea>
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Points</label>
+            <input v-model="newQuiz.score" class="border p-2 rounded" required />
           </div>
           <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Answer</label>
@@ -374,12 +466,12 @@
             <input v-model="newBadge.title" class="border p-2 rounded" required />
           </div>
           <div class="flex flex-col">
-            <label class="font-medium text-sm mb-1">Description</label>
+            <label class="font-medium text-sm mb-1">Criteria</label>
             <textarea v-model="newBadge.description" class="border p-2 rounded" required></textarea>
           </div>
           <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Image URL</label>
-            <input v-model="newBadge.image" class="border p-2 rounded" required />
+            <input type="file" @change="handleImageUpload($event, 'new')" accept="image/*" class="border p-2 rounded" required />
           </div>
           <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Create Badge</button>
         </form>
@@ -400,7 +492,7 @@
               <div v-else class="space-y-2 mt-5">
                 <input v-model="editBadge.title" class="border p-1 rounded w-full" />
                 <textarea v-model="editBadge.description" class="border p-1 rounded w-full"></textarea>
-                <input v-model="editBadge.image" class="border p-1 rounded w-full" />
+                <input type="file" @change="handleImageUpload($event, 'edit')" accept="image/*" class="border p-1 rounded w-full" />
                 <div class="flex gap-2">
                   <button @click="updateBadge" class="bg-blue-600 text-white px-3 py-1 rounded">Save</button>
                   <button @click="cancelEditingBadge" class="text-gray-600 underline">Cancel</button>
@@ -621,7 +713,7 @@ const newTopics = ref({})
 const expandedCourses = ref({})
 const errorMessages = ref({})
 const editingTopicId = ref(null)
-const showSection = ref('topics')
+const showSection = ref('users')
 const lessonTab = ref('vue')
 const options = ref(['', '', '', ''])
 const editingBadgeId = ref(null)
@@ -637,6 +729,7 @@ const newQuiz = ref({
   topic_id: '',
   is_published: false,
   answer: '',
+  score: '',
 })
 const filteredTopics = computed(() => {
   return allTopics.value.filter(topic => {
@@ -750,14 +843,6 @@ const reportResults = ref(null)
 const fieldsVisible = ref(false);
 const newBadge = ref({ title: '', description: '', image: '' })
 const badges = ref([])
-// const fetchReport = async (type) => {
-//   try {
-//     const res = await axios.get(`/api/reports/${type}`)
-//     reportResults.value = res.data
-//   } catch (err) {
-//     reportResults.value = { error: 'Failed to load report.' }
-//   }
-// }
 
 const downloadPdf = async (type) => {
   try {
@@ -855,11 +940,25 @@ const createQuiz = () => {
   newQuiz.value.title = '';
   newQuiz.value.description = '';
   newQuiz.value.answer = '';
+  newQuiz.value.score = '';
   if (newQuiz.value.questionType === 'Choices') {
     options.value = ['', '', '', ''];
   }
 };
+const handleImageUpload = async (event, type = 'new') => {
+  const file = event.target.files[0]
+  if (!file) return
 
+  const reader = new FileReader()
+  reader.onload = () => {
+    if (type === 'new') {
+      newBadge.value.image = reader.result
+    } else if (type === 'edit') {
+      editBadge.value.image = reader.result
+    }
+  }
+  reader.readAsDataURL(file)
+}
 const saveAllQuizzes = async () => {
   try {
     for (const quiz of pendingQuizzes.value) {
@@ -922,139 +1021,4 @@ onMounted(async () => {
   fetchCourses();
   fetchAllTopics();
 })
-
-/*sandpit script still editing
-const selectedLanguage = ref('vue')
-  const activeTab = ref('template')
-
-    const tabs = {
-    vue: ['template', 'script', 'style'],
-    laravel: ['template', 'web.php', 'style']
-    }
-
-    const visibleTabs = computed(() => tabs[selectedLanguage.value])
-
-    const codeSections = ref({
-    template: '',
-    script: '',
-    style: '',
-    'web.php': ''
-    })
-
-    const compiledHtml = ref('')
-    const error = ref('')
-    watch(selectedLanguage, (lang) => {
-    if (lang === 'laravel') {
-        activeTab.value = 'template'
-        codeSections.value.template = `<div>
-    <h1>Hello, {{ name }}</h1>
-
-    @if(isAdmin)
-        <p>Welcome back, administrator!</p>
-    @else
-        <p>You are logged in as a regular user.</p>
-    @endif
-
-    <ul>
-        @foreach($tasks as $task)
-        <li>{{ task }}</li>
-        @endforeach
-    </ul>
-    </div>`
-        codeSections.value['web.php'] = `$name = "Jane";
-    $isAdmin = true;
-    $tasks = ["Write docs", "Fix bug", "Deploy"];`
-        codeSections.value.style = `body { font-family: sans-serif; padding: 20px; }`
-    } else {
-        activeTab.value = 'template'
-        codeSections.value.template = `<header>\n  <h1>WELCOME TO SANDPIT</h1>\n</header>`
-        codeSections.value.script = `// JS logic here`
-        codeSections.value.style = `header { text-align: center; }`
-    }
-    })
-
-    function parseWebPhp(phpCode) {
-    const lines = phpCode.split('\n')
-    const data = {}
-    for (let line of lines) {
-        line = line.trim()
-        if (line.startsWith('$')) {
-        let [key, value] = line.split('=')
-        key = key.replace('$', '').trim()
-        value = value.trim().replace(/;$/, '')
-
-        try {
-
-            if (value.startsWith('"') || value.startsWith("'")) {
-            data[key] = value.replace(/^["']|["']$/g, '')
-            } else if (value.startsWith('[')) {
-            data[key] = eval(value)
-            } else {
-            data[key] = eval(value)
-            }
-        } catch (e) {
-            console.warn('Failed parsing:', line)
-        }
-        }
-    }
-    return data
-    }
-    function runCode() {
-    error.value = ''
-
-    try {
-        if (selectedLanguage.value === 'vue') {
-            compiledHtml.value = `
-                <html>
-                <head>
-                <style>${codeSections.value.style}</style>
-                </head>
-                <body>
-                <div id="app">
-                    ${codeSections.value.template}
-                </div>
-                <script>
-                    ${codeSections.value.script}
-                <\/script>
-                </body>
-                </html>
-            `
-            } else if (selectedLanguage.value === 'laravel') {
-            const data = parseWebPhp(codeSections.value['web.php'])
-            let rendered = codeSections.value.template
-            rendered = rendered.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, key) => data[key] ?? '')
-
-            rendered = rendered.replace(/@if\s*\((.*?)\)([\s\S]*?)@else([\s\S]*?)@endif/g, (_, condition, ifTrue, elseBlock) => {
-                if (condition.includes('=') && !condition.includes('==') && !condition.includes('>=') && !condition.includes('<=') && !condition.includes('!=')) {
-                throw new Error('Use "==", ">=", "<=" etc. for comparison in @if. Avoid single "=" (assignment).')
-                }
-
-                const expr = condition.replace(/(\w+)/g, 'data.$1')
-                return eval(expr) ? ifTrue : elseBlock
-            })
-
-
-            rendered = rendered.replace(/@foreach\s*\(\s*\$(\w+)\s+as\s+\$(\w+)\s*\)([\s\S]*?)@endforeach/g, (_, list, item, content) => {
-                const arr = data[list]
-                if (!Array.isArray(arr)) return ''
-                return arr.map(val => content.replace(new RegExp(`\\{\\{\\s*${item}\\s*\\}\\}`, 'g'), val)).join('')
-            })
-
-
-            compiledHtml.value = `
-                <html>
-                <head>
-                <style>${codeSections.value.style}</style>
-                </head>
-                <body>
-                ${rendered}
-                </body>
-                </html>
-            `
-            }
-        } catch (err) {
-            error.value = 'Error: ' + err.message
-        }
-      }*/
-
 </script>

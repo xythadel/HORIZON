@@ -41,6 +41,7 @@ class QuizController extends Controller
             'is_published' => 'boolean',
             'answer' => 'required|string|max:255',
             'questionType' => 'required|string|max:255',
+            'score' => 'required|integer'
         ]);
 
         // Create the quiz
@@ -60,6 +61,7 @@ class QuizController extends Controller
             'course_id' => 'exists:courses,id',
             'topic_id' => 'exists:topics,id',
             'is_published' => 'boolean',
+            'score' => 'required|integer'
         ]);
 
         $quiz->update($validated);
@@ -107,6 +109,7 @@ class QuizController extends Controller
                     'answer' => $quiz->answer,
                     'topic' => $quiz->topic->title ?? null,
                     'course' => $quiz->topic->course->course_name ?? null,
+                    'score' => $quiz->score
                 ];
             });
 

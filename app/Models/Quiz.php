@@ -17,7 +17,8 @@ class Quiz extends Model
         'questionCategory',
         'quizStatus',
         'answer',
-        'questionType'
+        'questionType',
+        'score'
 
     ];
 
