@@ -86,8 +86,11 @@
           </div>
         </div>
         <div v-if="quizCompleted && postTestResult" class="text-center mt-10 text-white">
-          <p class="text-2xl mb-6">
+          <p class="text-2xl mb-2">
             You {{ postTestResult === 'pass' ? 'passed' : 'did not pass' }} the post-test.
+          </p>
+          <p class="text-xl mb-6">
+            Your Score: {{ userTotalScore }} / {{ maxScore }}
           </p>
           <button
             v-if="postTestResult === 'pass'"
@@ -123,6 +126,8 @@ export default {
       topics: [],
       PostTest: [],
       lessons: [],
+      userTotalScore: 0,
+      maxScore: 0,
       postTestDisplay: false,
       postTestResult: null,
       quizCompleted: false,
@@ -154,7 +159,7 @@ export default {
     async fetchUserDifficulty() {
       const res = await fetch(`/api/user-difficulty/${this.user.id}`);
       const result = await res.json();
-      const difficultyRecord = result.find(d => d.course_id === 2);
+      const difficultyRecord = result.find(d => d.course_id === 1);
       this.selectedDifficulty = difficultyRecord?.difficulty_level || 1;
     },
     async fetchLessons() {
@@ -167,7 +172,7 @@ export default {
       this.lessons = allLessons.filter(lesson => lesson.difficulty === this.selectedDifficulty);
     },
     async fetchTopics() {
-      const res = await fetch(`/api/courses/2/topics`);
+      const res = await fetch(`/api/courses/1/topics`);
       const topics = await res.json();
 
       const allowedDifficulties = [1];
@@ -244,7 +249,7 @@ export default {
     },
     async unlockTopicsBasedOnProgress() {
       try {
-        const res = await fetch(`/api/user-topic-progress/${this.user.id}/1`);
+        const res = await fetch(`/api/user-topic-progress/${this.user.id}/2`);
         const completed = await res.json();
         const completedIds = completed.map(item => item.topic_id);
 
@@ -278,18 +283,23 @@ export default {
       this.stopTimer();
 
       const testData = this.PostTest;
-      const score = testData.filter(q => q.isCorrect).length;
-      const total = testData.length;
-      const passed = score >= Math.ceil(total * 0.6);
+
+      // Calculate total possible score and user actual score
+      const totalScore = testData.reduce((acc, q) => acc + (q.score || 1), 0);
+      const userScore = testData.reduce((acc, q) => acc + (q.isCorrect ? (q.score || 1) : 0), 0);
+      const passed = userScore >= Math.ceil(totalScore * 0.6);
+
+      this.userTotalScore = userScore;
+      this.maxScore = totalScore;
 
       const attempts = testData.map(q => ({
         user_id: this.user.id,
         topic_id: this.currentTopic.id,
         quiz_id: q.id,
         type,
-        score: q.isCorrect ? 1 : 0,
-        total: 1,
-        passed: q.isCorrect ? true : false,
+        score: q.isCorrect ? (q.score || 1) : 0,
+        total: q.score || 1,
+        passed: q.isCorrect,
         difficulty: q.difficulty || this.selectedDifficulty,
         time_taken: this.elapsedTime,
         timestamp: new Date().toISOString(),
@@ -311,6 +321,7 @@ export default {
         this.topics[this.currentTopicIndex + 1].unlocked = true;
       }
     },
+
     startPostTest() {
       this.ModuleTopic = false;
       this.stopTimer();
