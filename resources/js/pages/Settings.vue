@@ -22,7 +22,7 @@
         <a href="/test" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Course</a> 
         <a href="#" @click.prevent="goTo('learning')" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a>
         <a href="#" @click.prevent="goTo('compiler')" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a>
-        <a href="#" @click.prevent="goTo('settings')" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Settings</a>
+        <a href="#" @click.prevent="goTo('settings')" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Profiles</a>
       </nav>
 
       <!-- Logout -->
