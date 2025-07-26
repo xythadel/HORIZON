@@ -469,6 +469,16 @@
             <label class="font-medium text-sm mb-1">Criteria</label>
             <textarea v-model="newBadge.description" class="border p-2 rounded" required></textarea>
           </div>
+          <div>
+            <label for="">Course to Achieve</label>
+            <select name="" v-model="newBadge.course" id="" class="w-full rounded-md">
+              <option value="">
+                Select Course
+              </option>
+              <option value="Vue Js">Vue JS</option>
+              <option value="Laravel">Laravel</option>
+            </select>
+          </div>
           <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Image URL</label>
             <input type="file" @change="handleImageUpload($event, 'new')" accept="image/*" class="border p-2 rounded" required />
@@ -490,9 +500,16 @@
                 <div class="text-sm text-blue-600 underline cursor-pointer mt-1" @click="startEditingBadge(badge)">Edit</div>
               </div>
               <div v-else class="space-y-2 mt-5">
-                <input v-model="editBadge.title" class="border p-1 rounded w-full" />
-                <textarea v-model="editBadge.description" class="border p-1 rounded w-full"></textarea>
+                <input v-model="editBadge.title" class="border p-1 rounded w-full" placeholder="Title" />
+                <textarea v-model="editBadge.description" class="border p-1 rounded w-full" placeholder="Descriotion"></textarea>
                 <input type="file" @change="handleImageUpload($event, 'edit')" accept="image/*" class="border p-1 rounded w-full" />
+                <select name="" v-model="editBadge.course" id="" class="w-full rounded-md">
+                  <option value="">
+                    Select Course
+                  </option>
+                  <option value="Vue Js">Vue JS</option>
+                  <option value="Laravel">Laravel</option>
+                </select>
                 <div class="flex gap-2">
                   <button @click="updateBadge" class="bg-blue-600 text-white px-3 py-1 rounded">Save</button>
                   <button @click="cancelEditingBadge" class="text-gray-600 underline">Cancel</button>
@@ -841,7 +858,7 @@ const reportTypes = [
 ]
 const reportResults = ref(null)
 const fieldsVisible = ref(false);
-const newBadge = ref({ title: '', description: '', image: '' })
+const newBadge = ref({ title: '', description: '', image: '' , course: ''})
 const badges = ref([])
 
 const downloadPdf = async (type) => {
@@ -1007,7 +1024,7 @@ const fetchBadges = async () => {
 const createBadge = async () => {
   await axios.post('/api/badges', newBadge.value)
   await fetchBadges()
-  newBadge.value = { title: '', description: '', image: '' }
+  newBadge.value = { title: '', description: '', image: '', course: '' }
 }
 
 const logout = async () => {

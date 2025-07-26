@@ -15,7 +15,7 @@
             <a href="/mylearning" class="hover:text-indigo-600">My Learning</a>
             <a href="/sandpit" class="hover:text-indigo-600 text-indigo-600 font-bold">Sandpit</a>
             <a href="/badges" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Badge</a> 
-            <a href="/settings" class="hover:text-indigo-600">Settings</a>
+            <a href="/settings" class="hover:text-indigo-600">Profiles</a>
         </nav>
         <nav class="flex flex-col space-y-6 pl-20 pt-60">
             <a href="#" @click.prevent="showLogoutModal = true" class="hover:text-indigo-600">Logout</a>
@@ -52,11 +52,13 @@
 
         <!-- Code Area -->
         <textarea
-            v-model="codeSections[activeTab]"
-            rows="12"
-            class="w-full border rounded-md p-2 font-mono bg-slate-800 text-white"
-            style="scrollbar-width: thin;"
+        v-model="codeSections[activeTab]"
+        :readonly="activeTab === 'instruction'"
+        rows="12"
+        class="w-full border rounded-md p-2 font-mono bg-slate-800 text-white"
+        style="scrollbar-width: thin;"
         ></textarea>
+        <p class="mt-2 text-sm text-gray-600">Lines: {{ lineCount }} / 3000</p>
 
         <!-- Run -->
         <div class="mt-3">
@@ -88,8 +90,8 @@ const user = auth.user
     const activeTab = ref('template')
 
     const tabs = {
-    vue: ['template'],
-    laravel: ['template', 'web.php', 'style']
+    vue: ['template', 'instruction'],
+    laravel: ['template', 'web.php', 'style', 'instruction']
     }
 
     const visibleTabs = computed(() => tabs[selectedLanguage.value])
@@ -98,12 +100,56 @@ const user = auth.user
     template: '',
     script: '',
     style: '',
-    'web.php': ''
+    'web.php': '',
+    instruction: ''
     })
 
     const compiledHtml = ref('')
     const error = ref('')
     watch(selectedLanguage, (lang) => {
+        codeSections.value.instruction = `# Vue and Laravel Sandbox Playground Instructions
+
+Welcome to your interactive Vue/Laravel sandbox! This tool helps you test and render code in real time.
+
+---
+
+### 🧠 Tabs Overview
+
+- **template**: Your main HTML or Blade content.
+- **web.php**: (Laravel only) Simulate server-side data with PHP-like variables.
+- **style**: Add CSS styling for your rendered output.
+- **instruction**: You're reading it! Read-only tab for guidance.
+
+---
+
+### ✏️ Usage
+
+- Use  to interpolate values.
+- Laravel mode supports:
+  - \`@if(condition) ... @else ... @endif\`
+  - \`@foreach($array as $item) ... @endforeach\`
+
+---
+
+### ⚠️ Limits
+
+- Each tab can contain up to **3000 lines**.
+- A line counter is visible at the top.
+- Editing is **disabled** in this tab.
+
+---
+
+### ▶️ Running Code
+
+1. Select a tab and write your code.
+2. Press **Run** to see the output rendered below.
+3. Output supports raw HTML and basic Blade-like syntax.
+
+---
+
+Happy coding! 🚀
+`
+
     if (lang === 'laravel') {
         activeTab.value = 'template'
         codeSections.value.template = `<div>
@@ -224,5 +270,8 @@ const user = auth.user
             error.value = 'Error: ' + err.message
         }
     }
-
+const lineCount = computed(() => {
+  const code = codeSections.value[activeTab.value] || ''
+  return code.split('\n').length
+})
 </script>

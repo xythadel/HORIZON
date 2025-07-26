@@ -17,7 +17,8 @@ class BadgeController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'required|string'
+            'image' => 'required|string',
+            'course' => 'string'
         ]);
 
         return Badge::create($request->all());
@@ -31,6 +32,7 @@ class BadgeController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'required|string',
+            'course' => 'string'
         ]);
 
         $badge->update($validated);
