@@ -11,6 +11,7 @@ use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
