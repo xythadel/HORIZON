@@ -13,7 +13,7 @@
 
       <!-- Username -->
       <p v-if="user" class="pl-24 pt-16 text-base font-normal text-zinc-800">
-        {{ user.name }}
+        {{ user.firstname }} {{ user.lastname }}
       </p>
 
       <!-- Navigation -->

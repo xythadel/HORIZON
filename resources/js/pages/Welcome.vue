@@ -267,13 +267,22 @@
                 </div>
                 <form @submit.prevent="handleSignUp" class="space-y-6">
                     <div>
-                    <label class="text-xs text-white/70 block mb-2">Full Name</label>
-                    <input
-                        v-model="fullName"
-                        type="text"
-                        class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white/50 text-white focus:border-purple-500 focus:outline-none"
-                        placeholder="Your full name"
-                    />
+                        <label class="text-xs text-white/70 block mb-2">First Name</label>
+                        <input
+                            v-model="firstname"
+                            type="text"
+                            class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white/50 text-white focus:border-purple-500 focus:outline-none"
+                            placeholder="Your First name"
+                        />
+                    </div>
+                    <div>
+                        <label class="text-xs text-white/70 block mb-2">Last Name</label>
+                        <input
+                            v-model="lastname"
+                            type="text"
+                            class="w-full px-4 py-3 rounded-full bg-black/30 border border-white/10 placeholder-white/50 text-white focus:border-purple-500 focus:outline-none"
+                            placeholder="Your Last name"
+                        />
                     </div>
 
                     <div>
@@ -489,7 +498,8 @@ const password = ref('');
 const confirmPassword = ref('');
 const showPassword = ref(false);
 const errorMessage = ref('');
-const fullName = ref('');
+const firstname = ref('');
+const lastname = ref('');
 const birthday = ref('');
 
 function showSignUp() {
@@ -531,7 +541,7 @@ function handleLogin() {
 
 function handleSignUp() {
     // Validate all signup fields in one go
-    if (!fullName.value || !birthday.value || !email.value || !password.value || !confirmPassword.value) {
+    if (!firstname.value ||!lastname.value || !birthday.value || !email.value || !password.value || !confirmPassword.value) {
         errorMessage.value = 'Please fill in all fields';
         return;
     }
@@ -546,14 +556,15 @@ function handleSignUp() {
     errorMessage.value = '';
 
     router.post('/register', {
-        name: fullName.value,
+        firstname: firstname.value,
+        lastname: lastname.value,
         birthday: birthday.value,
         email: email.value,
         password: password.value,
         password_confirmation: confirmPassword.value,
     }, {
         onError: (errors) => {
-            errorMessage.value = errors.email || errors.password || errors.name || errors.birthday || 'Something went wrong';
+            errorMessage.value = errors.email || errors.password || errors.firstname || errors.lastname || errors.birthday || 'Something went wrong';
         },
         onSuccess: () => {
             currentView.value = 'login'; // Redirect to login after successful signup
@@ -570,7 +581,8 @@ function clearFields() {
     email.value = '';
     password.value = '';
     confirmPassword.value = ''; // clear new field too
-    fullName.value = '';
+    firstname.value = '';
+    lastname.value = '';
     birthday.value = '';
     errorMessage.value = '';
 }

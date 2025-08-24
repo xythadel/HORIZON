@@ -114,10 +114,10 @@ class LeaderboardsController extends Controller
 
     public function index()
     {
-        $users = User::select('users.id', 'users.name')
+        $users = User::select('users.id', 'users.firstname')
             ->join('quiz_attempts', 'users.id', '=', 'quiz_attempts.user_id')
             ->where('quiz_attempts.passed', true)
-            ->groupBy('users.id', 'users.name')
+            ->groupBy('users.id', 'users.firstname')
             ->selectRaw('COUNT(DISTINCT quiz_attempts.topic_id) as topics_completed')
             ->selectRaw('AVG(quiz_attempts.score) as average_score')
             ->orderByDesc('topics_completed')

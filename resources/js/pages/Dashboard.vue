@@ -13,7 +13,7 @@
 
       <!-- Username (Dynamic) -->
       <p v-if="user" class="pl-24 pt-16 text-base font-normal text-zinc-800">
-       {{ user.name }}
+       {{ user.firstname }} {{ user.lastname }}
       </p>
 
 
@@ -29,6 +29,7 @@
         <a href="/mylearning" class="text-base font-normal text-zinc-800 hover:text-indigo-600">My Learning</a> 
         <a href="/sandpit" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Sandpit</a> 
         <a href="/badges" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Badge</a> 
+
         <a href="/settings" class="text-base font-medium text-zinc-800 hover:text-indigo-600">Profiles</a>
       </nav>
 

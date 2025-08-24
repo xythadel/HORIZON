@@ -27,10 +27,8 @@
         <div v-if="ModuleTopic">
           <h1 class="text-2xl font-bold mb-1 text-white">{{ currentTopic.title }}</h1>
           <p class="text-sm text-gray-300 mb-6">{{ currentTopic.module_name }}</p>
-          <div v-if="lessons.length" class="h-[700px] overflow-auto scrollbar-w-1">
-            <div v-for="(lesson, i) in lessons" :key="lesson.id" class="bg-zinc-700 text-white p-6 rounded-xl mb-4">
-              <div v-html="lesson.content" class="leading-relaxed text-white"></div>
-            </div>
+          <div class="h-[700px] overflow-auto scrollbar-w-1">
+            <div v-html="currentTopic.content" class="leading-relaxed text-white"></div>
           </div>
           <div class="mt-5 flex justify-end">
             <button @click="startPostTest" class="py-3 bg-green-600 rounded-full w-72 text-white">Start Post Test</button>
@@ -92,29 +90,60 @@
           <p class="text-xl mb-6">
             Your Score: {{ userTotalScore }} / {{ maxScore }}
           </p>
+
+          <!-- Fail case -->
           <button
-            v-if="postTestResult === 'pass'"
-            @click="goToNextTopic"
-            class="bg-green-600 px-6 py-3 rounded-full text-white text-lg"
-          >
-            Continue to Next Topic
-          </button>
-          <button
-            v-else
+            v-if="postTestResult === 'fail'"
             @click="retryLessons"
             class="bg-red-600 px-6 py-3 rounded-full text-white text-lg"
           >
             Retry from First Lesson
           </button>
+          <div v-else>
+            <div v-if="skillTestAvailable && !skillTestCompleted">
+              <p class="text-2xl mb-4">Now it’s time for your Skill Test!</p>
+              <div class="bg-gray-900 p-6 rounded-lg text-left">
+                <h2 class="text-xl font-semibold mb-2">{{ skillTest.title }}</h2>
+                <p class="mb-4 text-gray-300">{{ skillTest.description }}</p>
+
+                <label class="block mb-2 text-gray-200">
+                  Write your solution ({{ skillTest.language }})
+                </label>
+                <textarea
+                  v-model="code"
+                  rows="10"
+                  class="w-full rounded-md p-3 text-black"
+                ></textarea>
+
+                <button
+                  @click="runCode"
+                  class="mt-4 bg-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-700"
+                >
+                  Run Code
+                </button>
+                <div v-if="result" class="mt-6 p-4 bg-gray-800 rounded-lg">
+                  <h3 class="text-lg font-semibold">Result:</h3>
+                  <pre class="text-green-400">{{ result.output }}</pre>
+                </div>
+              </div>
+            </div>
+            <div v-else-if="skillTestCompleted">
+              <button
+                @click="goToNextTopic"
+                class="bg-green-600 px-6 py-3 rounded-full text-white text-lg"
+              >
+                Continue to Next Topic
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
     </main>
   </div>
 </template>
-
 <script>
 import { usePage } from '@inertiajs/vue3';
-
 export default {
   props: {
     courseId: Number,
@@ -137,6 +166,11 @@ export default {
       elapsedTime: 0,
       currentPostQuestionIndex: 0,
       selectedDifficulty: null,
+      skillTestAvailable: false,
+      skillTest: null,
+      skillTestCompleted: false,
+      code: "",
+      result: null,
     };
   },
   computed: {
@@ -162,6 +196,34 @@ export default {
       const difficultyRecord = result.find(d => d.course_id === 1);
       this.selectedDifficulty = difficultyRecord?.difficulty_level || 1;
     },
+    async runCode() {
+      if (!this.skillTest) return;
+
+      try {
+        const res = await fetch("/api/skill-tests/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: this.user.id,
+            skill_test_id: this.skillTest.id,
+            code: this.code,
+            language: this.skillTest.language,
+          }),
+        });
+
+        const data = await res.json();
+        this.result = data;
+
+        if (data.correct || data.passed) {
+          this.skillTestCompleted = true;
+          this.result.output = "✅ Passed! Great job.";
+        } else {
+          this.result.output = "❌ Failed: " + (data.error || "Try again.");
+        }
+      } catch (err) {
+        this.result = { output: "Error running code" };
+      }
+    },
     async fetchLessons() {
       const topicId = this.currentTopic?.id;
       if (!topicId) return;
@@ -183,6 +245,32 @@ export default {
       this.topics = filteredTopics.map(topic => ({ ...topic, unlocked: false }));
 
       await this.unlockTopicsBasedOnProgress();
+    },
+    async startSkillTest() {
+      if (!this.skillTest) return;
+
+      try {
+        const res = await fetch(`/api/skill-tests/run`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: this.user.id,
+            skill_test_id: this.skillTest.id,
+            code: "// user code here or open editor UI"
+          }),
+        });
+
+        const result = await res.json();
+
+        if (result.passed) {
+          alert("🎉 Skill Test Passed!");
+          this.skillTestCompleted = true;
+        } else {
+          alert("❌ Skill Test Failed: " + (result.error || "Try again."));
+        }
+      } catch (err) {
+        console.error("Skill test failed", err);
+      }
     },
     goToTopic(index) {
       if (!this.topics[index].unlocked) return;
@@ -284,7 +372,6 @@ export default {
 
       const testData = this.PostTest;
 
-      // Calculate total possible score and user actual score
       const totalScore = testData.reduce((acc, q) => acc + (q.score || 1), 0);
       const userScore = testData.reduce((acc, q) => acc + (q.isCorrect ? (q.score || 1) : 0), 0);
       const passed = userScore >= Math.ceil(totalScore * 0.6);
@@ -317,8 +404,18 @@ export default {
       this.quizCompleted = true;
       this.postTestResult = passed ? 'pass' : 'fail';
 
-      if (passed && this.currentTopicIndex + 1 < this.topics.length) {
-        this.topics[this.currentTopicIndex + 1].unlocked = true;
+      if (passed) {
+        // this.topics[this.currentTopicIndex + 1].unlocked = true;
+        // debugger;
+        try {
+          const res = await fetch(`/api/skill-tests/by-topic/${this.currentTopic.id}`);
+          if (res.ok) {
+            this.skillTestAvailable = true;
+            this.skillTest = await res.json();
+          }
+        } catch (e) {
+          console.error("Skill test fetch failed", e);
+        }
       }
     },
 
