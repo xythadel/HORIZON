@@ -30,6 +30,11 @@
           <button @click="showSection = 'sandpit'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Sandpit
           </button>
+          <button @click="showSection = 'skilltests'" 
+            class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
+            Manage Skill Tests
+          </button>
+
           <button @click="showSection = 'reports'" class="w-full text-left bg-gray-700 p-2 rounded hover:bg-gray-600">
             Reports
           </button>
@@ -66,7 +71,7 @@
               <tbody>
                 <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50">
                   <td class="p-2 border">{{ user.id }}</td>
-                  <td class="p-2 border">{{ user.name }}</td>
+                  <td class="p-2 border">{{ user.firstname }} {{ user.lastname }}</td>
                   <td class="p-2 border">{{ user.email }}</td>
                   <td class="p-2 border">{{ user.role }}</td>
                   <td class="p-2 border">{{ new Date(user.created_at).toLocaleString() }}</td>
@@ -83,7 +88,7 @@
                 class="bg-gray-100 mb-3 px-4 py-2 rounded-2xl shadow"
               >
                 <div class="flex justify-between items-center">
-                  <h3 class="text-lg font-semibold">{{ entry.name }}</h3>
+                  <h3 class="text-lg font-semibold">{{ entry.firstname }}</h3>
                   <span class="text-sm text-gray-500">#{{ index + 1 }}</span>
                 </div>
                 <p class="text-sm mt-1">Topics Completed: <strong>{{ entry.topics_completed }}</strong></p>
@@ -106,7 +111,7 @@
           <tbody>
             <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50">
               
-              <td class="p-2 border">{{ user.name }}</td>
+              <td class="p-2 border">{{ user.firstname }} {{ user.lastname }}</td>
               <td class="p-2 border">{{ user.email }}</td>
               
               <td class="p-2 border">{{ new Date(user.created_at).toLocaleString() }}</td>
@@ -701,6 +706,64 @@
       <div v-if="showSection === 'sandpit'" class="p-4 bg-white rounded shadow">
         <Sandpit></Sandpit>
       </div>
+      <div v-if="showSection === 'skilltests'" class="p-4 bg-white rounded shadow">
+        <h2 class="text-2xl font-bold mb-4">Skill Test Management</h2>
+
+        <!-- Create Form -->
+        <form @submit.prevent="createSkillTest" class="mb-6 space-y-4">
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Title</label>
+            <input v-model="newSkillTest.title" class="border p-2 rounded" required />
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Description</label>
+            <textarea v-model="newSkillTest.description" class="border p-2 rounded"></textarea>
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Language</label>
+            <select v-model="newSkillTest.language" class="border p-2 rounded" required>
+              <option value="php">PHP</option>
+              <option value="javascript">JavaScript</option>
+            </select>
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Topics</label>
+            <select v-model="newSkillTest.topic_id" class="border p-2 rounded" required>
+              <option disabled value="">-- Select Topic --</option>
+              <option v-for="topic in allTopics" :key="topic.id" :value="topic.id">{{ topic.title }}</option>
+            </select>
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Score</label>
+            <input v-model="newSkillTest.score" class="border p-2 rounded" required />
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Test Input (stdin)</label>
+            <input v-model="newSkillTest.test_input" class="border p-2 rounded" />
+          </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Expected Output</label>
+            <input v-model="newSkillTest.expected_output" class="border p-2 rounded" required />
+          </div>
+          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Create Test</button>
+        </form>
+
+        <!-- Existing Tests -->
+        <div v-if="skillTests.length">
+          <h3 class="text-xl font-semibold mb-3">Existing Skill Tests</h3>
+          <ul>
+            <li v-for="test in skillTests" :key="test.id" class="border p-3 mb-2 rounded flex justify-between">
+              <div>
+                <h4 class="font-semibold">{{ test.title }} <span class="text-xs text-gray-500">({{ test.language }})</span></h4>
+                <p class="text-sm text-gray-600">{{ test.description }}</p>
+                <p class="text-xs text-gray-400">Input: {{ test.test_input }} | Output: {{ test.expected_output }}</p>
+              </div>
+              <button @click="deleteSkillTest(test.id)" class="text-red-600 hover:underline">Delete</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
     </main> 
   </div>
 </template>
@@ -771,6 +834,39 @@ const fetchReport = async (type) => {
     modalVisible.value = true
   }
 }
+const skillTests = ref([]);
+const newSkillTest = ref({ title: "", description: "", language: "php", test_input: "", expected_output: "" , score: "", topic_id: "" });
+
+const fetchSkillTests = async () => {
+  try {
+    const res = await axios.get("/api/skill-tests");
+    skillTests.value = res.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const createSkillTest = async () => {
+  try {
+    const res = await axios.post("/api/skill-tests", newSkillTest.value, {
+      headers: { "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content }
+    });
+    skillTests.value.push(res.data.data);
+    newSkillTest.value = { title: "", description: "", language: "php", test_input: "", expected_output: "" , score: "", topic_id: "" };
+  } catch (err) {
+    console.error(err.response?.data || err);
+  }
+};
+
+const deleteSkillTest = async (id) => {
+  if (!confirm("Are you sure?")) return;
+  try {
+    await axios.delete(`/api/skill-tests/${id}`);
+    skillTests.value = skillTests.value.filter(t => t.id !== id);
+  } catch (err) {
+    console.error(err);
+  }
+};
 const startEditingBadge = (badge) => {
   editingBadgeId.value = badge.id
   editBadge.value = { ...badge }
@@ -953,6 +1049,7 @@ const createQuiz = () => {
     options: newQuiz.value.questionType === 'Choices' ? [...options.value] : [],
     quizStatus: 'ACTIVE'
   });
+  
 
   newQuiz.value.title = '';
   newQuiz.value.description = '';
@@ -976,6 +1073,7 @@ const handleImageUpload = async (event, type = 'new') => {
   }
   reader.readAsDataURL(file)
 }
+
 const saveAllQuizzes = async () => {
   try {
     for (const quiz of pendingQuizzes.value) {
@@ -1000,6 +1098,7 @@ const saveAllQuizzes = async () => {
     alert('Failed to save some quizzes.');
   }
 };
+
 const deleteQuiz = async (id) => {
   await axios.delete(`/api/quizzes/${id}`)
   quizzes.value = quizzes.value.filter(q => q.id !== id)
@@ -1031,11 +1130,13 @@ const logout = async () => {
   await axios.post('/logout')
   window.location.href = '/'
 }
+
 onMounted(async () => {
   const lbRes = await fetch('/api/leaderboard')
   leaderboard.value = await lbRes.json()
   fetchBadges();
   fetchCourses();
   fetchAllTopics();
+  fetchSkillTests();
 })
 </script>

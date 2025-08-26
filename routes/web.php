@@ -51,6 +51,10 @@ Route::get('/badges', function () {
     return Inertia::render('badges');
 })->name('badges');
 
+Route::get('/skilltest', function () {
+    return Inertia::render('skilltest');
+})->name('skilltest');
+
 Route::get('/quizlara', function () {
     return Inertia::render('settings/LaraModules/QuizLara');
 })->name('quiz.lara');

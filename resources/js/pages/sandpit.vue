@@ -5,16 +5,17 @@
         <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Horizon</h1>
         <div class="absolute left-10 top-[124px] w-40 border-t border-gray-200"></div>
         <div class="absolute left-4 top-[138px] h-16 w-16 rounded-full bg-white shadow-md"></div>
-          <p v-if="user" class="pl-24 pt-16 text-base font-normal text-zinc-800">
-       {{ user.name }}
-      </p>
 
+        <p v-if="user" class="pl-24 pt-16 text-base font-normal text-zinc-800">
+            {{ user.firstname }} {{ user.lastname }}
+        </p>
         <nav class="flex flex-col space-y-6 pl-20 pt-14">
             <a href="/dashboard" class="hover:text-indigo-600">Dashboard</a>
             <a href="/test" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Course</a> 
             <a href="/mylearning" class="hover:text-indigo-600">My Learning</a>
             <a href="/sandpit" class="hover:text-indigo-600 text-indigo-600 font-bold">Sandpit</a>
             <a href="/badges" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Badge</a> 
+    
             <a href="/settings" class="hover:text-indigo-600">Profiles</a>
         </nav>
         <nav class="flex flex-col space-y-6 pl-20 pt-60">

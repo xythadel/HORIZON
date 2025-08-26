@@ -7,6 +7,8 @@ use App\Http\Controllers\LeaderboardsController;
 use App\Http\Controllers\LearningProgressController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\QuizAttemptController;
+use App\Http\Controllers\SkillAttemptController;
+use App\Http\Controllers\SkillTestController;
 use App\Http\Controllers\UserDifficultyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
@@ -45,7 +47,7 @@ Route::delete('/laravel-topics/{laravelTopic}', [LaravelTopicController::class, 
 
 // ✅ Users (admin listing)
 Route::get('/users', function () {
-    return User::select('id', 'name', 'email', 'role', 'created_at')->get();
+    return User::select('id', 'firstname','lastname', 'email', 'role', 'created_at')->get();
 });
 
 // ✅ User progress (protected)
@@ -128,6 +130,19 @@ Route::get('/user-difficulty/{user_id}/{course_name}', [UserDifficultyController
 Route::get('/user-difficulty/{user_id}', [UserDifficultyController::class, 'index']);
 
 
+
+
+Route::get('/skill-tests', [SkillTestController::class, 'index']);
+Route::post('/skill-tests', [SkillTestController::class, 'store']);
+Route::get('/skill-tests/{skillTest}', [SkillTestController::class, 'show']);
+Route::put('/skill-tests/{skillTest}', [SkillTestController::class, 'update']);
+Route::delete('/skill-tests/{skillTest}', [SkillTestController::class, 'destroy']);
+Route::post('/skill-tests/run', [SkillTestController::class, 'run']);
+Route::get('/skill-tests/by-topic/{topicId}', [SkillTestController::class, 'byTopic']);
+
+
+Route::post('/skill-tests/{testId}/attempts', [SkillAttemptController::class, 'store']);
+Route::get('/my-attempts', [SkillAttemptController::class, 'myAttempts']);
 
 Route::apiResource('lessons', LessonController::class);
 Route::get('/topics/{id}/lessons', [LessonController::class, 'byTopic']);
