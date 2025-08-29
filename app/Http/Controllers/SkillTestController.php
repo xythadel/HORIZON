@@ -19,15 +19,38 @@ class SkillTestController extends Controller
             'language' => 'required|in:php,javascript',
             'test_input' => 'nullable|string',
             'expected_output' => 'required|string',
+            'topic_id' => 'required|integer',
+            'codesnippet' => 'string',
+            'score' => 'nullable|numeric',
         ]);
 
-        $test = SkillTest::create($request->all());
+        $data = $request->only([
+            'title',
+            'description',
+            'language',
+            'test_input',
+            'expected_output',
+            'topic_id',
+            'codesnippet',
+            'score',
+        ]);
+
+        // At this point, codesnippet already contains base64 (from frontend)
+        // If you want to be sure it's valid base64, you can check:
+        if (!base64_decode($data['codesnippet'], true)) {
+            return response()->json([
+                'message' => 'Invalid base64 string for codesnippet'
+            ], 422);
+        }
+
+        $test = SkillTest::create($data);
 
         return response()->json([
             'message' => 'Skill test created successfully',
             'data' => $test
         ], 201);
     }
+
     public function show(SkillTest $skillTest)
     {
         return response()->json($skillTest);
@@ -40,6 +63,8 @@ class SkillTestController extends Controller
             'language' => 'sometimes|in:php,javascript',
             'test_input' => 'nullable|string',
             'expected_output' => 'sometimes|string',
+            'topic_id' => 'integer'
+
         ]);
 
         $skillTest->update($request->all());
@@ -57,7 +82,7 @@ class SkillTestController extends Controller
     }
     public function byTopic($topicId)
     {
-        $test = SkillTest::where('topic_id', $topicId)->first();
+        $test = SkillTest::where('topic_id', $topicId)->get();
 
         if (!$test) {
             return response()->json(['message' => 'No skill test available for this topic'], 404);

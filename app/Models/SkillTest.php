@@ -17,6 +17,7 @@ class SkillTest extends Model
         'expected_output',
         'topic_id',
         'score',
+        'codesnippet'
     ];
     public function attempts()
     {
