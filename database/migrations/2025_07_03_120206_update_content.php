@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('topics', function (Blueprint $table) {
-            $table->unsignedTinyInteger('difficulty');
-            $table->longText('content');
+            $table->unsignedTinyInteger('difficulty')->nullable();
+            $table->longText('content')->nullable();
         });
     }
 
@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('topics', function (Blueprint $table) {
-            $table->unsignedTinyInteger('difficulty');
-            $table->longText('content');
+            $table->unsignedTinyInteger('difficulty')->nullable();
+            $table->longText('content')->nullable();
         });
     }
-};
+};  
