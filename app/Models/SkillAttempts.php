@@ -15,6 +15,7 @@ class SkillAttempts extends Model
         'submitted_code',
         'status',
         'output',
+        
     ];
 
     public function user()

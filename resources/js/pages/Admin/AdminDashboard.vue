@@ -708,8 +708,6 @@
       </div>
       <div v-if="showSection === 'skilltests'" class="p-4 bg-white rounded shadow">
         <h2 class="text-2xl font-bold mb-4">Skill Test Management</h2>
-
-        <!-- Create Form -->
         <form @submit.prevent="createSkillTest" class="mb-6 space-y-4">
           <div class="flex flex-col">
             <label class="font-medium text-sm mb-1">Title</label>
@@ -745,10 +743,12 @@
             <label class="font-medium text-sm mb-1">Expected Output</label>
             <input v-model="newSkillTest.expected_output" class="border p-2 rounded" required />
           </div>
+          <div class="flex flex-col">
+            <label class="font-medium text-sm mb-1">Code Snippets</label>
+            <input type="file" @change="handleSnippetFile" class="border p-2 rounded" required />
+          </div>
           <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Create Test</button>
         </form>
-
-        <!-- Existing Tests -->
         <div v-if="skillTests.length">
           <h3 class="text-xl font-semibold mb-3">Existing Skill Tests</h3>
           <ul>
@@ -835,7 +835,7 @@ const fetchReport = async (type) => {
   }
 }
 const skillTests = ref([]);
-const newSkillTest = ref({ title: "", description: "", language: "php", test_input: "", expected_output: "" , score: "", topic_id: "" });
+const newSkillTest = ref({ title: "", description: "", language: "php", test_input: "", expected_output: "" , score: "", topic_id: "", codesnippet: "" });
 
 const fetchSkillTests = async () => {
   try {
@@ -846,13 +846,28 @@ const fetchSkillTests = async () => {
   }
 };
 
+const handleSnippetFile = (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    newSkillTest.value.codesnippet = reader.result.split(",")[1]; 
+  };
+  reader.readAsDataURL(file);
+};
+
 const createSkillTest = async () => {
   try {
     const res = await axios.post("/api/skill-tests", newSkillTest.value, {
-      headers: { "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content }
+      headers: { 
+        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+        "Content-Type": "application/json"
+      }
     });
+
     skillTests.value.push(res.data.data);
-    newSkillTest.value = { title: "", description: "", language: "php", test_input: "", expected_output: "" , score: "", topic_id: "" };
+    newSkillTest.value = { title: "", description: "", language: "php", test_input: "", expected_output: "" , score: "", topic_id: "", codesnippet: ""  };
   } catch (err) {
     console.error(err.response?.data || err);
   }

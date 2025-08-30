@@ -21,8 +21,7 @@
       </a>
     </aside>
 
-    <!-- Main Content -->
-    <main class="flex-1 p-10">
+    <main class="flex-1 p-10 overflow-y-scroll h-dvh">
       <div v-if="currentTopic">
         <div v-if="ModuleTopic">
           <h1 class="text-2xl font-bold mb-1 text-white">{{ currentTopic.title }}</h1>
@@ -37,8 +36,6 @@
             <pre>{{ currentTopic.code }}</pre>
           </div>
         </div>
-
-        <!-- Post Test -->
         <div v-if="postTestDisplay">
           <h1 class="text-4xl text-white">QUIZ</h1>
 
@@ -48,8 +45,6 @@
                 Question {{ currentPostQuestionIndex + 1 }}:<br>
                 {{ PostTest[currentPostQuestionIndex].description }} ?
               </p>
-
-              <!-- Choices -->
               <div v-if="PostTest[currentPostQuestionIndex].questionType === 'Choices'" class="bg-[#5A5A5A] p-8 rounded-2xl">
                 <label v-for="(choice, i) in PostTest[currentPostQuestionIndex].choices" :key="i" class="flex items-center gap-4">
                   <input
@@ -62,8 +57,6 @@
                   {{ choice }}
                 </label>
               </div>
-
-              <!-- Fill in the blank -->
               <div v-else-if="PostTest[currentPostQuestionIndex].questionType === 'Blank'" class="flex flex-col justify-end items-end">
                 <input
                   type="text"
@@ -75,8 +68,6 @@
                 <button @click="onAnswerPost" class="mt-2 bg-[#4AC887] text-black px-4 py-2 rounded-full w-32">Next</button>
               </div>
             </div>
-
-            <!-- When All Questions Are Done -->
             <div v-else-if="PostTest.length && currentPostQuestionIndex >= PostTest.length" class="border text-center p-10 w-1/3 rounded-2xl">
               <p class="text-white text-xl mb-4">You completed all Post-Test questions.</p>
               <button @click="submitQuiz('post')" class="bg-green-600 text-white px-4 py-2 rounded mt-4">Submit Post-Test</button>
@@ -90,8 +81,6 @@
           <p class="text-xl mb-6">
             Your Score: {{ userTotalScore }} / {{ maxScore }}
           </p>
-
-          <!-- Fail case -->
           <button
             v-if="postTestResult === 'fail'"
             @click="retryLessons"
@@ -100,33 +89,56 @@
             Retry from First Lesson
           </button>
           <div v-else>
-            <div v-if="skillTestAvailable && !skillTestCompleted">
+            <div v-if="skillTests.length && !skillTestsCompleted">
               <p class="text-2xl mb-4">Now it’s time for your Skill Test!</p>
-              <div class="bg-gray-900 p-6 rounded-lg text-left">
-                <h2 class="text-xl font-semibold mb-2">{{ skillTest.title }}</h2>
-                <p class="mb-4 text-gray-300">{{ skillTest.description }}</p>
+
+              <div 
+                v-for="(test, i) in skillTests" 
+                :key="test.id" 
+                class="bg-gray-900 p-6 rounded-lg text-left mb-8"
+              >
+                <h2 class="text-xl font-semibold mb-2">{{ test.title }}</h2>
+                <p class="mb-4 text-gray-300">{{ test.description }}</p>
+                <div v-if="test.codesnippet">
+                  <img :src="`data:image/png;base64,${test.codesnippet}`" class="my-4 rounded shadow" />
+                </div>
 
                 <label class="block mb-2 text-gray-200">
-                  Write your solution ({{ skillTest.language }})
+                  Write your solution ({{ test.language }})
                 </label>
                 <textarea
-                  v-model="code"
-                  rows="10"
+                  v-model="test.userCode"
+                  rows="8"
                   class="w-full rounded-md p-3 text-black"
                 ></textarea>
 
                 <button
-                  @click="runCode"
+                  @click="runCode(test, i)"
                   class="mt-4 bg-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-700"
                 >
                   Run Code
                 </button>
-                <div v-if="result" class="mt-6 p-4 bg-gray-800 rounded-lg">
+                <div v-if="test.result" class="mt-4 p-3 bg-gray-800 rounded-lg">
                   <h3 class="text-lg font-semibold">Result:</h3>
-                  <pre class="text-green-400">{{ result.output }}</pre>
+                  <pre class="text-green-400">{{ test.result.output }}</pre>
                 </div>
               </div>
             </div>
+            <div v-else-if="skillTestsCompleted" class="text-center mt-10 text-white">
+              <p class="text-2xl mb-4">🎉 You completed all Skill Tests!</p>
+              <p class="text-xl mb-6">Your Total Score: {{ skillTestTotalScore }} / {{ skillTestMaxScore }}</p>
+
+              <button
+                v-if="hasNextTopic"
+                @click="goToNextTopic"
+                class="bg-green-600 px-6 py-3 rounded-full text-white text-lg"
+              >
+                Continue to Next Topic
+              </button>
+
+              <p v-else class="text-2xl text-green-400">🎊 Congratulations! You finished all lessons.</p>
+            </div>
+
             <div v-else-if="skillTestCompleted">
               <button
                 @click="goToNextTopic"
@@ -167,8 +179,10 @@ export default {
       currentPostQuestionIndex: 0,
       selectedDifficulty: null,
       skillTestAvailable: false,
-      skillTest: null,
-      skillTestCompleted: false,
+      skillTests: [],
+      skillTestsCompleted: false,
+      skillTestTotalScore: 0,
+      skillTestMaxScore: 0,
       code: "",
       result: null,
     };
@@ -176,6 +190,9 @@ export default {
   computed: {
     currentTopic() {
       return this.topics[this.currentTopicIndex];
+    },
+    hasNextTopic() {
+      return this.currentTopicIndex + 1 < this.topics.length;
     },
     user() {
       return usePage().props.auth.user;
@@ -188,6 +205,11 @@ export default {
         this.startTimer();
       });
     });
+    this.skillTests = this.skillTests.map(t => ({
+      ...t,
+      attempted: false,
+      passed: false
+    }));
   },
   methods: {
     async fetchUserDifficulty() {
@@ -196,32 +218,57 @@ export default {
       const difficultyRecord = result.find(d => d.course_id === 1);
       this.selectedDifficulty = difficultyRecord?.difficulty_level || 1;
     },
-    async runCode() {
-      if (!this.skillTest) return;
+    async fetchSkillTests() {
+      try {
+        const res = await fetch(`/api/skill-tests/by-topic/${this.currentTopic.id}`);
+        if (res.ok) {
+          const tests = await res.json();
+          this.skillTests = tests.map(t => ({
+            ...t,
+            userCode: "",
+            result: null,
+            passed: false,
+          }));
+        }
+      } catch (e) {
+        console.error("Skill test fetch failed", e);
+      }
+    },
 
+    async runCode(test, index) {
       try {
         const res = await fetch("/api/skill-tests/run", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             user_id: this.user.id,
-            skill_test_id: this.skillTest.id,
-            code: this.code,
-            language: this.skillTest.language,
+            skill_test_id: test.id,
+            code: test.userCode,
+            language: test.language,
           }),
         });
 
         const data = await res.json();
-        this.result = data;
+        test.result = data;
 
         if (data.correct || data.passed) {
-          this.skillTestCompleted = true;
-          this.result.output = "✅ Passed! Great job.";
+          test.passed = true;
+          test.result.output = "✅ Passed! Good job.";
         } else {
-          this.result.output = "❌ Failed: " + (data.error || "Try again.");
+          test.result.output = "❌ Failed: " + (data.error || "Try again.");
         }
+        test.attempted = true;
+        this.calculateSkillTestScore();
       } catch (err) {
-        this.result = { output: "Error running code" };
+        test.result = { output: "Error running code" };
+      }
+    },
+
+    calculateSkillTestScore() {
+      this.skillTestMaxScore = this.skillTests.reduce((acc, t) => acc + (t.score || 1), 0);
+      this.skillTestTotalScore = this.skillTests.reduce((acc, t) => acc + (t.passed ? (t.score || 1) : 0), 0);
+      if (this.skillTests.every(t => t.attempted)) {
+        this.skillTestsCompleted = true;
       }
     },
     async fetchLessons() {
@@ -246,16 +293,16 @@ export default {
 
       await this.unlockTopicsBasedOnProgress();
     },
-    async startSkillTest() {
-      if (!this.skillTest) return;
+    async startSkillTest(test) {
+      if (!test) return;
 
       try {
         const res = await fetch(`/api/skill-tests/run`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             user_id: this.user.id,
-            skill_test_id: this.skillTest.id,
+            skill_test_id: test.id,
             code: "// user code here or open editor UI"
           }),
         });
@@ -264,14 +311,22 @@ export default {
 
         if (result.passed) {
           alert("🎉 Skill Test Passed!");
-          this.skillTestCompleted = true;
+          test.passed = true;
         } else {
           alert("❌ Skill Test Failed: " + (result.error || "Try again."));
+          test.passed = false;
+        }
+
+        test.attempted = true;
+        if (this.skillTests.every(t => t.attempted)) {
+          this.skillTestsCompleted = true;
         }
       } catch (err) {
         console.error("Skill test failed", err);
       }
     },
+
+
     goToTopic(index) {
       if (!this.topics[index].unlocked) return;
       this.currentTopicIndex = index;
@@ -405,14 +460,8 @@ export default {
       this.postTestResult = passed ? 'pass' : 'fail';
 
       if (passed) {
-        // this.topics[this.currentTopicIndex + 1].unlocked = true;
-        // debugger;
         try {
-          const res = await fetch(`/api/skill-tests/by-topic/${this.currentTopic.id}`);
-          if (res.ok) {
-            this.skillTestAvailable = true;
-            this.skillTest = await res.json();
-          }
+          await this.fetchSkillTests();
         } catch (e) {
           console.error("Skill test fetch failed", e);
         }
