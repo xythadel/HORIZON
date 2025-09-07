@@ -118,7 +118,7 @@ class TopicController extends Controller
     }
     public function getTopicsByCourse($id)
     {
-        $topics = \App\Models\Topic::where('course_id', $id)->get();
+        $topics =Topic::where('course_id', $id)->get();
         return response()->json($topics);
     }
 }

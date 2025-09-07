@@ -2,17 +2,17 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <div class="flex min-h-screen flex-col md:flex-row">
         <!-- Sidebar -->
-        <aside class="flex w-full flex-col justify-between bg-gray-800 p-4 text-white md:w-64">
+        <aside class="flex w-full flex-col justify-between bg-[#EDEDED] p-4 text-black md:w-64">
             <div>
                 <h2 class="mb-4 text-xl font-semibold">Vue Panel</h2>
                 <nav class="flex flex-col gap-2">
-                    <button @click="showSection = 'vuetopics'" class="w-full rounded bg-gray-700 p-2 text-left hover:bg-gray-600">Vue Topics</button>
-                    <button @click="showSection = 'quizzes'" class="w-full rounded bg-gray-700 p-2 text-left hover:bg-gray-600">
+                    <button @click="showSection = 'vuetopics'" class="w-full rounded bg-white p-2 text-left hover:bg-[#EDEDED]">Vue Topics</button>
+                    <button @click="showSection = 'quizzes'" class="w-full rounded bg-white p-2 text-left hover:bg-[#EDEDED]">
                         Manage Quizzes
                     </button>
-                    <button @click="showSection = 'badges'" class="w-full rounded bg-gray-700 p-2 text-left hover:bg-gray-600">Badge</button>
-                    <button @click="showSection = 'sandpit'" class="w-full rounded bg-gray-700 p-2 text-left hover:bg-gray-600">Sandpit</button>
-                    <button @click="showSection = 'skilltests'" class="w-full rounded bg-gray-700 p-2 text-left hover:bg-gray-600">
+                    <button @click="showSection = 'badges'" class="w-full rounded bg-white p-2 text-left hover:bg-[#EDEDED]">Badge</button>
+                    <button @click="showSection = 'sandpit'" class="w-full rounded bg-white p-2 text-left hover:bg-[#EDEDED]">Sandpit</button>
+                    <button @click="showSection = 'skilltests'" class="w-full rounded bg-white p-2 text-left hover:bg-[#EDEDED]">
                         Manage Skill Tests
                     </button>
                 </nav>
@@ -40,7 +40,7 @@
                                 activeTab[course.id] === tab ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600 hover:text-blue-500',
                             ]"
                         >
-                            {{ tab === 'create' ? 'Create New Topic' : tab === 'uploaded' ? 'Uploaded Topics' : 'Archived Topics' }}
+                            {{ tab === 'create' ? 'Create New Topic' : tab === 'uploaded' ? 'Uploaded Topics' : undefined}}
                         </button>
                     </div>
                     <div v-if="activeTab[course.id] === 'create'" class="p-5">
@@ -92,7 +92,7 @@
                                         <button @click="editingTopicId = editingTopicId === topic.id ? null : topic.id" class="text-blue-600">
                                             {{ editingTopicId === topic.id ? 'Cancel' : 'Edit' }}
                                         </button>
-                                        <button @click="deleteStandaloneTopic(topic.id, course.id)" class="text-red-600">Delete</button>
+                                        <!-- <button @click="deleteStandaloneTopic(topic.id, course.id)" class="text-red-600">Delete</button> -->
                                     </div>
                                 </div>
                                 <div v-if="editingTopicId === topic.id" class="mt-4 space-y-4">
@@ -126,9 +126,9 @@
                             </li>
                         </ul>
                     </div>
-                    <div v-if="activeTab[course.id] === 'archived'" class="p-5">
+                    <!-- <div v-if="activeTab[course.id] === 'archived'" class="p-5">
                         <p class="text-gray-500">Archived topics will appear here.</p>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div v-if="showSection === 'quizzes'" class="rounded bg-white p-4 shadow">
@@ -222,8 +222,6 @@
                         <button @click="saveAllQuizzes" class="rounded bg-green-600 px-4 py-2 text-white">Save All Quizzes</button>
                     </div>
                 </div>
-
-                <!-- Uploaded Quizzes Section -->
                 <div v-if="quizTab === 'uploaded'">
                     <h4 class="mb-4 text-lg font-bold">Uploaded Quizzes</h4>
                     <ul>
@@ -233,14 +231,12 @@
                                 <p class="text-sm text-gray-600">{{ quiz.description }}</p>
                             </div>
                             <div class="mr-5 flex flex-row gap-3">
-                                <button @click="deleteQuiz(quiz.id)" class="text-red-600 hover:underline">Delete</button>
-                                <button @click="editQuiz(quiz.id)" class="text-green-600 hover:underline">Edit</button>
+                                <button @click="deleteQuiz(quiz.id)" class="text-red-600 hover:underline">Archive</button>
+                                <!-- <button @click="editQuiz(quiz.id)" class="text-green-600 hover:underline">Edit</button> -->
                             </div>
                         </li>
                     </ul>
                 </div>
-
-                <!-- Archive Section -->
                 <div v-if="quizTab === 'archive'">
                     <h4 class="mb-4 text-lg font-bold">Archived Quizzes</h4>
                     <ul>
@@ -494,6 +490,7 @@ const lessonToggles = ref({});
 const users = ref([]);
 const courses = ref([]);
 const quizzes = ref([]);
+const archivedQuizzes = ref([]);
 const allTopics = ref([]);
 const modalVisible = ref(false);
 const selectedReport = ref({ title: '', data: {} });
@@ -751,6 +748,11 @@ const fetchQuizzes = async () => {
     quizzes.value = res.data;
 };
 
+const fetchQuizzesArchives = async () => {
+    const res = await axios.get('/api/quizzes/fetchperCoursearchives/1');
+    archivedQuizzes.value = res.data;
+};
+
 const fetchAllTopics = async () => {
     const res = await axios.get('/api/topics/fetchpercourse/1');
     allTopics.value = res.data;
@@ -858,6 +860,7 @@ watch(showSection, async (val) => {
     if (val === 'users') await fetchUsers();
     if (val === 'quizzes') {
         await fetchQuizzes();
+        await fetchQuizzesArchives();
         await fetchAllTopics();
     }
 });
