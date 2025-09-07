@@ -46,6 +46,12 @@ Route::get('/mylearning', function () {
 Route::get('/sandpit', function () {
     return Inertia::render('sandpit');
 })->name('sandpit');
+Route::get('/Admin/VuePanel', function () {
+    return Inertia::render('VuePanel');
+})->name('VuePanel');
+Route::get('/Admin/LaravelPanel', function () {
+    return Inertia::render('LaravelPanel');
+})->name('LaravelPanel');
 
 Route::get('/badges', function () {
     return Inertia::render('badges');
@@ -83,6 +89,8 @@ Route::post('/logout', function () {
 //Admin routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/Admin/AdminDashboard', [AdminController::class, 'index'])->name('admin');
+    Route::get('/Admin/VuePanel', [AdminController::class, 'VuePanel'])->name('admin');
+    Route::get('/Admin/LaravelPanel', [AdminController::class, 'LaravelPanel'])->name('admin');
 
     Route::middleware('auth')->group(function () {
     Route::get('/complete-registration', [App\Http\Controllers\Auth\CompleteRegistrationController::class, 'showForm'])->name('complete.registration');

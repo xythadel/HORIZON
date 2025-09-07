@@ -46,16 +46,18 @@
                 {{ PostTest[currentPostQuestionIndex].description }} ?
               </p>
               <div v-if="PostTest[currentPostQuestionIndex].questionType === 'Choices'" class="bg-[#5A5A5A] p-8 rounded-2xl">
-                <label v-for="(choice, i) in PostTest[currentPostQuestionIndex].choices" :key="i" class="flex items-center gap-4">
-                  <input
-                    type="radio"
-                    :name="'Post-question'"
-                    :value="choice"
-                    v-model="PostTest[currentPostQuestionIndex].userAnswer"
-                    @change="onAnswerPost"
-                  />
+                <button
+                  v-for="(choice, i) in PostTest[currentPostQuestionIndex].choices"
+                  :key="i"
+                  class="flex items-center gap-4 w-full p-4 mb-3 text-left rounded-lg border-2 transition-all duration-200 hover:bg-gray-600"
+                  :class="{
+                    'border-blue-500 bg-blue-600 text-white': PostTest[currentPostQuestionIndex].userAnswer === choice,
+                    'border-gray-400 bg-gray-700 text-gray-200': PostTest[currentPostQuestionIndex].userAnswer !== choice
+                  }"
+                  @click="selectChoice(choice)"
+                >
                   {{ choice }}
-                </label>
+                </button>
               </div>
               <div v-else-if="PostTest[currentPostQuestionIndex].questionType === 'Blank'" class="flex flex-col justify-end items-end">
                 <input
@@ -212,6 +214,10 @@ export default {
     }));
   },
   methods: {
+    selectChoice(choice) {
+      this.PostTest[this.currentPostQuestionIndex].userAnswer = choice;
+      this.onAnswerPost();
+    },
     async fetchUserDifficulty() {
       const res = await fetch(`/api/user-difficulty/${this.user.id}`);
       const result = await res.json();

@@ -41,13 +41,19 @@ class QuizController extends Controller
             'is_published' => 'boolean',
             'answer' => 'required|string|max:255',
             'questionType' => 'required|string|max:255',
-            'score' => 'required|integer'
+            'score' => 'required|integer',
+            'course_id' => 'integer'
         ]);
 
-        // Create the quiz
         $quiz = Quiz::create($validated);
 
         return response()->json($quiz, 201);
+    }
+
+    public function fetchperCourse($id){
+        $displayQuiz = Quiz::where('course_id','=',$id)->get();
+
+        return response()->json($displayQuiz);
     }
 
     /**
@@ -98,7 +104,7 @@ class QuizController extends Controller
         $quizzes = Quiz::whereHas('topic', function ($query) use ($course) {
                 $query->where('course_id', $course->id);
             })
-            ->with('topic', 'topic.course') // eager load to avoid N+1
+            ->with('topic', 'topic.course')
             ->get()
             ->map(function ($quiz) {
                 return [

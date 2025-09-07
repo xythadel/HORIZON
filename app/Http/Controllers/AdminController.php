@@ -26,6 +26,15 @@ class AdminController extends Controller
         return inertia('Admin/AdminDashboard'); // Or whatever Inertia page you want to show
     }
 
+    public function VuePanel()
+    {
+        return inertia('Admin/VuePanel'); // Or whatever Inertia page you want to show
+    }
+    public function LaravelPanel()
+    {
+        return inertia('Admin/LaravelPanel'); // Or whatever Inertia page you want to show
+    }
+
     public function getAllUsers()
     {
         return response()->json(User::all());

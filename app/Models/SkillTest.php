@@ -16,6 +16,7 @@ class SkillTest extends Model
         'test_input',
         'expected_output',
         'topic_id',
+        'course_id',
         'score',
         'codesnippet'
     ];

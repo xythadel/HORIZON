@@ -11,6 +11,11 @@ class SkillTestController extends Controller
     {
         return response()->json(SkillTest::all());
     }
+    public function fetchperCourse($id){
+        $displayQuiz = SkillTest::where('course_id','=',$id)->get();
+
+        return response()->json($displayQuiz);
+    }
     public function store(Request $request)
     {
         $request->validate([
@@ -22,6 +27,7 @@ class SkillTestController extends Controller
             'topic_id' => 'required|integer',
             'codesnippet' => 'string',
             'score' => 'nullable|numeric',
+            'course_id' => 'nullable|numeric',
         ]);
 
         $data = $request->only([
@@ -33,10 +39,8 @@ class SkillTestController extends Controller
             'topic_id',
             'codesnippet',
             'score',
+            'course_id'
         ]);
-
-        // At this point, codesnippet already contains base64 (from frontend)
-        // If you want to be sure it's valid base64, you can check:
         if (!base64_decode($data['codesnippet'], true)) {
             return response()->json([
                 'message' => 'Invalid base64 string for codesnippet'

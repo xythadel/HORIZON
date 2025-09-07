@@ -50,11 +50,6 @@
           class="absolute left-[270px] top-[175px] text-xl font-medium text-stone-900 hover:text-green-500"
           @click.prevent="startCourse(course)"
         >Start</button>
-        <button
-          v-if="difficultyMap[course]"
-          class="absolute left-[270px] top-[210px] text-sm text-blue-600 hover:underline"
-          @click.prevent="retestPretest(course)"
-        >Retake Pretest</button>
 
         <!-- Progress Circle -->
         <div class="absolute left-[500px] top-[30px] flex flex-col items-center">
@@ -75,6 +70,9 @@
     <div v-if="showPretestModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div class="w-full max-w-3xl rounded-lg bg-white p-6 text-gray-800 shadow-lg">
         <h2 class="mb-4 text-xl font-semibold text-center">{{ selectedCourse }} Pretest</h2>
+        <div class="text-center mb-4 text-red-600 font-bold text-lg">
+          Time Remaining: {{ Math.floor(timeLeft / 60) }}:{{ (timeLeft % 60).toString().padStart(2, '0') }}
+        </div>
 
         <div v-if="pretestQuestions.length && currentQuestionIndex < pretestQuestions.length">
           <p class="text-lg font-semibold mb-4">Question {{ currentQuestionIndex + 1 }}:</p>
@@ -125,7 +123,8 @@ import { usePage, router } from '@inertiajs/vue3';
 
 const { auth } = usePage().props;
 const user = auth?.user;
-
+const timeLeft = ref(0);
+let timerInterval = null;
 const showLogoutModal = ref(false);
 const showPretestModal = ref(false);
 const selectedCourse = ref('');
@@ -175,6 +174,17 @@ async function fetchPretestQuestions(course) {
 
     currentQuestionIndex.value = 0;
     showPretestModal.value = true;
+
+    timeLeft.value = pretestQuestions.value.length * 60;
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      if (timeLeft.value > 0) {
+        timeLeft.value--;
+      } else {
+        clearInterval(timerInterval);
+        submitPretest(); // auto submit on timeout
+      }
+    }, 1000);
   } catch (error) {
     console.error('Failed to load pretest questions:', error);
   }
@@ -187,6 +197,8 @@ function nextPretestQuestion() {
 }
 
 async function submitPretest() {
+
+  if (timerInterval) clearInterval(timerInterval);
   const answered = pretestQuestions.value;
   const correctCount = answered.filter(q =>
     q.userAnswer?.toLowerCase().trim() === q.answer?.toLowerCase().trim()

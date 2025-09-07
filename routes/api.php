@@ -35,6 +35,7 @@ Route::apiResource('courses', CourseController::class)->only(['index', 'store', 
 Route::get('/courses/{id}/topics', [TopicController::class, 'getTopicsByCourse']);
 Route::post('/courses/{course_id}/topics', [TopicController::class, 'store']); // expects: title, content, module_name
 Route::get('/topics', [TopicController::class, 'index']);
+Route::get('/topics/fetchpercourse/{id}', [TopicController::class, 'fetchperCourse']);
 Route::get('/topics/{topic}', [TopicController::class, 'show']);
 Route::put('/topics/{topic}', [TopicController::class, 'update']); // expects: title, content, module_name
 Route::delete('/topics/{topic}', [TopicController::class, 'destroy']);
@@ -46,9 +47,8 @@ Route::put('/laravel-topics/{laravelTopic}', [LaravelTopicController::class, 'up
 Route::delete('/laravel-topics/{laravelTopic}', [LaravelTopicController::class, 'destroy']);
 
 // ✅ Users (admin listing)
-Route::get('/users', function () {
-    return User::select('id', 'firstname','lastname', 'email', 'role', 'created_at')->get();
-});
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/admin', [UserController::class, 'admin']);
 
 // ✅ User progress (protected)
 Route::middleware(['auth:sanctum'])->get('/user-progress', [UserProgressTracker::class, 'userProgress']);
@@ -68,6 +68,8 @@ Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy']);
 Route::get('/displayQuiz', [QuizController::class, 'displayQuiz']);
 
 Route::get('/pretest/{courseName}', [QuizController::class, 'getPretestByCourse']);
+
+Route::get('/quizzes/fetchpercourse/{id}', [QuizController::class, 'fetchperCourse']);
 
 // Nested Questions under a Quiz
 Route::get('/quizzes/{quiz}/questions', [QuestionController::class, 'index']);
@@ -96,12 +98,14 @@ Route::post('/recordAttempt', [QuizAttemptController::class, 'store']);
 Route::get('/post-attempts/{id}', [LeaderboardsController::class, 'postAttempts']);
 Route::get('/leaderboard', [LeaderboardsController::class, 'index']);
 Route::get('/rating/{id}', [LeaderboardsController::class, 'displayRatings']);
+Route::get('/leaderboard-counts', [LeaderboardsController::class, 'counts']);
 
 Route::post('/upload-image', [ImageUploadController::class, 'store'])->name('upload.image');
 Route::get('/user-topic-progress/{userId}/{courseId}', [QuizAttemptController::class, 'getCompletedTopics']);
 Route::get('/badges/check/{id}', [BadgeController::class, 'check']);
 Route::get('/badges/claimed/{id}', [BadgeController::class, 'claimed']);
 Route::post('/badges/claim/{id}', [BadgeController::class, 'claim']);
+Route::get('/badges/display/{id}', [BadgeController::class, 'fetchperCourse']);
 Route::post('/badges', [BadgeController::class, 'store']);
 Route::get('/badges', [BadgeController::class, 'index']);
 
@@ -143,7 +147,7 @@ Route::get('/skill-tests/by-topic/{topicId}', [SkillTestController::class, 'byTo
 
 Route::post('/skill-tests/{testId}/attempts', [SkillAttemptController::class, 'store']);
 Route::get('/my-attempts', [SkillAttemptController::class, 'myAttempts']);
-
+Route::get('/skill-tests/display/{id}', [SkillTestController::class, 'fetchperCourse']);
 Route::apiResource('lessons', LessonController::class);
 Route::get('/topics/{id}/lessons', [LessonController::class, 'byTopic']);
 Route::put('/lessons/{id}', [LessonController::class, 'update']);
