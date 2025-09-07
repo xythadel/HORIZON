@@ -18,6 +18,12 @@ class TopicController extends Controller
         return Topic::all();
     }
 
+    public function fetchperCourse($id){
+        $displayQuiz = Topic::where('course_id','=',$id)->get();
+
+        return response()->json($displayQuiz);
+    }
+
     /**
      * Show the form for creating a new resource.
      */

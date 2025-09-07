@@ -19,6 +19,7 @@ import ModuleLara from '@/settings/LaraModules/ModuleLara.vue';
 import MyLearning from '@/settings/VueModules/MyLearning.vue';
 import QuizVue from '@/pages/settings/VueModules/QuizVue.vue';
 import AdminDashboard from '@/pages/Admin/AdminDashboard.vue';
+import VuePanel from '@/pages/Admin/VuePanel.vue';
 import Dashboard from '@/pages/Dashboard.vue';
 import Login from '@/pages/Welcome.vue';
 import Test from '@/pages/test';
@@ -38,6 +39,8 @@ const routes = [
   { path: '/sandpit', component: Badgesasd},
   { path: '/quiz-vue', component: QuizVue },
   { path: '/badges', component: Badgesasd },
+  { path: '/VuePanel', component: VuePanel },
+  { path: '/LaravelPanel', component: LaravelPanel },
 ];
 const router = createRouter({
   history: createWebHistory(),

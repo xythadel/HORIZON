@@ -18,7 +18,8 @@ class Quiz extends Model
         'quizStatus',
         'answer',
         'questionType',
-        'score'
+        'score',
+        'course_id'
 
     ];
 

@@ -12,13 +12,20 @@ class BadgeController extends Controller
         return Badge::all();
     }
 
+    public function fetchperCourse($id){
+        $displayQuiz = Badge::where('course','=',$id)->get();
+
+        return response()->json($displayQuiz);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'required|string',
-            'course' => 'string'
+            'topic_id' => 'integer',
+            'course' => 'integer'
         ]);
 
         return Badge::create($request->all());
@@ -32,7 +39,7 @@ class BadgeController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'required|string',
-            'course' => 'string'
+            'topic_id' => 'integer'
         ]);
 
         $badge->update($validated);
@@ -45,8 +52,6 @@ class BadgeController extends Controller
         $earned = $user->badges->pluck('id')->toArray();
 
         $badges = [];
-
-        // Check if user passed all Laravel topics
         $laravelCourse = Course::with('topics')->where('name', 'Laravel')->first();
         if ($laravelCourse) {
             $topicIds = $laravelCourse->topics->pluck('id');

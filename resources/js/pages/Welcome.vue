@@ -122,24 +122,24 @@
                 </div>
 
                 </div>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-                        <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                        <img src="/Photos/Darlyn.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 text-center">
+                        <div class="rounded-lg p-4 aspect-square flex flex-col justify-end">
+                        <img src="/Photos/Darlyn.png" alt="Team Member" class="w-full aspect-square object-cover rounded-full mb-3">
                         <span class="font-medium">Darlyn</span>
                         <span class="text-sm text-white/70">Developer</span>
                         </div>
-                        <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                        <img src="/Photos/Zach.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
+                        <div class="rounded-lg p-4 aspect-square flex flex-col justify-end">
+                        <img src="/Photos/Zach.png" alt="Team Member" class="w-full aspect-square object-cover rounded-full mb-3">
                         <span class="font-medium">Zach</span>
                         <span class="text-sm text-white/70">Developer</span>
                         </div>
-                        <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                        <img src="/Photos/Xytha.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
+                        <div class="rounded-lg p-4 aspect-square flex flex-col justify-end">
+                        <img src="/Photos/Xytha.png" alt="Team Member" class="w-full aspect-square object-cover rounded-full mb-3">
                         <span class="font-medium">Xythadel</span>
                         <span class="text-sm text-white/70">Designer</span>
                         </div>
-                        <div class="bg-gray-800 rounded-lg p-4 aspect-square flex flex-col justify-end">
-                        <img src="/Photos/Wilson.png" alt="Team Member" class="w-full aspect-square object-cover rounded-xl mb-3">
+                        <div class="rounded-lg p-4 aspect-square flex flex-col justify-end">
+                        <img src="/Photos/Wilson.png" alt="Team Member" class="w-full aspect-square object-cover rounded-full mb-3">
                         <span class="font-medium">Wilson</span>
                         <span class="text-sm text-white/70">Developer</span>
                         </div>
