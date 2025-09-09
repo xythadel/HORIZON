@@ -70,6 +70,7 @@ Route::get('/displayQuiz', [QuizController::class, 'displayQuiz']);
 Route::get('/pretest/{courseName}', [QuizController::class, 'getPretestByCourse']);
 
 Route::get('/quizzes/fetchpercourse/{id}', [QuizController::class, 'fetchperCourse']);
+Route::get('/quizzes/fetchperCoursearchives/{id}', [QuizController::class, 'fetchperCoursearchives']);
 
 // Nested Questions under a Quiz
 Route::get('/quizzes/{quiz}/questions', [QuestionController::class, 'index']);

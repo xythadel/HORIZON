@@ -121,30 +121,30 @@
                 </div>
             </div>
             <div v-if="showSection === 'dashboard'" class="rounded bg-white p-4 shadow">
-              <header class="text-2xl font-semibold">Dashboard</header>
-              <div class="w-full rounded bg-[#1F8AE8] p-4 text-white mb-6">
-                  <header class="text-3xl font-semibold">Welcome, Admin!</header>
-                  <span class="mt-4 block !w-1/4">
-                      Welcome back! Manage your learners and keep Vue & Laravel lessons on track.
-                  </span>
-              </div>
+                <header class="text-2xl font-semibold">Dashboard</header>
+                <div class="w-full rounded bg-[#1F8AE8] p-4 text-white mb-6">
+                    <header class="text-3xl font-semibold">Welcome, Admin!</header>
+                    <span class="mt-4 block !w-1/4">
+                        Welcome back! Manage your learners and keep Vue & Laravel lessons on track.
+                    </span>
+                </div>
 
-              <!-- Stats Cards -->
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div class="rounded-lg bg-blue-500 text-white p-6 shadow">
-                      <h3 class="text-lg font-semibold">Total Users</h3>
-                      <p class="mt-2 text-3xl font-bold">{{ counts.total_users }}</p>
-                  </div>
-                  <div class="rounded-lg bg-green-500 text-white p-6 shadow">
-                      <h3 class="text-lg font-semibold">Vue Students</h3>
-                      <p class="mt-2 text-3xl font-bold">{{ counts.vue_students }}</p>
-                  </div>
-                  <div class="rounded-lg bg-red-500 text-white p-6 shadow">
-                      <h3 class="text-lg font-semibold">Laravel Students</h3>
-                      <p class="mt-2 text-3xl font-bold">{{ counts.laravel_students }}</p>
-                  </div>
-              </div>
-          </div>
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="rounded-lg bg-blue-500 text-white p-6 shadow">
+                        <h3 class="text-lg font-semibold">Total Users</h3>
+                        <p class="mt-2 text-3xl font-bold">{{ counts.total_users }}</p>
+                    </div>
+                    <div class="rounded-lg bg-green-500 text-white p-6 shadow">
+                        <h3 class="text-lg font-semibold">Vue Students</h3>
+                        <p class="mt-2 text-3xl font-bold">{{ counts.vue_students }}</p>
+                    </div>
+                    <div class="rounded-lg bg-red-500 text-white p-6 shadow">
+                        <h3 class="text-lg font-semibold">Laravel Students</h3>
+                        <p class="mt-2 text-3xl font-bold">{{ counts.laravel_students }}</p>
+                    </div>
+                </div>
+            </div>
 
             <div v-if="modalVisible" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                 <div class="relative w-full max-w-3xl rounded bg-white p-6 shadow-lg">

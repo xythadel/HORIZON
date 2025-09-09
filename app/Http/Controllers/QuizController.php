@@ -51,14 +51,17 @@ class QuizController extends Controller
     }
 
     public function fetchperCourse($id){
-        $displayQuiz = Quiz::where('course_id','=',$id)->get();
+        $displayQuiz = Quiz::where('course_id','=',$id)->where('quizStatus','ACTIVE')->get();
 
         return response()->json($displayQuiz);
     }
 
-    /**
-     * Update the specified quiz.
-     */
+    public function fetchperCoursearchives($id){
+        $displayQuiz = Quiz::where('course_id','=',$id)->where('quizStatus','ARCHIVED')->get();
+
+        return response()->json($displayQuiz);
+    }
+
     public function update(Request $request, Quiz $quiz)
     {
         $validated = $request->validate([
@@ -128,9 +131,10 @@ class QuizController extends Controller
      */
     public function destroy(Quiz $quiz)
     {
-        $quiz->delete();
-        
-        return response()->json(['message' => 'Quiz deleted successfully']);
+        $quiz->update([
+            'quizStatus' => 'ARCHIVED'
+        ]);
+
+        return response()->json(['message' => 'Quiz archived successfully']);
     }
-    
 }
