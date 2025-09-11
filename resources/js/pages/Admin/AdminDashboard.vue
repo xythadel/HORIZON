@@ -56,45 +56,54 @@
                         </button>
                     </div>
                 </div>
-
-                <!-- User Accounts -->
+                <div class="mb-4">
+                    <input
+                        v-model="searchQuery"
+                        type="text"
+                        placeholder="Search by name or email..."
+                        class="w-full rounded border p-2"
+                    />
+                </div>
                 <div v-if="activeTab === 'users'">
                     <h2 class="mb-3 text-xl font-bold">Registered Users</h2>
                     <table class="w-full border border-gray-300 text-left text-sm">
                         <thead class="bg-gray-100">
                             <tr>
-                                <th class="border p-2">ID</th>
-                                <th class="border p-2">Name</th>
+                                <th class="border p-2 w-[30%]">Name</th>
                                 <th class="border p-2">Email</th>
-                                <th class="border p-2">Role</th>
                                 <th class="border p-2">Created At</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50">
-                                <td class="border p-2">{{ user.id }}</td>
+                            <tr
+                                v-for="user in filteredUsers"
+                                :key="user.id"
+                                class="hover:bg-gray-50"
+                            >
                                 <td class="border p-2">{{ user.firstname }} {{ user.lastname }}</td>
                                 <td class="border p-2">{{ user.email }}</td>
-                                <td class="border p-2">{{ user.role }}</td>
                                 <td class="border p-2">{{ new Date(user.created_at).toLocaleString() }}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Admin Accounts -->
                 <div v-else-if="activeTab === 'admins'">
                     <h2 class="mb-3 text-xl font-bold">Registered Administrators</h2>
                     <table class="w-full border border-gray-300 text-left text-sm">
                         <thead class="bg-gray-100">
                             <tr>
-                                <th class="border p-2">Name</th>
+                                <th class="border p-2 w-[30%]">Name</th>
                                 <th class="border p-2">Email</th>
                                 <th class="border p-2">Created At</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="user in admin" :key="user.id" class="hover:bg-gray-50">
+                            <tr
+                                v-for="user in filteredAdmins"
+                                :key="user.id"
+                                class="hover:bg-gray-50"
+                            >
                                 <td class="border p-2">{{ user.role }} {{ user.lastname }}</td>
                                 <td class="border p-2">{{ user.email }}</td>
                                 <td class="border p-2">{{ new Date(user.created_at).toLocaleString() }}</td>
@@ -104,14 +113,15 @@
                 </div>
             </div>
 
+
             <div v-if="showSection === 'reports'" class="rounded bg-white p-4 shadow">
                 <h2 class="mb-4 text-2xl font-bold">Reports</h2>
                 <div class="space-y-4">
                     <div v-for="type in reportTypes" :key="type" class="flex items-center justify-between rounded border p-4">
                         <span class="capitalize">{{ type.replace('-', ' ') }} Report</span>
                         <div class="space-x-2">
-                            <button @click="fetchReport(type)" class="rounded bg-blue-600 px-4 py-1 text-white">View</button>
-                            <button @click="downloadPdf(type)" class="rounded bg-green-600 px-4 py-1 text-white">Download PDF</button>
+                            <button @click="fetchReport(type)" class="rounded bg-blue-600 px-4 py-1 text-white"><Fullscreen></Fullscreen></button>
+                            <button @click="downloadPdf(type)" class="rounded bg-green-600 px-4 py-1 text-white"><Download></Download></button>
                         </div>
                     </div>
 
@@ -383,7 +393,7 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import axios from 'axios';
 import { computed, onMounted, ref, watch } from 'vue';
 import Sandpit from '../sandpitComponent.vue';
-
+import { Download, Fullscreen } from 'lucide-vue-next';
 const leaderboard = ref([]);
 const quizTab = ref('pretest');
 const lessonsByTopic = ref({});
@@ -402,6 +412,7 @@ const expandedCourses = ref({});
 const showSection = ref('dashboard');
 const lessonTab = ref('vue');
 const options = ref(['', '', '', '']);
+const searchQuery = ref("");
 const editingBadgeId = ref(null);
 const editingLessonId = ref(null);
 const editLesson = ref({});
@@ -409,6 +420,22 @@ const editBadge = ref({});
 const activeTab = ref('users')
 const titleHeader = '<HORIZON/>';
 
+
+const filteredUsers = computed(() => {
+    return users.value.filter((u) =>
+        `${u.firstname} ${u.lastname} ${u.email}`
+            .toLowerCase()
+            .includes(searchQuery.value.toLowerCase())
+    );
+});
+
+const filteredAdmins = computed(() => {
+    return admin.value.filter((a) =>
+        `${a.role} ${a.lastname} ${a.email}`
+            .toLowerCase()
+            .includes(searchQuery.value.toLowerCase())
+    );
+});
 const filteredTopics = computed(() => {
     return allTopics.value.filter((topic) => {
         if (lessonTab.value === 'vue') return topic.course_id === 2;
