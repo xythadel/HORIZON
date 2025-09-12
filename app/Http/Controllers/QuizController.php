@@ -67,15 +67,23 @@ class QuizController extends Controller
         $validated = $request->validate([
             'title' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
-            'course_id' => 'exists:courses,id',
-            'topic_id' => 'exists:topics,id',
-            'is_published' => 'boolean',
-            'score' => 'required|integer'
+            'questionCategory' => 'sometimes|string|max:255',
+            'quizStatus' => 'sometimes|string|in:ACTIVE,ARCHIVED',
+            'topic_id' => 'sometimes|exists:topics,id',
+            'course_id' => 'sometimes|exists:courses,id',
+            'is_published' => 'sometimes|boolean',
+            'answer' => 'sometimes|string|max:255',
+            'questionType' => 'sometimes|string|max:255',
+            'choices' => 'nullable|json',
+            'score' => 'sometimes|integer|min:0'
         ]);
 
         $quiz->update($validated);
 
-        return response()->json($quiz);
+        return response()->json([
+            'message' => 'Quiz updated successfully',
+            'quiz' => $quiz
+        ]);
     }
 
     public function displayQuiz(Request $request)

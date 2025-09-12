@@ -89,8 +89,9 @@
                                         <p class="text-sm text-gray-600">{{ topic.module_name }}</p>
                                     </div>
                                     <div class="flex gap-2">
-                                        <button @click="editingTopicId = editingTopicId === topic.id ? null : topic.id" class="text-blue-600">
-                                            {{ editingTopicId === topic.id ? 'Cancel' : 'Edit' }}
+                                        <button @click="editingTopicId = editingTopicId === topic.id ? null : topic.id" class="text-blue-600 flex items-center gap-1">
+                                            <span v-if="editingTopicId === topic.id"><X></X></span>
+                                            <PenBoxIcon size="25" v-else/> <Archive size="25" color="red"/>
                                         </button>
                                         <!-- <button @click="deleteStandaloneTopic(topic.id, course.id)" class="text-red-600">Delete</button> -->
                                     </div>
@@ -224,18 +225,64 @@
                 </div>
                 <div v-if="quizTab === 'uploaded'">
                     <h4 class="mb-4 text-lg font-bold">Uploaded Quizzes</h4>
-                    <ul>
-                        <li v-for="quiz in quizzes" :key="quiz.id" class="mb-2 flex justify-between rounded border bg-gray-50 p-3">
-                            <div>
-                                <h4 class="font-semibold">{{ quiz.title }}</h4>
-                                <p class="text-sm text-gray-600">{{ quiz.description }}</p>
+                    <ul class="space-y-4">
+                        <li
+                            v-for="quiz in quizzes"
+                            :key="quiz.id"
+                            class="border-b pb-2 flex justify-between items-start"
+                        >
+                            <div v-if="editingQuizId !== quiz.id">
+                            <h3 class="text-lg font-semibold">{{ quiz.title }}</h3>
+                            <p class="text-sm text-gray-600">{{ quiz.description }}</p>
+                            <p class="text-sm hidden text-gray-600">Answer: {{ quiz.answer }}</p>
+                            <p class="text-sm hidden text-gray-600">Score: {{ quiz.score }}</p>
+                            <p class="text-sm text-gray-600">Status: {{ quiz.quizStatus }}</p>
                             </div>
-                            <div class="mr-5 flex flex-row gap-3">
-                                <button @click="deleteQuiz(quiz.id)" class="text-red-600 hover:underline">Archive</button>
-                                <!-- <button @click="editQuiz(quiz.id)" class="text-green-600 hover:underline">Edit</button> -->
+
+                            <!-- Editing Form -->
+                            <div v-else class="space-y-2">
+                            <input v-model="editQuizData.title" placeholder="Quiz Title" class="border rounded p-2 w-full" />
+                            <textarea v-model="editQuizData.description" placeholder="Description" class="border rounded p-2 w-full"></textarea>
+                            <input v-model="editQuizData.answer" placeholder="Answer" class="border rounded p-2 w-full" />
+                            <input v-model="editQuizData.score" placeholder="Score" class="border rounded p-2 w-full" />
+                            <select v-model="editQuizData.quizStatus" class="border rounded p-2 w-full">
+                                <option value="ACTIVE">Active</option>
+                                <option value="ARCHIVE">Archive</option>
+                            </select>
+                            </div>
+
+                            <div class="space-x-2">
+                            <button
+                                v-if="editingQuizId !== quiz.id"
+                                @click="startEditingQuiz(quiz)"
+                                class="text-blue-600"
+                            >
+                                <PenBoxIcon></PenBoxIcon>
+                            </button>
+                            <button
+                                v-if="editingQuizId === quiz.id"
+                                @click="updateQuiz(quiz.id)"
+                                class="text-green-600"
+                            >
+                                <RefreshCcw></RefreshCcw>
+                            </button>
+                            <button
+                                v-if="editingQuizId === quiz.id"
+                                @click="editingQuizId = null"
+                                class="text-gray-600"
+                            >
+                                <X></X>
+                            </button>
+                            <button
+                                @click="deleteQuiz(quiz.id)"
+                                class="text-red-600"
+                            >
+                                <Archive></Archive>
+                            </button>
                             </div>
                         </li>
-                    </ul>
+                        </ul>
+
                 </div>
                 <div v-if="quizTab === 'archive'">
                     <h4 class="mb-4 text-lg font-bold">Archived Quizzes</h4>
@@ -466,7 +513,7 @@
                                 <p class="text-sm text-gray-600">{{ test.description }}</p>
                                 <p class="text-xs text-gray-400">Input: {{ test.test_input }} | Output: {{ test.expected_output }}</p>
                             </div>
-                            <button @click="deleteSkillTest(test.id)" class="text-red-600 hover:underline">Delete</button>
+                            <button @click="deleteSkillTest(test.id)" class="text-red-600 hover:underline"><Trash2></Trash2></button>
                         </li>
                     </ul>
                 </div>
@@ -481,6 +528,7 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import axios from 'axios';
 import { computed, onMounted, ref, watch } from 'vue';
 import Sandpit from '../sandpitComponent.vue';
+import { Archive, PenBoxIcon, RefreshCcw, X, Trash2 } from 'lucide-vue-next';
 
 const leaderboard = ref([]);
 const quizTab = ref('pretest');
@@ -503,6 +551,14 @@ const openSection = ref(null);
 const showSection = ref('vuetopics');
 const lessonTab = ref('vue');
 const options = ref(['', '', '', '']);
+const editingQuizId = ref(null);
+const editQuizData = ref({
+    title: "",
+    description: "",
+    answer: "",
+    score: "",
+    quizStatus: "ACTIVE",
+});
 const editingBadgeId = ref(null);
 const editingLessonId = ref(null);
 const editLesson = ref({});
@@ -565,6 +621,59 @@ const newSkillTest = ref({
     codesnippet: '',
     course_id: '1',
 });
+const startEditingQuiz = (quiz) => {
+    editingQuizId.value = quiz.id;
+    editQuizData.value = {
+        title: quiz.title ?? '',
+        description: quiz.description ?? '',
+        answer: quiz.answer ?? '',
+        score: quiz.score ?? '',
+        quizStatus: quiz.quizStatus ?? 'ACTIVE',
+    };
+};
+const updateQuiz = async (quizId) => {
+    try {
+        const response = await fetch(`/api/quizzes/${quizId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content"),
+        },
+        body: JSON.stringify(editQuizData.value),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+        const index = quizzes.value.findIndex((q) => q.id === quizId);
+        if (index !== -1) {
+            quizzes.value[index] = {
+            ...quizzes.value[index],
+            ...editQuizData.value,
+            };
+        }
+
+        editingQuizId.value = null;
+        editQuizData.value = {
+            title: "",
+            description: "",
+            answer: "",
+            score: "",
+            quizStatus: "ACTIVE",
+        };
+
+        alert("Quiz updated successfully!");
+        } else {
+        alert("Failed to update quiz: " + (result.message || JSON.stringify(result)));
+        }
+    } catch (error) {
+        console.error("Error updating quiz:", error);
+        alert("Error updating quiz. See console for details.");
+    }
+};
+
 
 const fetchSkillTests = async () => {
     try {
@@ -640,16 +749,6 @@ const cancelEditingLesson = () => {
     editLesson.value = {};
 };
 
-const updateLesson = async (topicId) => {
-    try {
-        await axios.put(`/api/lessons/${editingLessonId.value}`, editLesson.value);
-        await fetchLessons(topicId);
-        cancelEditingLesson();
-    } catch (e) {
-        alert('Failed to update lesson');
-        console.error(e);
-    }
-};
 const updateBadge = async () => {
     try {
         await axios.put(`/api/badges/${editingBadgeId.value}`, editBadge.value);
@@ -670,11 +769,6 @@ const difficultyLabel = (val) => {
     if (val === 3) return 'Advanced';
     return 'Unknown';
 };
-const toggleLesson = (topicId) => {
-    lessonToggles.value[topicId] = !lessonToggles.value[topicId];
-    if (lessonToggles.value[topicId]) fetchLessons(topicId);
-};
-
 const fetchLessons = async (topicId) => {
     const res = await axios.get(`/api/lessons?topic_id=${topicId}`);
     lessonsByTopic.value[topicId] = res.data;
@@ -683,22 +777,6 @@ const fetchLessons = async (topicId) => {
     }
 };
 
-const createLesson = async (topicId) => {
-    const data = {
-        topic_id: topicId,
-        difficulty: newLesson.value[topicId].difficulty,
-        content: newLesson.value[topicId].content,
-    };
-
-    try {
-        await axios.post('/api/lessons', data);
-        newLesson.value[topicId] = { difficulty: '', content: '' };
-        await fetchLessons(topicId);
-    } catch (e) {
-        alert('Failed to create lesson');
-        console.error(e);
-    }
-};
 const reportTypes = ['course-completion', 'framework-scorecard', 'gamification', 'assessment', 'framework-comparison'];
 const reportResults = ref(null);
 const fieldsVisible = ref(false);
@@ -785,30 +863,21 @@ const updateStandaloneTopic = async (topic) => {
     await axios.put(updateUrl, topic);
     editingTopicId.value = null;
 };
-
-const deleteStandaloneTopic = async (id, courseId) => {
-    const course = courses.value.find((c) => c.id === courseId);
-    const isLaravel = course.name === 'Laravel Frameworks';
-    const deleteUrl = isLaravel ? `/api/laravel-topics/${id}` : `/api/topics/${id}`;
-    await axios.delete(deleteUrl);
-    standaloneTopics.value[courseId] = standaloneTopics.value[courseId].filter((t) => t.id !== id);
-};
-
 const createQuiz = () => {
-    pendingQuizzes.value.push({
-        ...newQuiz.value,
-        questionCategory: 'quiz',
-        options: newQuiz.value.questionType === 'Choices' ? [...options.value] : [],
-        quizStatus: 'ACTIVE',
-        course_id: 1,
-    });
+        pendingQuizzes.value.push({
+            ...newQuiz.value,
+            questionCategory: 'quiz',
+            options: newQuiz.value.questionType === 'Choices' ? [...options.value] : [],
+            quizStatus: 'ACTIVE',
+            course_id: 1,
+        });
 
     newQuiz.value.title = '';
     newQuiz.value.description = '';
     newQuiz.value.answer = '';
     newQuiz.value.score = '';
     if (newQuiz.value.questionType === 'Choices') {
-        options.value = ['', '', '', ''];
+    options.value = ['', '', '', ''];
     }
 };
 const handleImageUpload = async (event, type = 'new') => {
