@@ -39,6 +39,8 @@ Route::get('/topics/fetchpercourse/{id}', [TopicController::class, 'fetchperCour
 Route::get('/topics/{topic}', [TopicController::class, 'show']);
 Route::put('/topics/{topic}', [TopicController::class, 'update']); // expects: title, content, module_name
 Route::delete('/topics/{topic}', [TopicController::class, 'destroy']);
+Route::put('/topics/{topic}/archive', [TopicController::class, 'archive']);
+Route::get('/courses/{id}/topics/archived', [TopicController::class, 'getArchivedTopics']);
 
 // ✅ Laravel Topics (uses separate `laravel_topics` table, expects `module_name`)
 Route::get('/courses/{course}/laravel-topics', [LaravelTopicController::class, 'index']);

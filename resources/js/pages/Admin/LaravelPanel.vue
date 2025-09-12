@@ -40,7 +40,7 @@
                                 activeTab[course.id] === tab ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600 hover:text-blue-500',
                             ]"
                         >
-                            {{ tab === 'create' ? 'Create New Topic' : tab === 'uploaded' ? 'Uploaded Topics' : undefined}}
+                            {{ tab === 'create' ? 'Create New Topic' : tab === 'uploaded' ? 'Uploaded Topics' : 'Archived Topics'}}
                         </button>
                     </div>
                     <div v-if="activeTab[course.id] === 'create'" class="p-5">
@@ -91,9 +91,11 @@
                                     <div class="flex gap-2">
                                         <button @click="editingTopicId = editingTopicId === topic.id ? null : topic.id" class="text-blue-600 flex items-center gap-1">
                                             <span v-if="editingTopicId === topic.id"><X></X></span>
-                                            <PenBoxIcon size="25" v-else/> <Archive size="25" color="red"/>
+                                            <PenBoxIcon size="25" v-else/> 
                                         </button>
-                                        <!-- <button @click="deleteStandaloneTopic(topic.id, course.id)" class="text-red-600">Delete</button> -->
+                                        <button @click="archiveTopic(topic.id)" class="text-red-600">
+                                            <Archive size="25" color="red"/>
+                                        </button>
                                     </div>
                                 </div>
                                 <div v-if="editingTopicId === topic.id" class="mt-4 space-y-4">
@@ -127,9 +129,18 @@
                             </li>
                         </ul>
                     </div>
-                    <!-- <div v-if="activeTab[course.id] === 'archived'" class="p-5">
-                        <p class="text-gray-500">Archived topics will appear here.</p>
-                    </div> -->
+                    <div v-if="activeTab[course.id] === 'archived'" class="p-5">
+                        <div v-if="archivedTopics[course.id] && archivedTopics[course.id].length > 0">
+                            <ul>
+                                <li v-for="topic in archivedTopics[course.id]" :key="'archived-' + topic.id" 
+                                    class="mb-3 rounded border bg-gray-100 p-3">
+                                    <h4 class="text-lg font-semibold">{{ topic.title }}</h4>
+                                    <p class="text-sm text-gray-600">{{ topic.module_name }}</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <p v-else class="text-gray-500">No archived topics yet.</p>
+                    </div>
                 </div>
             </div>
             <div v-if="showSection === 'quizzes'" class="rounded bg-white p-4 shadow">
@@ -535,6 +546,7 @@ const quizTab = ref('pretest');
 const lessonsByTopic = ref({});
 const newLesson = ref({});
 const lessonToggles = ref({});
+const archivedTopics = ref({});
 const users = ref([]);
 const courses = ref([]);
 const quizzes = ref([]);
@@ -580,6 +592,22 @@ const newQuiz = ref({
     score: '',
     course_id: '',
 });
+const fetchArchivedTopics = async (courseId) => {
+    try {
+        const response = await axios.get(`/api/courses/2/topics/archived`);
+        archivedTopics.value[courseId] = response.data;
+    } catch (error) {
+        console.error('Error fetching archived topics:', error);
+    }
+};
+const restoreTopic = async (topicId, courseId) => {
+    try {
+        await axios.put(`/api/topics/${topicId}`, { topicStatus: 'ACTIVE' });
+        fetchArchivedTopics(courseId);
+    } catch (error) {
+        console.error('Error restoring topic:', error);
+    }
+};
 const filteredTopics = computed(() => {
     return allTopics.value.filter((topic) => {
         if (lessonTab.value === 'vue') return topic.course_id === 2;
@@ -648,7 +676,7 @@ const updateQuiz = async (quizId) => {
 
         if (response.ok) {
         const index = quizzes.value.findIndex((q) => q.id === quizId);
-        if (index !== -2) {
+        if (index !== -1) {
             quizzes.value[index] = {
             ...quizzes.value[index],
             ...editQuizData.value,
@@ -690,7 +718,7 @@ const handleSnippetFile = (event) => {
 
     const reader = new FileReader();
     reader.onload = () => {
-        newSkillTest.value.codesnippet = reader.result.split(',')[2];
+        newSkillTest.value.codesnippet = reader.result.split(',')[1];
     };
     reader.readAsDataURL(file);
 };
@@ -739,16 +767,6 @@ const cancelEditingBadge = () => {
     editingBadgeId.value = null;
     editBadge.value = {};
 };
-const startEditingLesson = (lesson) => {
-    editingLessonId.value = lesson.id;
-    editLesson.value = { ...lesson };
-};
-
-const cancelEditingLesson = () => {
-    editingLessonId.value = null;
-    editLesson.value = {};
-};
-
 const updateBadge = async () => {
     try {
         await axios.put(`/api/badges/${editingBadgeId.value}`, editBadge.value);
@@ -768,13 +786,6 @@ const difficultyLabel = (val) => {
     if (val === 2) return 'Intermediate';
     if (val === 3) return 'Advanced';
     return 'Unknown';
-};
-const fetchLessons = async (topicId) => {
-    const res = await axios.get(`/api/lessons?topic_id=${topicId}`);
-    lessonsByTopic.value[topicId] = res.data;
-    if (!newLesson.value[topicId]) {
-        newLesson.value[topicId] = { difficulty: '', content: '' };
-    }
 };
 
 const reportTypes = ['course-completion', 'framework-scorecard', 'gamification', 'assessment', 'framework-comparison'];
@@ -894,7 +905,15 @@ const handleImageUpload = async (event, type = 'new') => {
     };
     reader.readAsDataURL(file);
 };
-
+const archiveTopic = async (topicId) => {
+    try {
+        await axios.put(`/api/topics/${topicId}/archive`);
+        // Refresh topics list or filter archived ones
+        standaloneTopics[course.id] = standaloneTopics[course.id].filter(t => t.id !== topicId);
+    } catch (error) {
+        console.error('Error archiving topic:', error);
+    }
+};
 const saveAllQuizzes = async () => {
     try {
         for (const quiz of pendingQuizzes.value) {
@@ -932,6 +951,11 @@ watch(showSection, async (val) => {
         await fetchQuizzesArchives();
         await fetchAllTopics();
     }
+    if (val === 'vuetopics') {
+        for (const course of courses.value) {
+            await fetchArchivedTopics(2);
+        }
+    }
 });
 
 const toggleCourse = (courseId) => {
@@ -960,5 +984,6 @@ onMounted(async () => {
     fetchCourses();
     fetchAllTopics();
     fetchSkillTests();
+    fetchArchivedTopics(2);
 });
 </script>
