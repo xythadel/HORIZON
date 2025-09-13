@@ -15,11 +15,11 @@ class TopicController extends Controller
      */
     public function index()
     {
-        return Topic::all();
+        return Topic::all()->where('topicStatus' , 'ACTIVE');
     }
 
     public function fetchperCourse($id){
-        $displayQuiz = Topic::where('course_id','=',$id)->get();
+        $displayQuiz = Topic::where('course_id','=',$id)->where('topicStatus' , 'ACTIVE')->get();
 
         return response()->json($displayQuiz);
     }
@@ -36,48 +36,36 @@ class TopicController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request, $course_id)
-{
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'module_name' => 'required|string|max:255',
-        'difficulty' => 'required|in:1,2,3',
-        'content' => 'required|string',
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'module_name' => 'required|string|max:255',
+            'difficulty' => 'required|in:1,2,3',
+            'content' => 'required|string',
 
-    ]);
+        ]);
 
-     $course = Course::findOrFail($course_id); 
+        $course = Course::findOrFail($course_id); 
 
-    $topic = new Topic();
-    $topic->title = $validated['title'];
-    $topic->module_name = $validated['module_name'];
-    $topic->course_id = $course_id;;
-    $topic->difficulty = $validated['difficulty'];
-    $topic->content = $validated['content'];
-    $topic->save();
+        $topic = new Topic();
+        $topic->title = $validated['title'];
+        $topic->module_name = $validated['module_name'];
+        $topic->course_id = $course_id;;
+        $topic->difficulty = $validated['difficulty'];
+        $topic->content = $validated['content'];
+        $topic->topicStatus = 'ACTIVE';
+        $topic->save();
 
-    return response()->json($topic, 201);
-}
-
-
-    /**
-     * Display the specified resource.
-     */
+        return response()->json($topic, 201);
+    }
     public function show(Topic $topic)
     {
         //
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Topic $topic)
     {
         return view('admin.topics.edit', compact('topic'));
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Topic $topic)
     {
         $request->validate([
@@ -110,6 +98,26 @@ class TopicController extends Controller
 
         return response()->json(['message' => 'Topic deleted successfully.']);
     }
+    public function archive(Topic $topic)
+    {
+        $topic->update([
+            'topicStatus' => 'ARCHIVED',
+        ]);
+
+        return response()->json([
+            'message' => 'Topic archived successfully.',
+            'topic' => $topic
+        ]);
+    }
+
+    public function getArchivedTopics($courseId)
+    {
+        $topics = Topic::where('course_id', $courseId)
+                    ->where('topicStatus', 'ARCHIVED')
+                    ->get();
+
+        return response()->json($topics);
+    }
 
     public function vueTopics()
     {   
@@ -118,7 +126,8 @@ class TopicController extends Controller
     }
     public function getTopicsByCourse($id)
     {
-        $topics =Topic::where('course_id', $id)->get();
+        $topics =Topic::where('course_id', $id)->where('topicStatus','ACTIVE')->get();
         return response()->json($topics);
     }
+    
 }

@@ -15,6 +15,7 @@ class Topic extends Model
         'module_name',
         'difficulty',
         'content',
+        'topicStatus'
     ];
 
     public function course()
