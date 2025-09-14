@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Badge;
 use App\Models\Topic;
 use App\Models\Course;
+use App\Models\UserBadge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -128,6 +130,55 @@ class TopicController extends Controller
     {
         $topics =Topic::where('course_id', $id)->where('topicStatus','ACTIVE')->get();
         return response()->json($topics);
+    }
+
+    public function completeTopic($userId, $topicId)
+    {
+        $badge = Badge::where('topic_id', $topicId)->first();
+
+        if ($badge) {
+            UserBadge::firstOrCreate(
+                ['user_id' => $userId, 'badge_id' => $badge->id],
+                ['earned_at' => now()]
+            );
+        }
+    }
+
+    public function finishTopic(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'topic_id' => 'required|exists:topics,id',
+        ]);
+
+        $userId = $request->user_id;
+        $topicId = $request->topic_id;
+
+        // 🔹 (Optional) You may want to save a record of topic completion in another table
+        // Example: UserTopic::updateOrCreate(...)
+        // If you don’t track completions, you can skip this.
+
+        // 🔹 Check if this topic has a badge
+        $badge = Badge::where('topic_id', $topicId)->first();
+
+        if ($badge) {
+            // Assign badge if not already earned
+            $userBadge = UserBadge::firstOrCreate(
+                ['user_id' => $userId, 'badge_id' => $badge->id],
+                ['earned_at' => now()]
+            );
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Topic marked complete and badge assigned!',
+                'badge' => $badge,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Topic marked complete. No badge for this topic.',
+        ]);
     }
     
 }

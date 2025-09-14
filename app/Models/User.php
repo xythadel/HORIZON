@@ -123,5 +123,9 @@ class User extends Authenticatable // implements MustVerifyEmail
     {
         return $this->hasMany(\App\Models\QuizAttempt::class, 'user_id');
     }
+    public function badgesClaim()
+    {
+        return $this->hasMany(UserBadge::class);
+    }
 
 }

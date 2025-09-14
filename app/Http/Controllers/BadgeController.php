@@ -2,8 +2,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{User, Badge, Course, QuizAttempt};
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\User;
+use App\Models\Badge;
+use App\Models\Course;
+use App\Models\QuizAttempt;
+use App\Models\UserBadge;
+
 
 class BadgeController extends Controller
 {
@@ -328,6 +333,35 @@ class BadgeController extends Controller
             'progressData' => $progressData,
         ]);
     }
+    
+    public function getTopicBadges($userId)
+{
+    // Fetch all UserBadge records for this user, eager load badge + topic
+    $userBadges = UserBadge::where('user_id', $userId)
+        ->with(['badge.topic'])
+        ->get();
+
+    if ($userBadges->isEmpty()) {
+        return response()->json([
+            'message' => 'No badges found for this user',
+            'badges' => []
+        ]);
+    }
+
+    // Map into a simple array for the frontend
+    $badges = $userBadges->map(function ($userBadge) {
+        return [
+            'id' => $userBadge->badge->id,
+            'title' => $userBadge->badge->title,
+            'description' => $userBadge->badge->description,
+            'image' => $userBadge->badge->image,
+            'topic_title' => optional($userBadge->badge->topic)->title ?? 'Unknown Topic',
+            'earned_at' => $userBadge->earned_at,
+        ];
+    });
+
+    return response()->json(['badges' => $badges]);
+}
 
 
 }

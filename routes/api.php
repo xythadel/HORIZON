@@ -41,6 +41,7 @@ Route::put('/topics/{topic}', [TopicController::class, 'update']); // expects: t
 Route::delete('/topics/{topic}', [TopicController::class, 'destroy']);
 Route::put('/topics/{topic}/archive', [TopicController::class, 'archive']);
 Route::get('/courses/{id}/topics/archived', [TopicController::class, 'getArchivedTopics']);
+Route::post('/topics/complete', [TopicController::class, 'finishTopic']);
 
 // ✅ Laravel Topics (uses separate `laravel_topics` table, expects `module_name`)
 Route::get('/courses/{course}/laravel-topics', [LaravelTopicController::class, 'index']);
@@ -111,7 +112,7 @@ Route::post('/badges/claim/{id}', [BadgeController::class, 'claim']);
 Route::get('/badges/display/{id}', [BadgeController::class, 'fetchperCourse']);
 Route::post('/badges', [BadgeController::class, 'store']);
 Route::get('/badges', [BadgeController::class, 'index']);
-
+Route::get('/topic-badges/{userId}', [BadgeController::class, 'getTopicBadges']);
 Route::get('/validateBadge/{id}', [BadgeController::class, 'getBadges']);
 
 //Working
