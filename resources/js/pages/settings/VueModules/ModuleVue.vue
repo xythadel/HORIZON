@@ -212,8 +212,20 @@ export default {
       attempted: false,
       passed: false
     }));
+    window.addEventListener("beforeunload", this.beforeUnloadHandler);
+  },
+
+  beforeUnmount() {
+    window.removeEventListener("beforeunload", this.beforeUnloadHandler);
   },
   methods: {
+    beforeUnloadHandler(event) {
+      if (this.postTestDisplay || (!this.skillTestsCompleted && this.skillTests.length > 0)) {
+        event.preventDefault();
+        event.returnValue = "⚠️ If you leave, your quiz will be canceled and you’ll get zero.";
+        return event.returnValue;
+      }
+    },
     selectChoice(choice) {
       this.PostTest[this.currentPostQuestionIndex].userAnswer = choice;
       this.onAnswerPost();
@@ -466,6 +478,14 @@ export default {
       this.postTestResult = passed ? 'pass' : 'fail';
 
       if (passed) {
+        await fetch('/api/topics/complete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: this.user.id,
+            topic_id: this.currentTopic.id,
+          }),
+        });
         try {
           await this.fetchSkillTests();
         } catch (e) {

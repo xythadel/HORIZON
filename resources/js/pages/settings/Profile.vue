@@ -31,7 +31,7 @@ const page = usePage<SharedData>();
 const user = page.props.auth?.user as User;
 
 const form = useForm({
-    name: user.name,
+    name: user.firstname +' '+ user.lastname,
     email: user.email,
 });
 

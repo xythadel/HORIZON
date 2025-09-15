@@ -23,6 +23,7 @@
     </aside>
 
     <main class="flex-1 p-12">
+      <!-- All Badges -->
       <h2 class="text-2xl font-bold mb-4 text-white border-b-2 pb-2">All Badges</h2>
       <div class="rounded shadow">
         <div v-if="badges.length">
@@ -32,25 +33,6 @@
                 <img :src="badge.image" alt="Badge Image" class="w-20 h-20 object-cover rounded-full" />
                 <h4 class="font-semibold text-white">{{ badge.title }}</h4>
                 <p class="text-sm text-gray-50">{{ badge.description }}</p>
-
-                <div class="mt-2">
-                  <div class="w-full h-3 bg-gray-200 rounded-full">
-                    <div
-                      class="h-3 bg-green-500 rounded-full transition-all duration-300"
-                      :style="{ width: badge.progress + '%' }"
-                    ></div>
-                  </div>
-                  <p class="text-sm mt-1 text-gray-50">{{ badge.progress }}% progress</p>
-                </div>
-
-                <button
-                  :disabled="badge.claimed || !badge.claimable"
-                  @click="!badge.claimed && badge.claimable && claimBadge(badge.id)"
-                  class="mt-5 px-3 py-1 rounded-md text-lg w-full text-white"
-                  :class="badge.claimed ? 'bg-gray-400 cursor-not-allowed' : (badge.claimable ? 'bg-blue-500 hover:bg-blue-600' : 'bg-red-600 cursor-not-allowed')"
-                >
-                  {{ badge.claimed ? 'Claimed' : (badge.claimable ? 'Claim Badge' : 'Incomplete') }}
-                </button>
               </div>
             </li>
           </ul>
@@ -59,29 +41,30 @@
           <p>No badges available at the moment.</p>
         </div>
       </div>
-      <h2 class="text-2xl font-bold mt-10 mb-4 text-white border-b-2 pb-2">Claimed Badges</h2>
+
+      <!-- Topic Badges -->
+      <h2 class="text-2xl font-bold mt-10 mb-4 text-white border-b-2 pb-2">Topic Badges</h2>
       <div class="rounded shadow">
-        <div v-if="badges.some(b => b.claimed)">
-          <ul class="flex gap-4">
-            <li
-              v-for="badge in badges.filter(b => b.claimed)"
-              :key="badge.id"
-              class="flex items-center gap-2 flex-col"
-            >
-              <img :src="badge.image" alt="Badge Image" class="w-16 h-16 object-cover rounded-full" />
-              <div class="text-center">
+        <div v-if="topicBadges.length">
+          <ul class="grid grid-cols-4 gap-4">
+            <li v-for="badge in topicBadges" :key="badge.id" class="p-3 flex items-center gap-4 flex-col">
+              <div class="text-center w-full flex flex-col justify-center items-center">
+                <img :src="badge.image" alt="Badge Image" class="w-20 h-20 object-cover rounded-full" />
                 <h4 class="font-semibold text-white">{{ badge.title }}</h4>
+                <p class="text-sm text-gray-50">{{ badge.description }}</p>
+                <span class="text-green-400 text-sm mt-2">🏆 Earned for completing: {{ badge.topic_title }}</span>
               </div>
             </li>
           </ul>
         </div>
         <div v-else>
-          <p class="text-gray-600">No claimed badges yet.</p>
+          <p class="text-gray-400">No topic badges yet.</p>
         </div>
       </div>
     </main>
   </div>
 
+  <!-- Logout Modal -->
   <div v-if="showLogoutModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
     <div class="w-full max-w-sm rounded-lg bg-white p-6 text-center text-gray-800 shadow-lg">
       <h2 class="mb-4 text-xl font-semibold">Are you sure?</h2>
@@ -93,7 +76,6 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref, onMounted } from 'vue'
 import { usePage, router } from '@inertiajs/vue3'
@@ -101,14 +83,17 @@ import axios from 'axios'
 
 const { auth } = usePage().props
 const user = auth.user
+
 const badges = ref([])
+const topicBadges = ref([])
 const showLogoutModal = ref(false)
 
 const fetchBadges = async () => {
   try {
-    const [allBadges, claimedBadges] = await Promise.all([
+    const [allBadges, claimedBadges, topicBadgesRes] = await Promise.all([
       axios.get(`/api/validateBadge/${user.id}`),
-      axios.get(`/api/badges/claimed/${user.id}`)
+      axios.get(`/api/badges/claimed/${user.id}`),
+      axios.get(`/api/topic-badges/${user.id}`)
     ])
 
     const claimedIds = claimedBadges.data.map(b => b.id)
@@ -119,6 +104,8 @@ const fetchBadges = async () => {
       progress: allBadges.data.progressData[badge.id]?.progress || 0,
       claimable: allBadges.data.progressData[badge.id]?.claimable || false
     }))
+
+    topicBadges.value = topicBadgesRes.data.badges
   } catch (error) {
     console.error('Failed to fetch badges:', error)
   }
