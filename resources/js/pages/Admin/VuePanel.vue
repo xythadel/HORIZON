@@ -45,26 +45,30 @@
                     </div>
                     <div v-if="activeTab[course.id] === 'create'" class="p-5">
                         <form @submit.prevent="createStandaloneTopicForCourse(course.id)" class="mb-4 w-full space-y-4">
-                            <div class="flex flex-col">
-                                <label class="mb-1 text-sm font-medium">Topic Title <span class="text-red-500">*</span></label>
-                                <input v-model="newTopics[course.id].title" placeholder="Enter topic title" class="rounded-md border p-2" required />
+                            <div class="flex flex-row gap-3">
+                                <div class="flex flex-col w-3/6">
+                                    <label class="mb-1 text-sm font-medium">Topic Title <span class="text-red-500">*</span></label>
+                                    <input v-model="newTopics[course.id].title" placeholder="Enter topic title" class="rounded-md border p-2" required />
+                                </div>
+                                <div class="flex flex-col w-2/6">
+                                    <label class="mb-1 text-sm font-medium">Module Name <span class="text-red-500">*</span></label>
+                                    <input
+                                        v-model="newTopics[course.id].module_name"
+                                        placeholder="Enter module name"
+                                        class="rounded-md border p-2"
+                                        required
+                                    />
+                                </div>
+                                <div class="flex flex-col  w-1/6">
+                                    <label class="block font-medium">Difficulty</label>
+                                    <select v-model="newTopics[course.id].difficulty" class="w-full rounded border p-2" required>
+                                        <option disabled value="">-- Select Difficulty --</option>
+                                        <option value="1">Beginner</option>
+                                        <option value="2">Intermediate</option>
+                                        <option value="3">Advanced</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="flex flex-col">
-                                <label class="mb-1 text-sm font-medium">Module Name <span class="text-red-500">*</span></label>
-                                <input
-                                    v-model="newTopics[course.id].module_name"
-                                    placeholder="Enter module name"
-                                    class="rounded-md border p-2"
-                                    required
-                                />
-                            </div>
-                            <label class="block font-medium">Difficulty</label>
-                            <select v-model="newTopics[course.id].difficulty" class="w-full rounded border p-2" required>
-                                <option disabled value="">-- Select Difficulty --</option>
-                                <option value="1">Beginner</option>
-                                <option value="2">Intermediate</option>
-                                <option value="3">Advanced</option>
-                            </select>
 
                             <label class="block font-medium">Content</label>
                             <QuillEditor
@@ -171,22 +175,24 @@
                 <div v-if="quizTab === 'create'">
                     <form @submit.prevent="createQuiz" class="mb-6 space-y-4">
                         <!-- Topic -->
-                        <div class="flex flex-col">
-                            <label class="mb-1 text-sm font-medium">Topic</label>
-                            <select v-model="newQuiz.topic_id" class="rounded border p-2" required>
-                                <option disabled value="">-- Select Topic --</option>
-                                <option v-for="topic in allTopics" :key="topic.id" :value="topic.id">
-                                    {{ topic.title }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="flex flex-col">
-                            <label class="mb-1 text-sm font-medium">Quiz Type</label>
-                            <select v-model="newQuiz.questionType" class="rounded border p-2" @change="displayFields">
-                                <option value="">Select Type</option>
-                                <option value="Blank">Fill in the Blanks</option>
-                                <option value="Choices">Multiple Choice</option>
-                            </select>
+                        <div class="flex flec-row justify-between gap-2">
+                            <div class="flex flex-col w-2/3">
+                                <label class="mb-1 text-sm font-medium">Topic</label>
+                                <select v-model="newQuiz.topic_id" class="rounded border p-2" required>
+                                    <option disabled value="">-- Select Topic --</option>
+                                    <option v-for="topic in allTopics" :key="topic.id" :value="topic.id">
+                                        {{ topic.title }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col w-1/3">
+                                <label class="mb-1 text-sm font-medium">Quiz Type</label>
+                                <select v-model="newQuiz.questionType" class="rounded border p-2" @change="displayFields">
+                                    <option value="">Select Type</option>
+                                    <option value="Blank">Fill in the Blanks</option>
+                                    <option value="Choices">Multiple Choice</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="flex flex-col">
                             <label class="mb-1 text-sm font-medium">Title</label>
