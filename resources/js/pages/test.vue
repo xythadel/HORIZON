@@ -1,19 +1,13 @@
 <template>
   <div class="flex h-screen w-full flex-wrap bg-zinc-800">
-    <!-- Sidebar -->
-    <aside class="relative flex h-screen w-60 flex-col bg-white">
+      <aside class="relative flex h-screen w-60 flex-col bg-white">
       <h1 class="flex pl-10 pt-14 text-3xl font-normal text-zinc-800">Horizon</h1>
-         <!-- Divider -->
       <div class="absolute left-10 top-[124px] w-40 border-t border-gray-200"></div>
-
-      <!-- Profile Picture -->
       <div class="absolute left-4 top-[138px] h-16 w-16 rounded-full bg-white shadow-md"></div>
-      <!-- Username -->
-          <p v-if="user" class="pl-24 pt-16 text-base font-normal text-zinc-800">
-       {{ user.name }}
-      </p>
 
-      <!-- Navigation Panel -->
+      <p v-if="user" class="pl-24 pt-16 text-base font-normal text-zinc-800">
+          {{ user.firstname }} {{ user.lastname }}
+      </p>
       <nav class="flex flex-col space-y-6 pl-20 pt-14">
         <a href="/dashboard" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Dashboard</a>
         <a href="/test" class="text-base font-normal text-zinc-800 hover:text-indigo-600">Course</a>
